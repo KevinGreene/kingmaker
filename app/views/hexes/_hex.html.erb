@@ -1,0 +1,12 @@
+<h2>Hex: <%= hex.label %></h2>
+<p><%= hex.coordinates %></p>
+
+<%= form_with model: [hex.map, hex], local: true do |form| %>
+  <p>
+    <strong>Region:</strong>
+    <%= form.select :region_id, 
+        options_from_collection_for_select(hex.map.regions, :id, :name, hex.region_id),
+        { prompt: 'No region' }, 
+        { onchange: 'this.form.submit();' } %>
+  </p>
+<% end %>

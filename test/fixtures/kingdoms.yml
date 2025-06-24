@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  ore: 1
+  food: 1
+  lumber: 1
+  luxuries: 1
+  stone: 1
+  resource_points: 1
+  map: one
+
+two:
+  ore: 1
+  food: 1
+  lumber: 1
+  luxuries: 1
+  stone: 1
+  resource_points: 1
+  map: two

@@ -1,0 +1,33 @@
+<div id="<%= dom_id map %>">
+  <p>
+    <strong>Name:</strong>
+    <%= map.name %>
+  </p>
+
+  <p>
+    <strong>Description:</strong>
+    <%= map.description %>
+  </p>
+
+  <p>
+    <strong>Regions:</strong>
+  </p>
+  <% if map.regions.any? %>
+    <ul>
+      <% map.regions.each do |region| %>
+        <li><%= region.name %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  
+  <%= form_with model: [map, map.regions.build], local: true do |form| %>
+    <%= form.text_field :name, placeholder: "Region name" %>
+    <%= form.submit "Add Region" %>
+  <% end %>
+
+  <%= image_tag map.image.representation(resize_to_limit: [500, 500]) %>
+ 
+  <% map.hexes.each do |hex| %>
+    <%= render 'hexes/hex', hex: hex %>
+  <% end %>
+</div>
