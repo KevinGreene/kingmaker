@@ -3,6 +3,10 @@ require "application_system_test_case"
 class MapsTest < ApplicationSystemTestCase
   setup do
     @map = maps(:one)
+
+    # authenticate in headless browser using dedicated path
+    @user = users(:one)
+    visit "/test_login/#{@user.id}"
   end
 
   test "visiting the index" do
