@@ -7,9 +7,8 @@ class MapsControllerTest < ActionDispatch::IntegrationTest
 
     post session_path, params: {
       email_address: @user.email_address,
-      password: 'password'
+      password: "password"
     }
-
   end
 
   test "should get index" do
