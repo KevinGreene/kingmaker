@@ -61,7 +61,7 @@ class MapsController < ApplicationController
     @map.hexes.each do |hex|
       hex.update(label: hex.default_label)
     end
-    
+
     redirect_to @map, notice: "All hex labels updated to default."
   end
 

@@ -25,7 +25,12 @@
     <%= form.submit "Add Region" %>
   <% end %>
 
-  <%= image_tag map.image.representation(resize_to_limit: [500, 500]) %>
+  <% if map.image.attached? %>
+    <%= image_tag map.image.representation(resize_to_limit: [500, 500]) %>
+  <% else %>
+    <!-- Show placeholder or nothing -->
+    <div class="no-image-placeholder">No image available</div>
+  <% end %>
  
   <% map.hexes.each do |hex| %>
     <%= render 'hexes/hex', hex: hex %>

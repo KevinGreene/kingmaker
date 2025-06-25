@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     user = User.new(params.require(:user).permit(:email_address, :password, :password_confirmation))
     if user.save
       start_new_session_for user
-      redirect_to maps_path, notice: 'User was successfully created.'
+      redirect_to maps_path, notice: "User was successfully created."
     else
       render :new
     end
