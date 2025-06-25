@@ -3,11 +3,11 @@ class RegionsController < ApplicationController
 
   def create
     @region = @map.regions.build(region_params)
-    
+
     if @region.save
-      redirect_to @map, notice: 'Region was successfully created.'
+      redirect_to @map, notice: "Region was successfully created."
     else
-      redirect_to @map, alert: 'Failed to create region.'
+      redirect_to @map, alert: "Failed to create region."
     end
   end
 

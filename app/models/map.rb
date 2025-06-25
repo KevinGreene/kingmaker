@@ -5,7 +5,7 @@ class Map < ApplicationRecord
 
   def create_initial_hexes
     return if hexes.exists?
-    # Create a grid of hexes for the map    
+    # Create a grid of hexes for the map
     (0..columns).each do |x|
       (0..rows).each do |y|
         hexes.create(x_coordinate: x, y_coordinate: y, label: "Hex #{x},#{y}", reconnoitered: false, claimed: false, visible: true)

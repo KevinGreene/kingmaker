@@ -3,9 +3,9 @@ class HexesController < ApplicationController
 
   def update
     if @hex.update(hex_params)
-      redirect_to @map, notice: 'Hex region updated successfully.'
+      redirect_to @map, notice: "Hex region updated successfully."
     else
-      redirect_to @map, alert: 'Failed to update hex region.'
+      redirect_to @map, alert: "Failed to update hex region."
     end
   end
 
