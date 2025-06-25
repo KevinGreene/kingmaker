@@ -4,7 +4,7 @@ one:
   x_coordinate: 1
   y_coordinate: 1
   label: MyString
-  reconreconnoitered: false
+  reconnoitered: false
   claimed: false
   map: one
 
@@ -12,6 +12,6 @@ two:
   x_coordinate: 1
   y_coordinate: 1
   label: MyString
-  reconreconnoitered: false
+  reconnoitered: false
   claimed: false
   map: two
