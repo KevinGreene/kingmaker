@@ -2,6 +2,10 @@ class Map < ApplicationRecord
   has_one_attached :image
   has_many :hexes, dependent: :destroy
   has_many :regions, dependent: :destroy
+  has_many :notes, dependent: :destroy
+  has_many :kingdoms, dependent: :destroy
+  has_many :player_maps, dependent: :destroy
+  has_many :hex_notes, through: :hexes, source: :notes
 
   def create_initial_hexes
     return if hexes.exists?

@@ -3,6 +3,7 @@ class Hex < ApplicationRecord
   belongs_to :region, optional: true
   has_many :hex_resources, dependent: :destroy
   has_many :resources, through: :hex_resources
+  has_many :notes, dependent: :destroy
 
   def coordinates
     "#{x_coordinate}, #{y_coordinate}"

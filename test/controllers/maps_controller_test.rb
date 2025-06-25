@@ -3,6 +3,13 @@ require "test_helper"
 class MapsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @map = maps(:one)
+    @user = users(:one)
+
+    post session_path, params: {
+      email_address: @user.email_address,
+      password: 'password'
+    }
+
   end
 
   test "should get index" do
