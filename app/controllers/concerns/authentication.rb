@@ -14,12 +14,10 @@ module Authentication
 
   private
     def authenticated?
-      return true if Rails.env.test? && request.headers["HTTP_USER_AGENT"]&.include?("HeadlessChrome") # allows authentication for tests only
       resume_session
     end
 
     def require_authentication
-      return if Rails.env.test? && request.headers["HTTP_USER_AGENT"]&.include?("HeadlessChrome") # allows authentication for tests only
       resume_session || request_authentication
     end
 
