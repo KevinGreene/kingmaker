@@ -39,7 +39,7 @@ class MapsTest < ApplicationSystemTestCase
 
     click_on "Edit this map", match: :first
 
-    fill_in "Name", with: @map.name
+    fill_in "map[name]", with: @map.name
     click_on "Update Map"
 
     assert_text "Map was successfully updated"
