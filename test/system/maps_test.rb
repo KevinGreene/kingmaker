@@ -23,7 +23,7 @@ class MapsTest < ApplicationSystemTestCase
     end
     click_on "New map"
 
-    fill_in "Name", with: @map.name
+    fill_in "map_name", with: @map.name
     click_on "Create Map"
 
     assert_text "Map was successfully created"
@@ -38,42 +38,6 @@ class MapsTest < ApplicationSystemTestCase
     end
 
     click_on "Edit this map", match: :first
-
-    sleep(1)
-
-    puts "\n=== ALL PAGE ELEMENTS DEBUG ==="
-
-    # All input elements with detailed info
-    puts "INPUT ELEMENTS:"
-    all('input', visible: :all).each_with_index do |input, i|
-      puts "  #{i+1}. Type: #{input[:type]} | Name: #{input[:name]} | ID: #{input[:id]} | Value: #{input[:value]} | Visible: #{input.visible?} | Disabled: #{input.disabled?}"
-    end
-
-    # All labels
-    puts "LABEL ELEMENTS:"
-    all('label', visible: :all).each_with_index do |label, i|
-      puts "  #{i+1}. For: #{label[:for]} | Text: '#{label.text}' | Visible: #{label.visible?}"
-    end
-
-    # All form elements
-    puts "FORM ELEMENTS:"
-    all('form', visible: :all).each_with_index do |form, i|
-      puts "  #{i+1}. Action: #{form[:action]} | Method: #{form[:method]} | ID: #{form[:id]}"
-    end
-
-    # All select elements
-    puts "SELECT ELEMENTS:"
-    all('select', visible: :all).each_with_index do |select, i|
-      puts "  #{i+1}. Name: #{select[:name]} | ID: #{select[:id]} | Visible: #{select.visible?} | Disabled: #{select.disabled?}"
-    end
-
-    # All textarea elements
-    puts "TEXTAREA ELEMENTS:"
-    all('textarea', visible: :all).each_with_index do |textarea, i|
-      puts "  #{i+1}. Name: #{textarea[:name]} | ID: #{textarea[:id]} | Visible: #{textarea.visible?} | Disabled: #{textarea.disabled?}"
-    end
-
-    puts "=== END DEBUG ===\n"
 
     fill_in "map_name", with: @map.name
     click_on "Update Map"
