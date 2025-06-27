@@ -21,7 +21,11 @@ class MapsTest < ApplicationSystemTestCase
     if has_field?("email_address") && has_field?("password")
       login_as @user
     end
+
     click_on "New map"
+
+    # Wait for the form to be ready
+    assert_selector "input#map_name", wait: 10
 
     fill_in "map_name", with: @map.name
     click_on "Create Map"
@@ -38,6 +42,9 @@ class MapsTest < ApplicationSystemTestCase
     end
 
     click_on "Edit this map", match: :first
+
+    # Wait for the form to be ready
+    assert_selector "input#map_name", wait: 10
 
     fill_in "map_name", with: @map.name
     click_on "Update Map"
