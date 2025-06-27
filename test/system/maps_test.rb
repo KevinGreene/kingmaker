@@ -73,7 +73,7 @@ class MapsTest < ApplicationSystemTestCase
     click_on "Destroy this map", match: :first
 
     # Wait for the form to be ready
-    assert_selector "main", wait: 10
+    assert_selector "h1", text: "Maps", wait: 10
 
     assert_text "Map was successfully destroyed"
   end
