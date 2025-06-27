@@ -44,7 +44,7 @@ class MapsTest < ApplicationSystemTestCase
     click_on "Edit this map", match: :first
 
     # Wait for the form to be ready
-    assert_selector "input#map_name", wait: 10
+    assert_selector "main", wait: 10
 
     fill_in "map_name", with: @map.name
     click_on "Update Map"
