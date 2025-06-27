@@ -10,13 +10,17 @@ class MapsTest < ApplicationSystemTestCase
 
   test "visiting the index" do
     visit maps_url
-    login_as @user
+    if has_field?("email_address") && has_field?("password")
+      login_as @user
+    end
     assert_selector "h1", text: "Maps"
   end
 
   test "should create map" do
     visit maps_url
-    login_as @user
+    if has_field?("email_address") && has_field?("password")
+      login_as @user
+    end
     click_on "New map"
 
     fill_in "Name", with: @map.name
@@ -28,7 +32,11 @@ class MapsTest < ApplicationSystemTestCase
 
   test "should update Map" do
     visit map_url(@map)
-    login_as @user
+
+    if has_field?("email_address") && has_field?("password")
+      login_as @user
+    end
+
     click_on "Edit this map", match: :first
 
     fill_in "Name", with: @map.name
@@ -40,7 +48,11 @@ class MapsTest < ApplicationSystemTestCase
 
   test "should destroy Map" do
     visit map_url(@map)
-    login_as @user
+
+    if has_field?("email_address") && has_field?("password")
+      login_as @user
+    end
+
     click_on "Destroy this map", match: :first
 
     assert_text "Map was successfully destroyed"

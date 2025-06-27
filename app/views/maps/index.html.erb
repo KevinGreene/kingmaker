@@ -1,7 +1,5 @@
 <%= render "shared/card", variant: :map_thumbnail do %>
 
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Maps" %>
 
 <h1>Maps</h1>
@@ -26,11 +24,7 @@
     </div>
   </div>
 
-  <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          console.log('Tab script loading...');
-      });
-  </script>
+  <p><%= notice %></p>
 
 <div id="maps" class="grid grid-cols-2 gap-4 p-10">
   <% @maps.each_with_index do |map, index| %>
