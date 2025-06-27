@@ -1,4 +1,7 @@
 <div id="<%= dom_id map %>">
+
+  <p><%= notice %></p>
+
   <p>
     <strong>Name:</strong>
     <%= map.name %>
@@ -25,13 +28,14 @@
     <%= form.submit "Add Region" %>
   <% end %>
 
-  <% if map.image.attached? %>
-    <%= image_tag map.image.representation(resize_to_limit: [500, 500]) %>
-  <% else %>
-    <!-- Show placeholder or nothing -->
-    <div class="no-image-placeholder">No image available</div>
+  <%= render "shared/card", variant: :map do %>
+    <% if map.image.attached? %>
+      <%= image_tag map.image, alt: map.name, class: "#{spacing[:card][:thumbnail]} w-auto h-auto object-cover rounded" %>
+    <% else %>
+      <!-- Show placeholder or nothing -->
+      <div class="btn">No image available</div>
+    <% end %>
   <% end %>
- 
   <% map.hexes.each do |hex| %>
     <%= render 'hexes/hex', hex: hex %>
   <% end %>

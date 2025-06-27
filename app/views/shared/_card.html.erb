@@ -1,0 +1,21 @@
+<%
+  variant = local_assigns.fetch(:variant, :use_parent)
+  props = case variant
+          when :use_parent
+            "#{colors[:card][:use_parent]}"
+          when :background
+            "align-items-left"
+          when :map_container
+            "w-1 h-1 #{colors[:card][:dark]} #{spacing[:card][:map_container]}"
+          when :map
+            "#{colors[:card][:use_parent]} #{spacing[:card][:map]}"
+          when :map_thumbnail
+            ""
+          else
+            "align-items-right"
+          end
+%>
+
+<div class=" <%= props %>">
+  <%= yield if block_given? %>
+</div>

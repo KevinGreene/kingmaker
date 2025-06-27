@@ -1,16 +1,42 @@
-<p style="color: green"><%= notice %></p>
+<%= render "shared/card", variant: :map_thumbnail do %>
 
 <% content_for :title, "Maps" %>
 
 <h1>Maps</h1>
 
-<div id="maps">
-  <% @maps.each do |map| %>
-    <%= render map %>
-    <p>
-      <%= link_to "Show this map", map %>
-    </p>
+  <p><%= notice %></p>
+
+  <div data-controller="tabs">
+    <div role="tablist" class="tabs tabs-lift">
+      <a role="tab" class="tab" data-tab="tab1" data-action="tabs#switch" data-tabs-target="tab">Tab 1</a>
+      <a role="tab" class="tab tab-active" data-tab="tab2" data-action="tabs#switch" data-tabs-target="tab">Tab 2</a>
+      <a role="tab" class="tab" data-tab="tab3" data-action="tabs#switch" data-tabs-target="tab">Tab 3</a>
+    </div>
+
+    <div id="tab1" class="tab-content hidden" data-tabs-target="content">
+      <p>Content for Tab 1</p>
+    </div>
+
+    <div id="tab2" class="tab-content" data-tabs-target="content">
+      <p>Content for Tab 2</p>
+    </div>
+
+    <div id="tab3" class="tab-content hidden" data-tabs-target="content">
+      <p>Content for Tab 3</p>
+    </div>
+  </div>
+
+  <p><%= notice %></p>
+
+<div id="maps" class="grid grid-cols-2 gap-4 p-10">
+  <% @maps.each_with_index do |map, index| %>
+    <div>
+      <%= render map %>
+      <div class="btn" ><%= link_to "Show this map", map %> </div>
+
+    </div>
   <% end %>
 </div>
 
 <%= link_to "New map", new_map_path %>
+<% end %>

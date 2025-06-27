@@ -1,0 +1,27 @@
+=> 
+[[32m#<ActiveRecord::FixtureSet:0x00007acd0946cf48[0m
+  @config[32m=[0m[34m[1m[4mActiveRecord[0m::[34m[1m[4mBase[0m,
+  @fixtures[32m=[0m
+   {[31m[1m"[0m[31mone[0m[31m[1m"[0m =>
+     [32m#<ActiveRecord::Fixture:0x00007acd03d4d910[0m
+      @fixture[32m=[0m
+       {[31m[1m"[0m[31memail_address[0m[31m[1m"[0m => [31m[1m"[0m[31mone@example.com[0m[31m[1m"[0m,
+        [31m[1m"[0m[31mpassword_digest[0m[31m[1m"[0m => [31m[1m"[0m[31m$2a$12$F56gsSTvLBC/CQ7tdxdrl.c9vYSjvWmAQzMWt6Ik0m4SnqKPDpKiO[0m[31m[1m"[0m,
+        [31m[1m"[0m[31mcreated_at[0m[31m[1m"[0m => 2025-06-25 15:05:53.537385611 UTC,
+        [31m[1m"[0m[31mupdated_at[0m[31m[1m"[0m => 2025-06-25 15:05:53.537385611 UTC,
+        [31m[1m"[0m[31mid[0m[31m[1m"[0m => [34m[1m980190962[0m},
+      @model_class[32m=[0m[34m[1m[4mUser[0m([35mid:[0m integer, [35memail_address:[0m string, [35mpassword_digest:[0m string, [35mcreated_at:[0m datetime, [35mupdated_at:[0m datetime)[32m>[0m,
+    [31m[1m"[0m[31mtwo[0m[31m[1m"[0m =>
+     [32m#<ActiveRecord::Fixture:0x00007acd03d4d8c0[0m
+      @fixture[32m=[0m
+       {[31m[1m"[0m[31memail_address[0m[31m[1m"[0m => [31m[1m"[0m[31mtwo@example.com[0m[31m[1m"[0m,
+        [31m[1m"[0m[31mpassword_digest[0m[31m[1m"[0m => [31m[1m"[0m[31m$2a$12$F56gsSTvLBC/CQ7tdxdrl.c9vYSjvWmAQzMWt6Ik0m4SnqKPDpKiO[0m[31m[1m"[0m,
+        [31m[1m"[0m[31mcreated_at[0m[31m[1m"[0m => 2025-06-25 15:05:53.537385611 UTC,
+        [31m[1m"[0m[31mupdated_at[0m[31m[1m"[0m => 2025-06-25 15:05:53.537385611 UTC,
+        [31m[1m"[0m[31mid[0m[31m[1m"[0m => [34m[1m298486374[0m},
+      @model_class[32m=[0m[34m[1m[4mUser[0m([35mid:[0m integer, [35memail_address:[0m string, [35mpassword_digest:[0m string, [35mcreated_at:[0m datetime, [35mupdated_at:[0m datetime)[32m>[0m},
+  @ignored_fixtures[32m=[0m[[31m[1m"[0m[31mDEFAULTS[0m[31m[1m"[0m],
+  @model_class[32m=[0m[34m[1m[4mUser[0m([35mid:[0m integer, [35memail_address:[0m string, [35mpassword_digest:[0m string, [35mcreated_at:[0m datetime, [35mupdated_at:[0m datetime),
+  @name[32m=[0m[31m[1m"[0m[31musers[0m[31m[1m"[0m,
+  @path[32m=[0m[31m[1m"[0m[31m{test/fixtures}/users[0m[31m[1m"[0m,
+  @table_name[32m=[0m[31m[1m"[0m[31musers[0m[31m[1m"[0m[32m>[0m]
