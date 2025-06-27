@@ -1,11 +1,7 @@
-<p style="color: green"><%= notice %></p>
-
 <%= render @map %>
-
 <div>
   <%= link_to "Edit this map", edit_map_path(@map) %> |
   <%= link_to "Back to maps", maps_path %> |
   <%= button_to "Update Hex Labels", update_hex_labels_map_path(@map), method: :patch %>
-
   <%= button_to "Destroy this map", @map, method: :delete %>
 </div>

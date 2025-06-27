@@ -1,0 +1,42 @@
+{
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "esbuild": "^0.25.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.4",
+    "@types/rails__actioncable": "^6.1.11",
+    "daisyui": "^5.0.43",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "tailwindcss --input ./app/assets/stylesheets/application.tailwind.css --output ./app/assets/builds/application.css --watch",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch"
+  },
+  "name": "kingmaker",
+  "version": "1.0.0",
+  "description": "A tool that people can use to host various RPG campaigns, with a specific focus on a shared understanding of hex crawls / point crawls.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KevinGreene/kingmaker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KevinGreene/kingmaker/issues"
+  },
+  "homepage": "https://github.com/KevinGreene/kingmaker#readme"
+}

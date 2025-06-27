@@ -1,0 +1,21 @@
+<%
+  title = local_assigns.fetch(:title, "Title Not Defined")
+  subtitle = local_assigns.fetch(:subtitle, nil)
+  variant = local_assigns.fetch(:variant, :banner)
+
+  classCSS = case variant
+             when :banner
+               "#{colors[:branding][:banner]} #{spacing[:hero][:banner]} h-[10%] w-[100%]"
+             else
+               "#{colors[:branding][:banner]} #{spacing[:hero][:banner]} h-[10%]"
+             end
+%>
+
+<div class="<%= classCSS %>">
+  <div>
+    <h1 class="<%= typography[:hero][:title] %> "><%= title %></h1>
+    <% if subtitle %>
+      <p class="<%= typography[:hero][:subtitle] %>"><%= subtitle %></p>
+    <% end %>
+  </div>
+</div>
