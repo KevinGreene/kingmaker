@@ -13,6 +13,10 @@ class MapsTest < ApplicationSystemTestCase
     if has_field?("email_address") && has_field?("password")
       login_as @user
     end
+
+    # Wait for the form to be ready
+    assert_selector "main", wait: 10
+
     assert_selector "h1", text: "Maps"
   end
 
@@ -29,6 +33,9 @@ class MapsTest < ApplicationSystemTestCase
 
     fill_in "map_name", with: @map.name
     click_on "Create Map"
+
+    # Wait for the form to be ready
+    assert_selector "main", wait: 10
 
     assert_text "Map was successfully created"
     click_on "Back"
@@ -49,6 +56,9 @@ class MapsTest < ApplicationSystemTestCase
     fill_in "map_name", with: @map.name
     click_on "Update Map"
 
+    # Wait for the form to be ready
+    assert_selector "main", wait: 10
+
     assert_text "Map was successfully updated"
     click_on "Back"
   end
@@ -61,6 +71,9 @@ class MapsTest < ApplicationSystemTestCase
     end
 
     click_on "Destroy this map", match: :first
+
+    # Wait for the form to be ready
+    assert_selector "main", wait: 10
 
     assert_text "Map was successfully destroyed"
   end
