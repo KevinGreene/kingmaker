@@ -41,6 +41,21 @@ To set up your dev environment, you'll need to install all of these tools:
 ## How-Tos
 
 <details>
+<summary>Adding New Routes</summary>
+
+1. **Create your file.html.erb in its appropriate views/folder**
+2. **Add a definition entry in the corresponding controller**
+`/app/controllers/file_controller.rb`
+3. **Add the definition to the `before_action` at the top, if applicable**
+4. **Add an entry to [routes.rb](./config/routes.rb)**
+5. **Call the route**
+``` html
+<%= link_to "Name of the link", path_goes_here %>
+```
+
+</details>
+
+<details>
 <summary>Adding New Javascript</summary>
 
 1. **Create controller file:** `app/javascript/controllers/your_controller_name.js`
