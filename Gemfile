@@ -43,9 +43,6 @@ gem "image_processing", "~> 1.2"
 # Typescript
 gem "jsbundling-rails"
 
-# TailwindCSS and DaisyUI to simplify the CSS process
-gem "tailwindcss-rails"
-
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

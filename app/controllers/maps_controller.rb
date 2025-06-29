@@ -1,5 +1,5 @@
 class MapsController < ApplicationController
-  before_action :set_map, only: %i[ show edit update destroy update_hex_labels ]
+  before_action :set_map, only: %i[ show edit update destroy update_hex_labels preview ]
 
   # GET /maps or /maps.json
   def index
@@ -54,6 +54,12 @@ class MapsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to maps_path, status: :see_other, notice: "Map was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def preview
+    respond_to do |format|
+      format.html { render layout: false }
     end
   end
 

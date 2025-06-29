@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :hexes, only: [ :update ]
     member do
       patch :update_hex_labels
+      get :preview
     end
   end
   resource :session

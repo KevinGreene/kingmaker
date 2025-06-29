@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="dark" lang="en">
   <head>
     <title><%= content_for(:title) || "Kingmaker" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -18,26 +18,12 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body>
-  <div class="w-[100%] h-[100%]">
-    <%# Hero section - only shows if content_for :hero is defined %>
-    <%= content_for :hero do %>
-      <%= render "shared/hero",
-                 title: "Kingmaker",
-                 subtitle: "subtitle",
-                 variant: :banner do %>
-      <% end %>
-    <% end %>
-    <%= yield :hero %>
+  <body class="h-screen w-screen">
     <main>
-      <div class="h-[90%]">
-        <%= yield %>
-      </div>
+      <%= yield %>
     </main>
-  </div>
   </body>
 </html>

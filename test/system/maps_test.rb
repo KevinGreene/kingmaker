@@ -17,7 +17,9 @@ class MapsTest < ApplicationSystemTestCase
     # Wait for the form to be ready
     assert_selector "main", wait: 10
 
-    assert_selector "h1", text: "Maps"
+    assert_current_path maps_path
+    assert_title "Maps"
+    assert_selector "h1", text: "Your Maps"
   end
 
   test "should create map" do
@@ -26,7 +28,7 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
-    click_on "New map"
+    find("[data-testid='new-map']").click
 
     # Wait for the form to be ready
     assert_selector "main", wait: 10
