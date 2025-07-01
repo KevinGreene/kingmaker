@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   resources :maps do
     resources :regions, only: [ :create ]
-    resources :hexes, only: [ :update ]
+    resources :hexes, only: [ :update ] do
+      collection do
+        post "bulk_create"
+      end
+    end
     member do
       patch :update_hex_labels
       get :preview

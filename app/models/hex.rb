@@ -5,6 +5,9 @@ class Hex < ApplicationRecord
   has_many :resources, through: :hex_resources
   has_many :notes, dependent: :destroy
 
+  validates :x_coordinate, :y_coordinate, presence: true
+  validates :x_coordinate, :y_coordinate, numericality: { greater_than_or_equal_to: 0 }
+
   def coordinates
     "#{x_coordinate}, #{y_coordinate}"
   end

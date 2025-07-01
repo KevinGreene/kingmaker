@@ -40,6 +40,10 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# ChunkyPNG for processing the map and hexes into single images:
+gem "chunky_png"
+gem "mini_magick"
+
 # Typescript
 gem "jsbundling-rails"
 

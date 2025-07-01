@@ -1,7 +1,277 @@
-<%= render @map %>
-<div>
-  <%= link_to "Edit this map", edit_map_path(@map) %> |
-  <%= link_to "Back to maps", maps_path %> |
-  <%= button_to "Update Hex Labels", update_hex_labels_map_path(@map), method: :patch %>
-  <%= button_to "Destroy this map", @map, method: :delete %>
+<div id="<%= dom_id @map %>" class="h-screen w-screen overflow-hidden flex flex-col" data-controller="maps regions hexes">
+
+  <!-- Map Info Header -->
+  <div id="header-section" class="bg-base-200 p-4 border-b border-base-300 h-24 overflow-hidden">
+    <div id="map-info">
+      <p><%= notice %></p>
+      <h1 class="text-2xl font-bold"><%= @map.name %></h1>
+      <p class="text-base-content/70 mt-1"><%= @map.description %></p>
+    </div>
+
+    <div id="controls" class="hidden h-full">
+      <div id="hex-controls" class="hidden h-full flex items-center">
+        <div class="flex flex-wrap items-center gap-4 w-full">
+
+          <!-- Position Controls -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Position:</span>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                X:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="0" step="1">
+              </label>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                Y:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="0" step="1">
+              </label>
+            </div>
+          </div>
+
+          <!-- Scale Controls -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Scale:</span>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                X:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="1.0" step="0.1" min="0.1" max="5.0">
+              </label>
+            </div>
+            <div class="flex items-center gap-2 text-center">
+              <label class="text-xs font-medium text-gray-600">
+                Y:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="1.0" step="0.1" min="0.1" max="5.0">
+              </label>
+            </div>
+          </div>
+
+          <!-- Orientation Control -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Orientation:</span>
+            <%= button_tag "⬢",
+                           id: "hex-style-switch",
+                           data:{
+                             action: "click->hexes#flipHexStyle",
+                             controller: "hexes"
+                           },
+                           class: "btn btn-primary text-4xl text-center"%>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex items-center gap-2 ml-auto">
+            <button class="px-4 py-1 text-sm bg-blue-500 text-white border border-blue-500 rounded hover:bg-blue-600">
+              Apply
+            </button>
+            <button class="px-4 py-1 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="region-controls" class="hidden h-full flex items-center">
+        <div class="flex flex-wrap items-center gap-4 w-full">
+
+          <!-- Region Management -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Regions:</span>
+            <button class="px-3 py-1 text-sm bg-green-500 text-white border border-green-500 rounded hover:bg-green-600">
+              Edit Labels
+            </button>
+          </div>
+
+          <!-- Selected Hex Actions -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Selected Hexes:</span>
+            <label>
+              <select class="px-2 py-1 text-sm border border-gray-300 rounded bg-white min-w-32">
+                <option value="">Choose Region...</option>
+                <option value="region1">Region 1</option>
+                <option value="region2">Region 2</option>
+              </select>
+            </label>
+            <button class="px-3 py-1 text-sm bg-blue-500 text-white border border-blue-500 rounded hover:bg-blue-600">
+              Assign
+            </button>
+            <button class="px-3 py-1 text-sm bg-red-500 text-white border border-red-500 rounded hover:bg-red-600">
+              Remove
+            </button>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex items-center gap-2 ml-auto">
+            <button class="px-4 py-1 text-sm bg-blue-500 text-white border border-blue-500 rounded hover:bg-blue-600">
+              Apply
+            </button>
+            <button class="px-4 py-1 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Controls -->
+      <div id="map-controls" class="hidden h-full flex items-center">
+        <div class="flex flex-wrap items-center gap-4 w-full">
+
+          <!-- Map Image Position Controls -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Map Image Position:</span>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                X:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="0" step="1">
+              </label>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                Y:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="0" step="1">
+              </label>
+            </div>
+          </div>
+
+          <!-- Scale Controls -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Hex Positions:</span>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                X:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="1.0" step="0.1" min="0.1" max="5.0">
+              </label>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-gray-600">
+                Y:
+                <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded" value="1.0" step="0.1" min="0.1" max="5.0">
+              </label>
+            </div>
+          </div>
+
+          <!-- Orientation Control -->
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-semibold">Orientation:</span>
+            <button class="px-3 py-1 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50">
+              ⬡ Pointy Top
+            </button>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex items-center gap-2 ml-auto">
+            <button class="px-4 py-1 text-sm bg-blue-500 text-white border border-blue-500 rounded hover:bg-blue-600">
+              Apply
+            </button>
+            <button class="px-4 py-1 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main Map Container -->
+  <div class="flex-1 relative overflow-hidden">
+    <!-- Map takes full remaining space -->
+    <div class="w-full h-full bg-neutral">
+      <div class="w-full h-full">
+        <%= render @map %>
+      </div>
+    </div>
+
+    <!-- Flyout Tab Toggle -->
+    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
+      <label for="admin-drawer" aria-label="open sidebar" data-action="click->maps#resetEditPanes" class="btn btn-primary btn-sm rounded-l-none rounded-r-lg pl-2 pr-3 shadow-lg cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </label>
+    </div>
+
+    <!-- Drawer -->
+    <div class="drawer">
+      <input id="admin-drawer" type="checkbox" class="drawer-toggle"/>
+
+      <!-- Drawer Side Panel -->
+      <div class="drawer-side z-50">
+        <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay" ></label>
+        <div class="menu bg-base-200 min-h-full w-80 p-4">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Map Details</h3>
+            <label for="admin-drawer" class="btn btn-ghost btn-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </label>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Default Fly-out Window Contents -->
+            <%= button_tag "Manage Map",
+                           type: "button",
+                           id:"edit-map-button",
+                           data: {
+                             action: "click->maps#showMapEditPane",
+                             controller: "maps",
+                             map: @map
+                           },
+                           class:"btn btn-primary w-full" %>
+            <%= button_tag "Manage Regions",
+                           type:"button",
+                           id:"manage-regions-button",
+                           data: {
+                             action: "click->regions#enableRegionEditPane",
+                             controller: "regions"
+                           },
+                           class:"btn btn-success w-full" %>
+            <%= button_tag "Manage Hexes",
+                           type:"button",
+                           id:"hexes-edit-button",
+                           data: {
+                             action:"click->hexes#toggleHexFlyout",
+                             map: @map
+                           },
+                           class:"btn btn-secondary w-full" %>
+            <div id="region-container" class="border-t border-base-300 pt-4">
+              <h4 class="font-medium mb-2">Regions:</h4>
+              <% if @map.regions.any? %>
+                <ul class="space-y-1">
+                  <% @map.regions.each do |region| %>
+                    <li class="text-sm bg-base-300 px-2 py-1 rounded"><%= region.name %></li>
+                  <% end %>
+                </ul>
+              <% else %>
+                <p class="text-sm text-base-content/50">No regions added yet</p>
+              <% end %>
+            </div>
+
+            <!-- Hex Fly-out Window Contents - Initially Hidden -->
+            <div id="hex-flyout-section" class="space-y-4 hidden">
+              <div id="hex-divider-element" class="divider"></div>
+              <%= button_tag "Generate Hexes",
+                           type:"button",
+                           data:{
+                             id:"generate-hexes-button",
+                             action:"click->hexes#generateHexes",
+                             controller: "hexes",
+                             hexes_map_id_value: @map.id,
+                             hexes_hex_cols_value: 5,
+                             hexes_hex_rows_value: 2},
+                           class:"btn btn-primary w-full" %>
+              <%= button_tag "Edit Hexes",
+                             type:"button",
+                             data:{
+                               id:"edit-hexes-button",
+                               action:"click->hexes#enableHexEditPane",
+                               controller: "hexes"
+                             },
+                             class:"btn btn-secondary w-full"%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

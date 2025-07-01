@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_22_193725) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_01_124719) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -82,12 +82,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_22_193725) do
     t.datetime "updated_at", null: false
     t.integer "columns"
     t.integer "rows"
-    t.float "hex_scale"
     t.float "image_scale_horizontal"
     t.float "image_scale_vertical"
     t.integer "offset_x"
     t.integer "offset_y"
     t.string "description"
+    t.decimal "hex_scale_x"
+    t.decimal "hex_scale_y"
   end
 
   create_table "notes", force: :cascade do |t|
