@@ -1,42 +1,69 @@
-<div id="<%= dom_id map %>">
+<div class="w-full h-full p-4">
+  <div class="w-full h-full bg-base-300 rounded overflow-hidden"
+       data-controller="map-play hex-editor"
+       data-map-play-map-id-value="<%= map.id %>"
+       data-hex-editor-hexes-value="<%= map.hexes.to_json(only: [:id, :x_coordinate, :y_coordinate, :region_id]) %>"
+       data-hex-editor-hex-scale-x-value="<%= map.hex_scale_x %>"
+       data-hex-editor-hex-scale-y-value="<%= map.hex_scale_y %>"
+       data-hex-editor-offset-x-value="<%= map.offset_x %>"
+       data-hex-editor-offset-y-value="<%= map.offset_y %>">
 
-  <p><%= notice %></p>
-
-  <p>
-    <strong>Name:</strong>
-    <%= map.name %>
-  </p>
-
-  <p>
-    <strong>Description:</strong>
-    <%= map.description %>
-  </p>
-
-  <p>
-    <strong>Regions:</strong>
-  </p>
-  <% if map.regions.any? %>
-    <ul>
-      <% map.regions.each do |region| %>
-        <li><%= region.name %></li>
-      <% end %>
-    </ul>
-  <% end %>
-  
-  <%= form_with model: [map, map.regions.build], local: true do |form| %>
-    <%= form.text_field :name, placeholder: "Region name" %>
-    <%= form.submit "Add Region" %>
-  <% end %>
-
-  <%= render "shared/card", variant: :map do %>
     <% if map.image.attached? %>
-      <%= image_tag map.image, alt: map.name, class: "#{spacing[:card][:thumbnail]} w-auto h-auto object-cover rounded" %>
+      <div class="w-full h-full relative overflow-hidden cursor-grab"
+           data-map-play-target="container">
+
+        <!-- Normal view: rendered image or fallback -->
+        <div id="normal-map-view">
+          <%
+            rendered_image_path = "/maps/#{map.id}_v#{map.updated_at.to_i}.png"
+            use_rendered = File.exist?(Rails.root.join('public', rendered_image_path.sub('/', '')))
+          %>
+
+          <% if use_rendered %>
+            <%= image_tag rendered_image_path,
+                alt: map.name,
+                data: {
+                  map_play_target: "normalImage",
+                  action: "mousedown->map-play#startDrag wheel->map-play#handleZoom"
+                },
+                class: "absolute top-0 left-0 select-none transition-transform duration-100 ease-out origin-top-left" %>
+          <% else %>
+            <%= image_tag map.image,
+                alt: map.name,
+                data: {
+                  map_play_target: "normalImage",
+                  action: "mousedown->map-play#startDrag wheel->map-play#handleZoom"
+                },
+                class: "absolute top-0 left-0 select-none transition-transform duration-100 ease-out origin-top-left" %>
+            <!-- Show message that rendered image isn't available -->
+            <div class="absolute top-4 left-4 bg-yellow-500 text-black p-2 rounded shadow-lg">
+              <div class="text-sm font-semibold">No rendered map available</div>
+              <div class="text-xs">Switch to hex edit mode to generate one</div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Hex editing view: original image + SVG overlay (initially hidden) -->
+        <div id="hex-edit-view" class="hidden">
+          <%= image_tag map.image,
+              alt: map.name,
+              data: {
+                map_play_target: "editImage",
+                action: "mousedown->map-play#startDrag wheel->map-play#handleZoom"
+              },
+              class: "absolute top-0 left-0 select-none transition-transform duration-100 ease-out origin-top-left" %>
+
+          <!-- SVG overlay for live hex drawing -->
+          <svg class="absolute top-0 left-0 w-full h-full pointer-events-none"
+               data-hex-editor-target="hexOverlay"
+               style="transform-origin: top left;">
+          </svg>
+        </div>
+      </div>
     <% else %>
-      <!-- Show placeholder or nothing -->
-      <div class="btn">No image available</div>
+      <div class="flex items-center justify-center h-full text-base-content/50">
+        <span>No map image available</span>
+      </div>
     <% end %>
-  <% end %>
-  <% map.hexes.each do |hex| %>
-    <%= render 'hexes/hex', hex: hex %>
-  <% end %>
+  </div>
 </div>

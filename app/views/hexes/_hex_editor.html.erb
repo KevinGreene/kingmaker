@@ -1,0 +1,85 @@
+<div class="w-full h-full p-4">
+  <div class="w-full h-full bg-base-300 rounded overflow-hidden"
+       data-controller="hex-editor"
+       data-hex-editor-map-id-value="<%= map.id %>"
+       data-hex-editor-hex-scale-x-value="<%= map.hex_scale_x %>"
+       data-hex-editor-hex-scale-y-value="<%= map.hex_scale_y %>"
+       data-hex-editor-offset-x-value="<%= map.offset_x %>"
+       data-hex-editor-offset-y-value="<%= map.offset_y %>"
+       data-hex-editor-hexes-value="<%= map.hexes.to_json(only: [:id, :x_coordinate, :y_coordinate, :region_id]) %>">
+
+    <% if map.image.attached? %>
+      <div class="w-full h-full relative overflow-hidden cursor-grab"
+           data-hex-editor-target="container">
+
+        <!-- Show the original map image (not the rendered one) -->
+        <%= image_tag map.image,
+            alt: map.name,
+            data: {
+              hex_editor_target: "image",
+              action: "mousedown->hex-editor#startDrag wheel->hex-editor#handleZoom"
+            },
+            class: "absolute top-0 left-0 select-none transition-transform duration-100 ease-out" %>
+
+        <!-- SVG overlay for live hex drawing -->
+        <svg class="absolute top-0 left-0 w-full h-full pointer-events-none origin-top-left"
+             data-hex-editor-target="hexOverlay"
+             style="transform-origin: top left;">
+          <!-- Hexes will be drawn here by JavaScript -->
+        </svg>
+
+        <!-- Controls overlay -->
+        <div class="absolute top-4 left-4 bg-base-100 rounded p-2 shadow-lg space-y-2">
+          <div class="text-sm font-semibold">Hex Editor</div>
+
+          <div class="space-y-1">
+            <label class="text-xs">Scale X:</label>
+            <input type="number"
+                   step="0.1"
+                   data-hex-editor-target="scaleXInput"
+                   data-action="input->hex-editor#updateScale"
+                   value="<%= map.hex_scale_x %>"
+                   class="input input-xs w-16">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-xs">Scale Y:</label>
+            <input type="number"
+                   step="0.1"
+                   data-hex-editor-target="scaleYInput"
+                   data-action="input->hex-editor#updateScale"
+                   value="<%= map.hex_scale_y %>"
+                   class="input input-xs w-16">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-xs">Offset X:</label>
+            <input type="number"
+                   data-hex-editor-target="offsetXInput"
+                   data-action="input->hex-editor#updateOffset"
+                   value="<%= map.offset_x %>"
+                   class="input input-xs w-16">
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-xs">Offset Y:</label>
+            <input type="number"
+                   data-hex-editor-target="offsetYInput"
+                   data-action="input->hex-editor#updateOffset"
+                   value="<%= map.offset_y %>"
+                   class="input input-xs w-16">
+          </div>
+
+          <button class="btn btn-primary btn-xs w-full"
+                  data-action="click->hex-editor#saveAndRender">
+            Save & Render Map
+          </button>
+        </div>
+      </div>
+    <% else %>
+      <div class="flex items-center justify-center h-full text-base-content/50">
+        <span>No map image available</span>
+      </div>
+    <% end %>
+  </div>
+</div>
