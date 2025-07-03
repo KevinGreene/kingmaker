@@ -68,8 +68,13 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
+    puts page.find("[data-id='edit-map']")[:class]
+
     # Click on a map in the list to select it
     find("[data-testid='map-card-#{@map.id}']").click
+
+    #debugging info
+    puts page.find("[data-id='edit-map']")[:class]
 
     # Wait for the edit button to become enabled (remove btn-disabled class)
     assert_selector "[data-id='edit-map']:not(.btn-disabled)", wait: 10
