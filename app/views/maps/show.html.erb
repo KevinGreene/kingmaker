@@ -1,4 +1,4 @@
-<div id="<%= dom_id @map %>" class="h-screen w-screen overflow-hidden flex flex-col" data-controller="maps regions hexes">
+<div id="<%= dom_id @map %>" class="h-screen w-screen overflow-hidden flex flex-col" data-controller="maps regions hexes" data-testid="map-details-partial-DOM">
 
   <!-- Map Info Header -->
   <div id="header-section" class="bg-base-200 p-4 border-b border-base-300 h-24 overflow-hidden">
@@ -165,6 +165,21 @@
             <button class="px-4 py-1 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50">
               Cancel
             </button>
+            <button id="delete_map_button" class="btn" onclick="delete_map_confirmation.showModal()">Delete Map</button>
+            <dialog id="delete_map_confirmation" class="modal">
+              <div class="modal-box">
+                <p class="py-4">Are you sure? This action cannot be undone!</p>
+                <div class="modal-action">
+                  <%= button_to "Delete Map",
+                    map_path(@map),
+                    method: :delete,
+                    data: {
+                      testid: "delete-map-button"
+                    },
+                    class: "btn btn-error" %>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
       </div>
@@ -183,7 +198,7 @@
 
     <!-- Flyout Tab Toggle -->
     <div class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
-      <label for="admin-drawer" aria-label="open sidebar" data-action="click->maps#resetEditPanes" class="btn btn-primary btn-sm rounded-l-none rounded-r-lg pl-2 pr-3 shadow-lg cursor-pointer">
+      <label for="admin-drawer" id="flyout-tab-toggle" aria-label="open sidebar" data-action="click->maps#resetEditPanes" class="btn btn-primary btn-sm rounded-l-none rounded-r-lg pl-2 pr-3 shadow-lg cursor-pointer">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
@@ -192,7 +207,7 @@
 
     <!-- Drawer -->
     <div class="drawer">
-      <input id="admin-drawer" type="checkbox" class="drawer-toggle"/>
+      <input id="admin-drawer" type="checkbox" class="drawer-toggle" data-testid="drawer-toggle"/>
 
       <!-- Drawer Side Panel -->
       <div class="drawer-side z-50">
@@ -200,7 +215,7 @@
         <div class="menu bg-base-200 min-h-full w-80 p-4">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">Map Details</h3>
-            <label for="admin-drawer" class="btn btn-ghost btn-sm">
+            <label id="fly-out-close-button" for="admin-drawer" class="btn btn-ghost btn-sm">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>

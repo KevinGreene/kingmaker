@@ -1,6 +1,10 @@
 <div>
   <strong><%= @map.name %></strong>
   <p><%= @map.description %></p>
-  <%= image_tag @map.image %>
+  <% if @map.image.attached? %>
+    <%= image_tag @map.image %>
+  <% else %>
+    <div>No preview available</div>
+  <% end %>
   <!-- More Content -->
 </div>
