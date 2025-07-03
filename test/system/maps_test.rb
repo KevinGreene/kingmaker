@@ -23,7 +23,7 @@ class MapsTest < ApplicationSystemTestCase
     end
 
     # Basic page structure
-    assert_selector "main", wait: 10  # if you have a main wrapper
+    assert_selector "[data-testid='index-DOM-div']", wait: 10
     assert_current_path maps_path
 
     # Core UI elements
@@ -42,22 +42,19 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
-    # Click the + button (much simpler than hamburger menu)
+    # Click the + button
     find("[data-testid='new-map']").click
 
     # Wait for new map form page to load
-    assert_selector "main", wait: 10
+    assert_selector "[data-testid='map-form']", wait: 10
     assert_current_path new_map_path
-
-    # Check that form exists and key fields are present
-    assert_selector "[data-testid='map-form']"
 
     # Fill out and submit (using Rails-generated field names)
     fill_in "map[name]", with: @map.name
     find("[data-testid='submit-map']").click
 
     # Wait for redirect to the map details page
-    assert_selector "main", wait: 10
+    assert_selector "[data-testid='map-details-partial-DOM']", wait: 10
     assert_current_path map_path(Map.last)
   end
 
@@ -68,22 +65,20 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
-    puts page.find("[data-id='edit-map']")[:class]
+    # Wait for javascript to be loaded:
+    assert_selector "[data-controller='maps']", wait: 10
 
     # Click on a map in the list to select it
     find("[data-testid='map-card-#{@map.id}']").click
 
-    #debugging info
-    puts page.find("[data-id='edit-map']")[:class]
-
-    # Wait for the edit button to become enabled (remove btn-disabled class)
+    # Wait for the edit button to become enabled (remove btn-disabled class via javascript)
     assert_selector "[data-id='edit-map']:not(.btn-disabled)", wait: 10
 
     # Click the edit button
     find("[data-id='edit-map']").click
 
     # Now we should be on the edit form page
-    assert_selector "main", wait: 10
+    assert_selector "[data-testid='map-form']", wait: 10
     assert_current_path edit_map_path(@map)
 
     # Check that form exists and fill it out
@@ -93,9 +88,8 @@ class MapsTest < ApplicationSystemTestCase
     fill_in "map[name]", with: "Updated #{@map.name}"
     find("input[type='submit']").click
 
-    # After update, probably redirects to show page or back to index
-    assert_selector "main", wait: 10
-    # Remove the specific path assertion until we see where it goes
+    # After update, redirects back to map details page
+    assert_selector "[data-testid='map-details-partial-DOM']", wait: 10
 
     # Check for success message
     assert_text "Map was successfully updated"
@@ -108,8 +102,11 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
+
     # Open fly-out
     find("#flyout-tab-toggle").click
+
+    assert_selector "[data-controller='maps']", wait: 10
 
     # Edit the Map
     find("#edit-map-button").click
@@ -126,7 +123,7 @@ class MapsTest < ApplicationSystemTestCase
     end
 
     # Wait for redirect to maps index
-    assert_selector "h1", text: "Your Maps", wait: 10
+    assert_selector "[data-testid='index-DOM-div']", wait: 10
     assert_current_path maps_path
   end
 end
