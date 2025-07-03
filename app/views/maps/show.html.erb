@@ -165,14 +165,21 @@
             <button class="px-4 py-1 text-sm border border-gray-300 rounded bg-white hover:bg-gray-50">
               Cancel
             </button>
-            <%= button_to "Delete Map",
-              map_path(@map),
-              method: :delete,
-              data: {
-                testid: "delete-map-button"
-              },
-              onclick: "return confirm('Are you sure you want to delete this map?')",
-              class: "btn btn-error" %>
+            <button id="delete_map_button" class="btn" onclick="delete_map_confirmation.showModal()">Delete Map</button>
+            <dialog id="delete_map_confirmation" class="modal">
+              <div class="modal-box">
+                <p class="py-4">Are you sure? This action cannot be undone!</p>
+                <div class="modal-action">
+                  <%= button_to "Delete Map",
+                    map_path(@map),
+                    method: :delete,
+                    data: {
+                      testid: "delete-map-button"
+                    },
+                    class: "btn btn-error" %>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
       </div>

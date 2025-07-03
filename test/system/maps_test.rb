@@ -102,8 +102,8 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
-
     # Open fly-out
+    assert_selector "#flyout-tab-toggle", wait: 10
     find("#flyout-tab-toggle").click
 
     assert_selector "[data-controller='maps']", wait: 10
@@ -115,12 +115,11 @@ class MapsTest < ApplicationSystemTestCase
     find("#fly-out-close-button").click
 
     # Find and click the delete button
-    assert_selector "[data-testid='delete-map-button']", wait: 10
+    assert_selector "#delete_map_button", wait: 10
+    find("#delete_map_button").click
 
-    # Handle the confirmation dialog (Rails UJS creates this)
-    accept_confirm do
-      find("[data-testid='delete-map-button']").click
-    end
+    assert_selector "[data-testid='delete-map-button']", wait: 10
+    find("[data-testid='delete-map-button']").click
 
     # Wait for redirect to maps index
     assert_selector "[data-testid='index-DOM-div']", wait: 10
