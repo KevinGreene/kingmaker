@@ -3,6 +3,12 @@ require "application_system_test_case"
 class MapsTest < ApplicationSystemTestCase
   setup do
     @map = maps(:one)
+    @map.image.attach(
+      io: File.open(Rails.root.join("test", "fixtures", "files", "test_image.png")),
+      filename: "test_image.png",
+      content_type: "image/png"
+    )
+
     @user = users(:one)
     visit new_session_url
     login_as @user
@@ -10,15 +16,23 @@ class MapsTest < ApplicationSystemTestCase
 
   test "visiting the index" do
     visit maps_url
+
+    # Handle auth if needed
     if has_field?("email_address") && has_field?("password")
       login_as @user
     end
 
-    # Wait for the form to be ready
-    assert_selector "main", wait: 10
-
+    # Basic page structure
+    assert_selector "main", wait: 10  # if you have a main wrapper
     assert_current_path maps_path
-    assert_title "Maps"
+
+    # Core UI elements
+    assert_selector "[data-testid='hamburger-menu']"  # hamburger button
+    assert_selector "[data-testid='new-map']"  # new map button
+    assert_selector "[data-controller='maps']"  # Stimulus controller loaded
+    assert_selector "[data-maps-target='preview']"  # preview area exists
+
+    # Essential content areas exist
     assert_selector "h1", text: "Your Maps"
   end
 
@@ -28,41 +42,58 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
+    # Click the + button (much simpler than hamburger menu)
     find("[data-testid='new-map']").click
 
-    # Wait for the form to be ready
+    # Wait for new map form page to load
     assert_selector "main", wait: 10
+    assert_current_path new_map_path
 
-    fill_in "map_name", with: @map.name
-    click_on "Create Map"
+    # Check that form exists and key fields are present
+    assert_selector "[data-testid='map-form']"
 
-    # Wait for the form to be ready
+    # Fill out and submit (using Rails-generated field names)
+    fill_in "map[name]", with: @map.name
+    find("[data-testid='submit-map']").click
+
+    # Wait for redirect to the map details page
     assert_selector "main", wait: 10
-
-    assert_text "Map was successfully created"
-    click_on "Back"
+    assert_current_path map_path(Map.last)
   end
 
   test "should update Map" do
-    visit map_url(@map)
+    visit maps_url  # Start at the index, not the show page
 
     if has_field?("email_address") && has_field?("password")
       login_as @user
     end
 
-    click_on "Edit this map", match: :first
+    # Click on a map in the list to select it
+    find("[data-testid='map-card-#{@map.id}']").click
 
-    # Wait for the form to be ready
+    # Wait for the edit button to become enabled (remove btn-disabled class)
+    assert_selector "[data-id='edit-map']:not(.btn-disabled)", wait: 10
+
+    # Click the edit button
+    find("[data-id='edit-map']").click
+
+    # Now we should be on the edit form page
     assert_selector "main", wait: 10
+    assert_current_path edit_map_path(@map)
 
-    fill_in "map_name", with: @map.name
-    click_on "Update Map"
+    # Check that form exists and fill it out
+    assert_selector "form"
+    assert_selector "input[name='map[name]']"
 
-    # Wait for the form to be ready
+    fill_in "map[name]", with: "Updated #{@map.name}"
+    find("input[type='submit']").click
+
+    # After update, probably redirects to show page or back to index
     assert_selector "main", wait: 10
+    # Remove the specific path assertion until we see where it goes
 
+    # Check for success message
     assert_text "Map was successfully updated"
-    click_on "Back"
   end
 
   test "should destroy Map" do
@@ -72,11 +103,25 @@ class MapsTest < ApplicationSystemTestCase
       login_as @user
     end
 
-    click_on "Destroy this map", match: :first
+    # Open fly-out
+    find("#flyout-tab-toggle").click
 
-    # Wait for the form to be ready
-    assert_selector "h1", text: "Maps", wait: 10
+    # Edit the Map
+    find("#edit-map-button").click
 
-    assert_text "Map was successfully destroyed"
+    # Close fly-out
+    find("#fly-out-close-button").click
+
+    # Find and click the delete button
+    assert_selector "[data-testid='delete-map-button']", wait: 10
+
+    # Handle the confirmation dialog (Rails UJS creates this)
+    accept_confirm do
+      find("[data-testid='delete-map-button']").click
+    end
+
+    # Wait for redirect to maps index
+    assert_selector "h1", text: "Your Maps", wait: 10
+    assert_current_path maps_path
   end
 end

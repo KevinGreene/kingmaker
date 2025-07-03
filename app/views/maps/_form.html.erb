@@ -1,4 +1,4 @@
-<%= form_with(model: map) do |form| %>
+<%= form_with(model: map, data: { testid: "map-form" }) do |form| %>
   <% if map.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(map.errors.count, "error") %> prohibited this map from being saved:</h2>
@@ -27,6 +27,6 @@
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit data: { testid: "submit-map" } %>
   </div>
 <% end %>

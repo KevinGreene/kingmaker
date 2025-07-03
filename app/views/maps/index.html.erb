@@ -81,7 +81,7 @@
               <div class="space-y-4">
                 <% @maps.each do |map| %>
                   <div class="h-10 min-w-full"></div>
-                  <%= link_to "#", data: {action: "click->maps#loadPreview", map_id: map.id} do %>
+                  <%= link_to "#", data: {action: "click->maps#loadPreview", map_id: map.id, testid: "map-card-#{map.id}"} do %>
                     <div class="card bg-base-100 p-4 flex flex-row gap-4 hover hover:bg-base-200 hover:border-neutral-content shadow-md">
                       <!-- Map Thumbnail -->
                       <div class="border w-3/5 rounded-md overflow-hidden h-64">
