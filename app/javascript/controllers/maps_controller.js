@@ -66,4 +66,21 @@ export default class extends Controller {
         document.getElementById("hex-edit-view").classList.remove("hidden")
     }
 
+    updateHexTransform(){
+        const offsetX = parseFloat(document.getElementById("position_x").value)
+        const offsetY = parseFloat(document.getElementById("position_y").value)
+        const scaleX = parseFloat(document.getElementById("scale_x").value)
+        const scaleY = parseFloat(document.getElementById("scale_y").value)
+
+        this.dispatch('hexTransform', {
+            detail: {
+                offsetX: offsetX,
+                offsetY: offsetY,
+                scaleX: scaleX,
+                scaleY: scaleY
+            },
+            bubbles: true
+        })
+    }
+
 }

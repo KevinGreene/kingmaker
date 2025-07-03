@@ -74,8 +74,8 @@ export default class extends Controller {
     if (newScale !== this.scale) {
       // Get mouse position relative to container
       const rect = this.containerTarget.getBoundingClientRect()
-      const mouseX = event.clientX - rect.left - (rect.width / 2)
-      const mouseY = event.clientY - rect.top - (rect.height / 2)
+      const mouseX = (event.clientX - rect.left) - (rect.left - window.screenX)
+      const mouseY = (event.clientY - rect.top) - (rect.left - window.screenY)
 
       // Calculate the point on the image that the mouse is currently over
       const imagePointX = (mouseX - this.currentX) / this.scale
@@ -95,7 +95,6 @@ export default class extends Controller {
   updateTransform() {
     const transform = `translate(${this.currentX}px, ${this.currentY}px) scale(${this.scale})`
 
-    // Apply transform to whichever image is currently visible
     if (this.hasNormalImageTarget && !document.getElementById("normal-map-view").classList.contains("hidden")) {
       this.normalImageTarget.style.transform = transform
     }
@@ -104,7 +103,6 @@ export default class extends Controller {
       this.editImageTarget.style.transform = transform
     }
 
-    // Notify hex-editor controller with detailed transform data
     this.dispatch('transformed', {
       detail: {
         transform: transform,
