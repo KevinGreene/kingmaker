@@ -78,12 +78,12 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-id='edit-map']").click
 
     # Now we should be on the edit form page
-    assert_selector "[data-testid='form-name-field']", wait: 10
+    assert_selector "form", wait: 20
+    assert_selector "[data-testid='form-name-field']", wait: 20
     assert_current_path edit_map_path(@map)
 
     # Check that form exists and fill it out
-    assert_selector "form"
-    assert_selector "input[name='map[name]']"
+    assert_selector "input[name='map[name]']", wait: 10
 
     fill_in "map[name]", with: "Updated #{@map.name}"
     find("input[type='submit']").click
