@@ -135,12 +135,10 @@ export default class extends Controller {
 
   updateHexTransform(event) {
     if (this.hasHexOverlayTarget) {
-      this.currentMapTranslateX = event.detail.translateX + this.offsetXValue;
-      this.currentMapTranslateY = event.detail.translateY + this.offsetYValue;
-      this.svgScaleX = event.detail.scale * this.hexScaleXValue;
-      this.svgScaleY = event.detail.scale * this.hexScaleYValue;
-
-      console.log("map moved. scale:", this.svgScaleX, this.svgScaleY, "translation:", this.currentMapTranslateX, this.currentMapTranslateY)
+      this.currentMapTranslateX = event.detail.translateX;
+      this.currentMapTranslateY = event.detail.translateY;
+      this.svgScaleX = event.detail.scale;
+      this.svgScaleY = event.detail.scale;
 
       this.applyHexTransform();
     }
@@ -148,33 +146,22 @@ export default class extends Controller {
 
   updateHexesByControls(detail){
 
-    this.currentMapTranslateX -= this.offsetXValue;
     this.offsetXValue = parseFloat(detail.offsetX || 0);
-    this.currentMapTranslateX += this.offsetXValue;
-
-    this.currentMapTranslateY -= this.offsetYValue;
     this.offsetYValue = parseFloat(detail.offsetY || 0);
-    this.currentMapTranslateY += this.offsetYValue;
-
-    this.svgScaleX *= parseFloat(detail.scaleX || 1);
     this.hexScaleXValue = parseFloat(detail.scaleX || 1);
-
-    this.svgScaleY = parseFloat(detail.scaleY || 1);
     this.hexScaleYValue = parseFloat(detail.scaleY || 1);
-
-    console.log("controls updated. scale:", this.svgScaleX, this.svgScaleY, "translation:", this.currentMapTranslateX, this.currentMapTranslateY)
 
     this.applyHexTransform();
   }
 
   applyHexTransform() {
     if (this.hasHexOverlayTarget) {
-/*
       const finalHexScaleX = this.hexScaleXValue * this.svgScaleX;
       const finalHexScaleY = this.hexScaleYValue * this.svgScaleY;
-*/
+      const finalTranslateX = this.currentMapTranslateX + this.offsetXValue;
+      const finalTranslateY = this.currentMapTranslateY + this.offsetYValue;
 
-      const localTransform = `translate(${this.currentMapTranslateX}px, ${this.currentMapTranslateY}px) scale(${this.svgScaleX}, ${this.svgScaleY})`;
+      const localTransform = `translate(${finalTranslateX}px, ${finalTranslateY}px) scale(${finalHexScaleX}, ${finalHexScaleY})`;
       this.hexOverlayTarget.style.transform = localTransform;
     }
   }
