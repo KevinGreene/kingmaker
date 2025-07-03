@@ -46,7 +46,7 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-testid='new-map']").click
 
     # Wait for new map form page to load
-    assert_selector "[data-testid='map-form']", wait: 10
+    assert_selector "[data-testid='form-name-field']", wait: 10
     assert_current_path new_map_path
 
     # Fill out and submit (using Rails-generated field names)
@@ -78,7 +78,7 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-id='edit-map']").click
 
     # Now we should be on the edit form page
-    assert_selector "[data-testid='map-form']", wait: 10
+    assert_selector "[data-testid='form-name-field']", wait: 10
     assert_current_path edit_map_path(@map)
 
     # Check that form exists and fill it out
