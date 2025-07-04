@@ -1,0 +1,148 @@
+<% content_for :title, "Edit Profile" %>
+
+<div class="min-h-screen bg-base-200 py-8">
+  <div class="container mx-auto px-4">
+    <div class="max-w-2xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-base-content">Edit Profile</h1>
+        <p class="text-base-content/70 mt-2">Update your account information</p>
+      </div>
+
+      <%= form_with model: @user, local: true, class: "space-y-6" do |form| %>
+        <!-- Account Information Card -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <h2 class="card-title text-primary">Account Information</h2>
+
+            <div class="space-y-4">
+              <!-- Email Field -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Email Address</span>
+                </label>
+                <%= form.email_field :email_address, class: "input input-bordered w-full", placeholder: "your@email.com", required: true %>
+                <label class="label">
+                  <span class="label-text-alt">This will be used for login and notifications</span>
+                </label>
+              </div>
+
+              <!-- Current Password (for verification) -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Current Password</span>
+                </label>
+                <%= password_field_tag :current_password, "", class: "input input-bordered w-full", placeholder: "Enter your current password", required: true %>
+                <label class="label">
+                  <span class="label-text-alt">Required to verify it's really you</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <h2 class="card-title text-secondary">Change Password</h2>
+            <p class="text-sm text-base-content/70 mb-4">Leave blank if you don't want to change your password</p>
+
+            <div class="space-y-4">
+              <!-- New Password -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">New Password</span>
+                </label>
+                <%= form.password_field :password, class: "input input-bordered w-full", placeholder: "Enter new password" %>
+                <label class="label">
+                  <span class="label-text-alt">Must be at least 6 characters</span>
+                </label>
+              </div>
+
+              <!-- Confirm New Password -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Confirm New Password</span>
+                </label>
+                <%= form.password_field :password_confirmation, class: "input input-bordered w-full", placeholder: "Confirm new password" %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coming Soon Card -->
+        <div class="card bg-base-300 shadow-lg">
+          <div class="card-body">
+            <h2 class="card-title text-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+              </svg>
+              More Settings Coming Soon
+            </h2>
+            <p class="text-base-content/70">
+              We're working on adding more customization options including:
+            </p>
+            <ul class="list-disc list-inside text-sm text-base-content/60 mt-2 space-y-1">
+              <li>Theme preferences (Dark/Light mode)</li>
+              <li>Default map settings</li>
+              <li>Notification preferences</li>
+              <li>Privacy settings</li>
+              <li>Display name and bio</li>
+            </ul>
+            <div class="mt-4">
+              <div class="badge badge-info">Coming in v2.0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <div class="flex flex-wrap gap-4 justify-between">
+              <div class="flex gap-2">
+                <%= form.submit "Save Changes", class: "btn btn-primary" %>
+                <%= link_to "Cancel", maps_path, class: "btn btn-ghost" %>
+              </div>
+
+              <div>
+                <button type="button" class="btn btn-error btn-outline" onclick="document.getElementById('delete-modal').checked = true">
+                  Delete Account
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Account Modal -->
+<input type="checkbox" id="delete-modal" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg text-error">Delete Account</h3>
+    <p class="py-4">Are you sure you want to delete your account? This action is permanent and cannot be undone. All your maps and data will be lost.</p>
+    <div class="modal-action">
+      <label for="delete-modal" class="btn">Cancel</label>
+      <%= link_to "Delete Account", user_path(@user), method: :delete,
+          data: { confirm: "Type 'DELETE' to confirm account deletion" },
+          class: "btn btn-error" %>
+    </div>
+  </div>
+  <label class="modal-backdrop" for="delete-modal"></label>
+</div>
+
+<!-- TODO: Add when user_preferences table is created
+Future settings to implement:
+- Theme preference (user_preferences.theme)
+- Email notifications (user_preferences.email_notifications)
+- Auto-save maps (user_preferences.auto_save_maps)
+- Show grid by default (user_preferences.show_grid_default)
+- Public profile (user_preferences.public_profile)
+- Default map size (user_preferences.default_map_size)
+- Default map theme (user_preferences.default_map_theme)
+- Allow public maps (user_preferences.allow_public_maps)
+- Show online status (user_preferences.show_online_status)
+- Allow friend requests (user_preferences.allow_friend_requests)
+-->

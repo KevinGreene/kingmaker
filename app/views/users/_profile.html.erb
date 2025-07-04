@@ -1,0 +1,16 @@
+<!-- Profile Dropdown Menu -->
+<ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg border border-base-300">
+  <li class="menu-title">
+    <span>Account</span>
+  </li>
+  <li>
+    <%= button_to "My Preferences", edit_user_path(current_user), method: :get,
+                  form: {class: "btn btn-primary btn-sm justify-center m-2"}
+    %>
+  </li>
+  <li>
+    <%= button_to "Sign Out", session_path, method: :delete,
+                  form: {class: "btn btn-error btn-sm justify-center m-2"}
+    %>
+  </li>
+</ul>

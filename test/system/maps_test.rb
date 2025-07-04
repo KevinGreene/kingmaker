@@ -20,6 +20,7 @@ class MapsTest < ApplicationSystemTestCase
     # Handle auth if needed
     if has_field?("email_address") && has_field?("password")
       login_as @user
+      puts "duplicate login was required for INDEX VISIT test"
     end
 
     # Basic page structure
@@ -40,13 +41,16 @@ class MapsTest < ApplicationSystemTestCase
     visit maps_url
     if has_field?("email_address") && has_field?("password")
       login_as @user
+      puts "duplicate login was required for CREATE test"
     end
 
     # Click the + button
     find("[data-testid='new-map']").click
 
     # Wait for new map form page to load
-    assert_selector "[data-testid='form-name-field']", wait: 20
+    assert_selector "h1", wait: 10
+    assert_selector "[data-testid='map-form']", wait: 10
+    assert_selector "[data-testid='form-name-field']", wait: 10
     assert_current_path new_map_path
 
     # Fill out and submit (using Rails-generated field names)
@@ -63,6 +67,7 @@ class MapsTest < ApplicationSystemTestCase
 
     if has_field?("email_address") && has_field?("password")
       login_as @user
+      puts "duplicate login was required for UPDATE test"
     end
 
     # Wait for javascript to be loaded:
@@ -95,17 +100,34 @@ class MapsTest < ApplicationSystemTestCase
     assert_text "Map was successfully updated"
   end
 
-  test "should destroy Map" do
-    visit map_url(@map)
+  test "should destroy map" do
+    visit maps_url
 
     if has_field?("email_address") && has_field?("password")
+      puts "duplicate login was required for DESTROY test"
       login_as @user
     end
+
+    # Wait for javascript to be loaded:
+    assert_selector "[data-controller='maps']", wait: 10
+
+    # Click on a map in the list to select it
+    find("[data-testid='map-card-#{@map.id}']").click
+
+    # Wait for the play button to become enabled (remove btn-disabled class via javascript)
+    assert_selector "[data-id='play-map']:not(.btn-disabled)", wait: 10
+
+    # Click the play button
+    find("[data-id='play-map']").click
+
+    # Wait for map details page to load
+    assert_selector "#controls", wait: 10
 
     # Open fly-out
     assert_selector "#flyout-tab-toggle", wait: 20
     find("#flyout-tab-toggle").click
 
+    # Wait for javascript to be loaded:
     assert_selector "[data-controller='maps']", wait: 20
 
     # Edit the Map
@@ -115,9 +137,10 @@ class MapsTest < ApplicationSystemTestCase
     find("#fly-out-close-button").click
 
     # Find and click the delete button
-    assert_selector "#delete_map_button", wait: 20
-    find("#delete_map_button").click
+    assert_selector "#delete_map_button_map", wait: 20
+    find("#delete_map_button_map").click
 
+    # Find and click the confirmation button in the modal pop-up
     assert_selector "[data-testid='delete-map-button']", wait: 20
     find("[data-testid='delete-map-button']").click
 
