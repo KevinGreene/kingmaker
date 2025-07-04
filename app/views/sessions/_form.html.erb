@@ -1,4 +1,5 @@
 <%= form_with url: session_path, local: true do |form| %>
+  <%= form.hidden_field :redirect_to, value: maps_path %>
   <div class="form-control mb-4">
     <label class="label">
       <span class="label-text">Email</span>
