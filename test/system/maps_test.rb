@@ -20,6 +20,7 @@ class MapsTest < ApplicationSystemTestCase
     # Handle auth if needed
     if has_field?("email_address") && has_field?("password")
       login_as @user
+      puts "duplicate login was required for INDEX VISIT test"
     end
 
     # Basic page structure
@@ -40,6 +41,7 @@ class MapsTest < ApplicationSystemTestCase
     visit maps_url
     if has_field?("email_address") && has_field?("password")
       login_as @user
+      puts "duplicate login was required for CREATE test"
     end
 
     # Click the + button
@@ -63,6 +65,7 @@ class MapsTest < ApplicationSystemTestCase
 
     if has_field?("email_address") && has_field?("password")
       login_as @user
+      puts "duplicate login was required for UPDATE test"
     end
 
     # Wait for javascript to be loaded:
@@ -95,12 +98,25 @@ class MapsTest < ApplicationSystemTestCase
     assert_text "Map was successfully updated"
   end
 
-  test "should destroy Map" do
-    visit map_url(@map)
+  test "should destroy map" do
+    visit maps_url
 
     if has_field?("email_address") && has_field?("password")
+      puts "duplicate login was required for DESTROY test"
       login_as @user
     end
+
+    # Wait for javascript to be loaded:
+    assert_selector "[data-controller='maps']", wait: 10
+
+    # Click on a map in the list to select it
+    find("[data-testid='map-card-#{@map.id}']").click
+
+    # Wait for the edit button to become enabled (remove btn-disabled class via javascript)
+    assert_selector "[data-id='edit-map']:not(.btn-disabled)", wait: 10
+
+    # Click the play button
+    find("[data-id='play-map']").click
 
     # Open fly-out
     assert_selector "#flyout-tab-toggle", wait: 20
