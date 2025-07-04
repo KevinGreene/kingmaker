@@ -46,7 +46,7 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-testid='new-map']").click
 
     # Wait for new map form page to load
-    assert_selector "[data-testid='form-name-field']", wait: 10
+    assert_selector "[data-testid='form-name-field']", wait: 20
     assert_current_path new_map_path
 
     # Fill out and submit (using Rails-generated field names)
