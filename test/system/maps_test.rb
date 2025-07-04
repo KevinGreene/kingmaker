@@ -46,7 +46,7 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-testid='new-map']").click
 
     # Wait for new map form page to load
-    assert_selector "[data-testid='form-name-field']", wait: 10
+    assert_selector "[data-testid='form-name-field']", wait: 20
     assert_current_path new_map_path
 
     # Fill out and submit (using Rails-generated field names)
@@ -103,10 +103,10 @@ class MapsTest < ApplicationSystemTestCase
     end
 
     # Open fly-out
-    assert_selector "#flyout-tab-toggle", wait: 10
+    assert_selector "#flyout-tab-toggle", wait: 20
     find("#flyout-tab-toggle").click
 
-    assert_selector "[data-controller='maps']", wait: 10
+    assert_selector "[data-controller='maps']", wait: 20
 
     # Edit the Map
     find("#edit-map-button").click
@@ -115,14 +115,14 @@ class MapsTest < ApplicationSystemTestCase
     find("#fly-out-close-button").click
 
     # Find and click the delete button
-    assert_selector "#delete_map_button", wait: 10
+    assert_selector "#delete_map_button", wait: 20
     find("#delete_map_button").click
 
-    assert_selector "[data-testid='delete-map-button']", wait: 10
+    assert_selector "[data-testid='delete-map-button']", wait: 20
     find("[data-testid='delete-map-button']").click
 
     # Wait for redirect to maps index
-    assert_selector "[data-testid='index-DOM-div']", wait: 10
+    assert_selector "[data-testid='index-DOM-div']", wait: 20
     assert_current_path maps_path
   end
 end

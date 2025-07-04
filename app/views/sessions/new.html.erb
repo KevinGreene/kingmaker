@@ -1,11 +1,58 @@
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
-
-<%= form_with url: session_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
-  <%= form.submit "Sign in" %>
+<% if flash[:alert] %>
+  <div class="alert alert-error mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span><%= flash[:alert] %></span>
+  </div>
 <% end %>
-<br>
 
-<%= link_to "Forgot password?", new_password_path %>
+<% if flash[:notice] %>
+  <div class="alert alert-success mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span><%= flash[:notice] %></span>
+  </div>
+<% end %>
+
+<div class="hero min-h-screen bg-base-200">
+  <div class="hero-content flex-col">
+    <div class="text-center lg:text-left">
+      <h1 class="text-3xl font-bold">Sign In</h1>
+      <p class="py-6 text-base-content/70">Welcome back to Kingmaker</p>
+    </div>
+    <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+      <div class="card-body">
+        <%= form_with url: session_path, local: true do |form| %>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Email</span>
+            </label>
+            <%= form.email_field :email_address, required: true, autofocus: true,
+                autocomplete: "username", placeholder: "Enter your email address",
+                value: params[:email_address], class: "input input-bordered" %>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Password</span>
+            </label>
+            <%= form.password_field :password, required: true,
+                autocomplete: "current-password", placeholder: "Enter your password",
+                maxlength: 72, class: "input input-bordered" %>
+          </div>
+
+          <div class="form-control mt-6">
+            <%= form.submit "Sign in", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+          <div class="text-center p-4">
+            <%= link_to "New User? Sign Up!", new_user_path, class: "btn btn-secondary btn-round" %>
+            <div class="divider"></div>
+            <%= link_to "Forgot password?", new_password_path, class: "link link-primary" %>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
