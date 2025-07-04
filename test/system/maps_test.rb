@@ -112,16 +112,20 @@ class MapsTest < ApplicationSystemTestCase
     # Click on a map in the list to select it
     find("[data-testid='map-card-#{@map.id}']").click
 
-    # Wait for the edit button to become enabled (remove btn-disabled class via javascript)
-    assert_selector "[data-id='edit-map']:not(.btn-disabled)", wait: 10
+    # Wait for the play button to become enabled (remove btn-disabled class via javascript)
+    assert_selector "[data-id='play-map']:not(.btn-disabled)", wait: 10
 
     # Click the play button
     find("[data-id='play-map']").click
+
+    # Wait for map details page to load
+    assert_selector "#controls", wait: 10
 
     # Open fly-out
     assert_selector "#flyout-tab-toggle", wait: 20
     find("#flyout-tab-toggle").click
 
+    # Wait for javascript to be loaded:
     assert_selector "[data-controller='maps']", wait: 20
 
     # Edit the Map
@@ -131,9 +135,10 @@ class MapsTest < ApplicationSystemTestCase
     find("#fly-out-close-button").click
 
     # Find and click the delete button
-    assert_selector "#delete_map_button", wait: 20
-    find("#delete_map_button").click
+    assert_selector "#delete_map_button_map", wait: 20
+    find("#delete_map_button_map").click
 
+    # Find and click the confirmation button in the modal pop-up
     assert_selector "[data-testid='delete-map-button']", wait: 20
     find("[data-testid='delete-map-button']").click
 

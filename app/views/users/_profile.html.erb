@@ -4,9 +4,13 @@
     <span>Account</span>
   </li>
   <li>
-    <%= button_to "My Preferences", edit_user_path(current_user), method: :get, class: "btn btn-primary btn-sm justify-start" %>
+    <%= button_to "My Preferences", edit_user_path(current_user), method: :get,
+                  form: {class: "btn btn-primary btn-sm justify-center m-2"}
+    %>
   </li>
   <li>
-    <%= button_to "Sign Out", session_path, method: :delete, class: "btn btn-error justify-center" %>
+    <%= button_to "Sign Out", session_path, method: :delete,
+                  form: {class: "btn btn-error btn-sm justify-center m-2"}
+    %>
   </li>
 </ul>

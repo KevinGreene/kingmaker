@@ -85,6 +85,7 @@ export default class extends Controller {
         document.getElementById("controls").classList.remove("hidden")
         document.getElementById("hex-controls").classList.remove("hidden")
         document.getElementById("region-controls").classList.add("hidden")
+        document.getElementById("map-controls").classList.add("hidden")
 
         // Switch to hex editing view
         document.getElementById("normal-map-view").classList.add("hidden")
