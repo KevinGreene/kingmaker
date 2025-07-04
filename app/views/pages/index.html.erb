@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL NAME HERE</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero min-h-screen hero-gradient">
+        <div class="hero-content text-center">
+            <div class="max-w-4xl">
+                <!-- Header -->
+                <div class="mb-12">
+                    <h1 class="text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                        TOOL NAME HERE
+                    </h1>
+                    <p class="text-xl text-base-content/80 max-w-2xl mx-auto">
+                        The Ultimate Campaign Management Tool
+                    </p>
+                </div>
+
+                <!-- Action Cards -->
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+
+                    <!-- Create New Map -->
+                    <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                        <div class="card-body items-center text-center">
+                            <div class="avatar placeholder mb-4">
+                                <div class="bg-primary text-primary-content rounded-full w-16">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="card-title text-lg">Create New Map</h3>
+                            <p class="text-base-content/70 text-sm mb-4">Start building your campaign world with interactive map tools</p>
+                            <div class="card-actions">
+                              <%=link_to link_to "Get Started", new_map_path, class: "btn btn-primary btn-block"%>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Join Campaign -->
+                    <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                        <div class="card-body items-center text-center">
+                            <div class="avatar placeholder mb-4">
+                                <div class="bg-secondary text-secondary-content rounded-full w-16">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"
+                                          />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="card-title text-lg">Join Campaign</h3>
+                            <p class="text-base-content/70 text-sm mb-4">Enter your GM's map code to join an existing campaign</p>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary btn-block" onclick="join_modal.showModal()">Join Now</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sign In -->
+                    <div class="card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+                        <div class="card-body items-center text-center">
+                            <div class="avatar placeholder mb-4">
+                                <div class="bg-accent text-accent-content rounded-full w-16">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                          />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="card-title text-lg">Sign In</h3>
+                            <p class="text-base-content/70 text-sm mb-4">Access your saved campaigns and premium features</p>
+                            <div class="card-actions">
+                                <button class="btn btn-accent btn-block" onclick="login_modal.showModal()">Sign In</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Campaign Modal -->
+    <dialog id="join_modal" class="modal">
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="font-bold text-lg mb-4">Join Campaign</h3>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Map Code</span>
+                </label>
+                <input type="text" placeholder="Enter your GM's map code" class="input input-bordered" />
+            </div>
+            <div class="modal-action">
+                <button class="btn btn-primary">Join Campaign</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Login Modal -->
+    <dialog id="login_modal" class="modal">
+        <div class="modal-box">
+          <%= render 'sessions/form' %>
+        </div>
+    </dialog>
+</body>
+</html>

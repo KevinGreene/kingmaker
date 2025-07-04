@@ -1,0 +1,25 @@
+<%= form_with url: session_path, local: true do |form| %>
+  <div class="form-control mb-4">
+    <label class="label">
+      <span class="label-text">Email</span>
+    </label>
+    <%= form.email_field :email_address, required: true, autofocus: true,
+        autocomplete: "username", placeholder: "Enter your email address",
+        value: params[:email_address], class: "input input-bordered" %>
+  </div>
+
+  <div class="form-control mb-4">
+    <label class="label">
+      <span class="label-text">Password</span>
+    </label>
+    <%= form.password_field :password, required: true,
+        autocomplete: "current-password", placeholder: "Enter your password",
+        maxlength: 72, class: "input input-bordered" %>
+  </div>
+
+  <div class="modal-action">
+    <%= link_to "New User? Sign Up!", new_user_path, class: "btn btn-secondary btn-round" %>
+    <%= form.submit "Sign in", class: "btn btn-primary" %>
+    <%= link_to "Forgot password?", new_password_path, class: "btn btn-ghost" %>
+  </div>
+<% end %>
