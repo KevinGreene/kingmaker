@@ -120,9 +120,16 @@
 
     <!-- Login Modal -->
     <dialog id="login_modal" class="modal">
-        <div class="modal-box">
-          <%= render 'sessions/form' %>
+      <div class="modal-box">
+        <div class="mb-4">
+          <h3 class="font-bold text-lg">Sign In</h3>
+          <p class="text-sm text-base-content/70">Welcome back to Kingmaker</p>
         </div>
+        <%= render 'sessions/form' %>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
     </dialog>
-</body>
+  </body>
 </html>

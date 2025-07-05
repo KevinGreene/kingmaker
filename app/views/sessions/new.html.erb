@@ -16,6 +16,15 @@
   </div>
 <% end %>
 
+<!-- Back to Home Button -->
+<div class="absolute top-4 left-4">
+  <%= link_to root_path, class: "btn btn-ghost btn-circle" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  <% end %>
+</div>
+
 <div class="hero min-h-screen bg-base-200">
   <div class="hero-content flex-col">
     <div class="text-center lg:text-left">
@@ -26,7 +35,7 @@
       <div class="card-body">
         <%= form_with url: session_path, local: true do |form| %>
           <%= form.hidden_field :redirect_to, value: maps_path %>
-          <div class="form-control">
+          <div class="form-control pb-5">
             <label class="label">
               <span class="label-text">Email</span>
             </label>
@@ -42,17 +51,24 @@
             <%= form.password_field :password, required: true,
                 autocomplete: "current-password", placeholder: "Enter your password",
                 maxlength: 72, class: "input input-bordered" %>
+            <label class="label">
+              <%= link_to "Forgot password?", new_password_path, class: "label-text-alt link link-hover" %>
+            </label>
           </div>
 
-          <div class="form-control mt-6">
-            <%= form.submit "Sign in", class: "btn btn-primary" %>
+          <div class="form-control mt-6 pb-6">
+            <%= form.submit "Sign in", class: "btn btn-primary w-full" %>
           </div>
         <% end %>
-          <div class="text-center p-4">
-            <%= link_to "New User? Sign Up!", new_user_path, class: "btn btn-secondary btn-round" %>
-            <div class="divider"></div>
-            <%= link_to "Forgot password?", new_password_path, class: "link link-primary" %>
-          </div>
+
+        <div class="text-center mt-4">
+          <p class="text-sm text-base-content/70 mb-2">Don't have an account?</p>
+          <%= link_to "Sign Up", new_user_path, class: "btn btn-outline btn-sm" %>
+        </div>
+
+        <div class="text-center mt-4">
+          <%= link_to "← Back to Home", root_path, class: "link link-hover text-sm" %>
+        </div>
       </div>
     </div>
   </div>

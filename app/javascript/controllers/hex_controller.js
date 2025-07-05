@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import hex_editor_controller from "@/controllers/hex_editor_controller";
 
 export default class extends Controller {
     static targets = ["map"]

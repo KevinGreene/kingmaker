@@ -1,11 +1,31 @@
 <% content_for :title, "New map" %>
 
-<h1>New map</h1>
+<div class="min-h-screen bg-base-200 py-8">
+  <div class="container mx-auto px-4">
 
-<%= render "form", map: @map %>
+    <!-- Page header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-base-content mb-2">Create New Map</h1>
+      <p class="text-base-content/70 text-lg">Upload and describe your map to share with others</p>
+    </div>
 
-<br>
+    <!-- Form card -->
+    <div class="max-w-2xl mx-auto">
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <%= render "form", map: @map %>
+        </div>
+      </div>
+    </div>
 
-<div>
-  <%= link_to "Back to maps", maps_path %>
+    <!-- Back link -->
+    <div class="text-center mt-8">
+      <%= link_to maps_path, class: "btn btn-ghost btn-sm" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Maps
+      <% end %>
+    </div>
+  </div>
 </div>

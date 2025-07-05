@@ -1,12 +1,38 @@
 <% content_for :title, "Editing map" %>
 
-<h1>Editing map</h1>
+<div class="min-h-screen bg-base-200 py-8">
+  <div class="container mx-auto px-4">
+    <!-- Page header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-base-content mb-2">Edit Map</h1>
+      <p class="text-base-content/70 text-lg">Update your map details and image</p>
+    </div>
 
-<%= render "form", map: @map %>
+    <!-- Form card -->
+    <div class="max-w-2xl mx-auto">
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <%= render "form", map: @map %>
+        </div>
+      </div>
+    </div>
 
-<br>
+    <!-- Navigation links -->
+    <div class="text-center mt-8 space-x-4">
+      <%= link_to @map, class: "btn btn-outline btn-sm" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        Show this map
+      <% end %>
 
-<div>
-  <%= link_to "Show this map", @map %> |
-  <%= link_to "Back to maps", maps_path %>
+      <%= link_to maps_path, class: "btn btn-ghost btn-sm" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Maps
+      <% end %>
+    </div>
+  </div>
 </div>

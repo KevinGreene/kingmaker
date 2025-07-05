@@ -1,6 +1,6 @@
 <%= form_with url: session_path, local: true do |form| %>
   <%= form.hidden_field :redirect_to, value: maps_path %>
-  <div class="form-control mb-4">
+  <div class="form-control">
     <label class="label">
       <span class="label-text">Email</span>
     </label>
@@ -9,18 +9,30 @@
         value: params[:email_address], class: "input input-bordered" %>
   </div>
 
-  <div class="form-control mb-4">
+  <div class="form-control">
     <label class="label">
       <span class="label-text">Password</span>
     </label>
     <%= form.password_field :password, required: true,
         autocomplete: "current-password", placeholder: "Enter your password",
         maxlength: 72, class: "input input-bordered" %>
+    <label class="label">
+      <%= link_to "Forgot password?", new_password_path, class: "label-text-alt link link-hover" %>
+    </label>
   </div>
 
-  <div class="modal-action">
-    <%= link_to "New User? Sign Up!", new_user_path, class: "btn btn-secondary btn-round" %>
-    <%= form.submit "Sign in", class: "btn btn-primary" %>
-    <%= link_to "Forgot password?", new_password_path, class: "btn btn-ghost" %>
+  <div class="form-control mt-6">
+    <%= form.submit "Sign in", class: "btn btn-primary w-full" %>
   </div>
 <% end %>
+
+<div class="text-center mt-4">
+  <p class="text-sm text-base-content/70 mb-2">Don't have an account?</p>
+  <%= link_to "Sign Up", new_user_path, class: "btn btn-outline btn-sm" %>
+</div>
+
+<div class="modal-action">
+  <form method="dialog">
+    <button class="btn btn-ghost">Cancel</button>
+  </form>
+</div>

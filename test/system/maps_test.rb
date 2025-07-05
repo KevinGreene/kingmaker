@@ -58,7 +58,7 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-testid='submit-map']").click
 
     # Wait for redirect to the map details page
-    assert_selector "[data-testid='map-details-partial-DOM']", wait: 10
+    assert_selector "#header-section", wait: 10
     assert_current_path map_path(Map.last)
   end
 
@@ -94,7 +94,7 @@ class MapsTest < ApplicationSystemTestCase
     find("input[type='submit']").click
 
     # After update, redirects back to map details page
-    assert_selector "[data-testid='map-details-partial-DOM']", wait: 10
+    assert_selector "#header-section", wait: 10
 
     # Check for success message
     assert_text "Map was successfully updated"
