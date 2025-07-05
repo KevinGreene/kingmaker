@@ -12,6 +12,9 @@ export default class extends Controller {
         // Show regular map
         document.getElementById("normal-map-view").classList.remove("hidden")
         document.getElementById("hex-edit-view").classList.add("hidden")
+
+        // Hide fly-out window
+        document.getElementById("admin-drawer").checked = false;
     }
 
 }

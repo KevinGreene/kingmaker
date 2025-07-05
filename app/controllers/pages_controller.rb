@@ -1,5 +1,10 @@
 class PagesController < ApplicationController
+  allow_unauthenticated_access only: [ :index ]
   def index
-    # Landing page - no authentication required
+    # Redirect authenticated users to maps index
+    if authenticated?
+      redirect_to maps_path
+      nil
+    end
   end
 end
