@@ -2,6 +2,9 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
 
+    static values = {
+        mapId: Number
+    }
     static targets = ["preview"];
 
     connect(){
@@ -229,4 +232,36 @@ export default class extends Controller {
         });
     }
 
+    async saveMap(){
+        // Get values from sliders
+        const columnCount = document.getElementById('map-col-control').value
+        const rowCount = document.getElementById('map-row-control').value
+        const hexRadius = document.getElementById('map-hex-radius-control').value / 10 // Need a better way to use this value instead of dividing it by 10 everywhere
+
+        const mapData = {
+            columns: columnCount,
+            rows: rowCount,
+            hex_radius: hexRadius
+        }
+
+        try{
+            const response = await fetch(`/maps/${this.mapIdValue}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ map: mapData })
+            });
+
+            if (response.ok) {
+                console.log('Map updated successfully');
+            } else {
+                console.error('Failed to update map');
+            }
+        }catch (e){
+            console.error('Error updating map:', e);
+        }
+    }
 }

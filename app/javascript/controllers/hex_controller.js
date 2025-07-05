@@ -11,6 +11,8 @@ export default class extends Controller {
     }
 
     connect(){
+        this.hexData = [];
+
         document.addEventListener('hexDimensionUpdate', (event) => this.regenerateHexes(event.detail));
         document.addEventListener('maps:hexDimensionUpdate', (event) => this.regenerateHexes(event.detail));
         document.addEventListener('hexRadiusUpdate', (event) => this.regenerateHexes(event.detail));
@@ -37,12 +39,12 @@ export default class extends Controller {
     }
 
     generateHexes() {
-        const hexData = [];
+        this.hexData = [];
 
         // Generate hex coordinates
         for (let col = 0; col < this.hexColsValue; col++) {
             for (let row = 0; row < this.hexRowsValue; row++) {
-                hexData.push({
+                this.hexData.push({
                     map_id: this.mapIdValue,
                     x_coordinate: col,
                     y_coordinate: row,
@@ -54,11 +56,9 @@ export default class extends Controller {
             }
         }
 
-        // TODO: move the comment below to be triggered by the "Save" button instead
-        // this.createHexesInDatabase(hexData);
         this.dispatch('regenerateHexes', {
             detail: {
-                hexes: hexData,
+                hexes: this.hexData,
                 radius: this.hexRadiusValue
             },
             bubbles: true,
@@ -66,7 +66,7 @@ export default class extends Controller {
         });
     }
 
-    async createHexesInDatabase(hexData) {
+    async createHexesInDatabase() {
         try {
             const response = await fetch(`/maps/${this.mapIdValue}/hexes/bulk_create`, {
                 method: 'POST',
@@ -74,7 +74,7 @@ export default class extends Controller {
                     'Content-Type': 'application/json',
                     'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
                 },
-                body: JSON.stringify({ hexes: hexData })
+                body: JSON.stringify({ hexes: this.hexData })
             });
 
             if (response.ok) {

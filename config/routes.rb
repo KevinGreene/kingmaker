@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resources :hexes, only: [ :update ] do
       collection do
         post "bulk_create"
+        post "bulk_replace"
       end
     end
     member do

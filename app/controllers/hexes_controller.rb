@@ -11,6 +11,10 @@ class HexesController < ApplicationController
   end
 
   def bulk_create
+    # Delete hexes if the already exist
+    @map.hexes.destroy_all
+
+    # generate the hexes
     hex_params = params[:hexes]
     created_hexes = []
     hex_params.each do |hex_data|

@@ -1,4 +1,10 @@
-<div id="<%= dom_id @map %>" class="h-screen w-screen overflow-hidden flex flex-col" data-controller="maps regions hexes" data-testid="map-details-partial-DOM">
+<div id="<%= dom_id @map %>"
+     class="h-screen w-screen overflow-hidden flex flex-col"
+     data-controller="maps regions hexes"
+     data-testid="map-details-partial-DOM"
+     data-hexes-map-id-value="<%= @map.id %>"
+     data-maps-map-id-value="<%= @map.id %>"
+>
 
   <!-- Map Info Header -->
   <div id="header-section" class="bg-base-200 p-4 border-b border-base-300 h-24">
@@ -229,9 +235,15 @@
 
           <!-- Action buttons -->
           <div class="flex items-center gap-2 ml-auto">
-            <button class="btn btn-primary">
+            <%= link_to "#",
+                        class:"btn btn-primary",
+                        data: {
+                          action: "click->hexes#createHexesInDatabase click->maps#saveMap",
+                          detail: @map
+                        } do
+            %>
               Save
-            </button>
+            <% end %>
             <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
               Cancel
             </button>
