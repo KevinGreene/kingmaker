@@ -232,7 +232,13 @@
                     <button class="btn btn-neutral">Cancel</button>
                   </form>
                   <!-- Your Rails button_to would go here -->
-                  <button class="btn btn-error">Delete Map</button>
+                  <%= button_to "Delete Map",
+                    map_path(@map),
+                    method: :delete,
+                    data: {
+                      testid: "delete-map-button-map"
+                    },
+                    class: "btn btn-error" %>
                 </div>
               </div>
             </dialog>

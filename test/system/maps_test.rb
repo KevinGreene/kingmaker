@@ -133,16 +133,14 @@ class MapsTest < ApplicationSystemTestCase
     # Edit the Map
     find("#edit-map-button").click
 
-    # Close fly-out
-    find("#fly-out-close-button").click
-
     # Find and click the delete button
-    assert_selector "#delete_map_button_map", wait: 20
+    assert_selector "[data-controller='maps']", wait: 5
+    assert_selector "#delete_map_button_map", wait: 5
     find("#delete_map_button_map").click
 
     # Find and click the confirmation button in the modal pop-up
-    assert_selector "[data-testid='delete-map-button']", wait: 20
-    find("[data-testid='delete-map-button']").click
+    assert_selector "[data-testid='delete-map-button-map']", wait: 20
+    find("[data-testid='delete-map-button-map']").click
 
     # Wait for redirect to maps index
     assert_selector "[data-testid='index-DOM-div']", wait: 20
