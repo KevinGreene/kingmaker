@@ -26,7 +26,7 @@ export default class extends Controller {
     if(!this.maxRowsValue) this.maxRowsValue = 10;
     if(!this.mapWidthValue) this.mapWidthValue = 800;
     if(!this.mapHeightValue) this.mapHeightValue = 600;
-    if(!this.hexRadiusValue) this.hexRadiusValue = 50;
+    if(!this.hexRadiusValue) this.hexRadiusValue = 20;
     this.currentMapTranslateX = 0;
     this.currentMapTranslateY = 0;
     this.svgScaleX = 1;
@@ -42,8 +42,9 @@ export default class extends Controller {
     this.drawHexes(document.getElementById("hex-style-switch").textContent.charAt(0));
   }
 
-  redrawHexes(detail){
-    this.hexesValue = detail.hexes;
+  redrawHexes(hexes){
+    this.hexesValue = hexes.hexes;
+    this.hexRadiusValue = hexes.radius;
     this.drawHexes();
   }
 
@@ -66,7 +67,7 @@ export default class extends Controller {
 
     if (currentHexStyle === "⬣") { // Flat-top hexagon
       // For flat-top: width = 2 * radius, height = √3 * radius
-      hexHeight = Math.sqrt(3) * this.hexRadiusValue; // temp radius for calculation
+      hexHeight = Math.sqrt(3) * this.hexRadiusValue;
       hexWidth = 2 * this.hexRadiusValue;
 
       // Calculate spacing needed
@@ -75,7 +76,7 @@ export default class extends Controller {
 
     } else { // Pointy-top hexagon
       // For pointy-top: width = √3 * radius, height = 2 * radius
-      hexWidth = Math.sqrt(3) * this.hexRadiusValue; // temp radius for calculation
+      hexWidth = Math.sqrt(3) * this.hexRadiusValue;
       hexHeight = 2 * this.hexRadiusValue;
 
       // Calculate spacing needed

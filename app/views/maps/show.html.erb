@@ -192,11 +192,11 @@
           <div class="form-control">
             <label for="map-col-control" id="map-col-view" class="label">
               <span class="label-text">Map Columns</span>
-              <span id="map-col-value" class="label-text-alt">20</span>
+              <span id="map-col-value" class="label-text-alt">4</span>
             </label>
             <div class="flex items-center gap-2">
               <button id="map-col-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementCols">-</button>
-              <input id="map-col-control" type="range" min="0" max="100" value="20" class="range range-primary"/>
+              <input id="map-col-control" type="range" min="0" max="60" value="4" class="range range-primary" autocomplete="off"/>
               <button id="map-col-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementCols">+</button>
             </div>
           </div>
@@ -205,12 +205,25 @@
           <div class="form-control">
             <label for="map-row-control" id="map-row-view" class="label">
               <span class="label-text">Map Rows</span>
-              <span id="map-row-value" class="label-text-alt">20</span>
+              <span id="map-row-value" class="label-text-alt">3</span>
             </label>
             <div class="flex items-center gap-2">
               <button id="map-row-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementRows">-</button>
-              <input id="map-row-control" type="range" min="0" max="100" value="20" class="range range-primary"/>
+              <input id="map-row-control" type="range" min="0" max="45" value="3" class="range range-primary" autocomplete="off"/>
               <button id="map-row-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementRows">+</button>
+            </div>
+          </div>
+
+          <!-- Hex Size -->
+          <div>
+            <label for="map-hex-radius-control" id="map-hex-radius-view" class="label">
+              <span class="label-text">Hex Size</span>
+              <span id="map-hex-radius-value" class="label-text-alt">200</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button id="map-hex-radius-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementHexRadius">-</button>
+              <input id="map-hex-radius-control" type="range" min="1" max="1200" value="200" class="range range-neutral" autocomplete="off"/>
+              <button id="map-hex-radius-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementHexRadius">+</button>
             </div>
           </div>
 

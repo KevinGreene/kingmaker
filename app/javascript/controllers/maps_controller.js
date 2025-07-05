@@ -9,10 +9,8 @@ export default class extends Controller {
         const valueDisplayCols = document.getElementById('map-col-value');
         const sliderRows = document.getElementById('map-row-control');
         const valueDisplayRows = document.getElementById('map-row-value');
-        const sliderColsDec = document.getElementById("map-col-control-dec");
-        const sliderColsInc = document.getElementById("map-col-control-inc");
-        const sliderRowsDec = document.getElementById("map-row-control-dec");
-        const sliderRowsInc = document.getElementById("map-row-control-inc");
+        const radiusSize = document.getElementById("map-hex-radius-control");
+        const radiusDisplay = document.getElementById("map-hex-radius-value");
 
         /**
          * Columns Controls Section
@@ -39,6 +37,21 @@ export default class extends Controller {
                 detail: {
                     cols: sliderCols.value,
                     rows: sliderRows.value
+                },
+                bubbles: true,
+                cancelable: true
+            });
+            document.dispatchEvent(event);
+        });
+
+        /**
+         * Radius Control Section
+         */
+        radiusSize.addEventListener('input', function() {
+            radiusDisplay.textContent = this.value;
+            const event = new CustomEvent('hexRadiusUpdate', {
+                detail: {
+                    radius: (radiusSize.value / 10)
                 },
                 bubbles: true,
                 cancelable: true
@@ -79,13 +92,51 @@ export default class extends Controller {
             this.updateMapRowValue(rowControl.value);
         }
     }
+    decrementHexRadius(){
+        const radiusControl = document.getElementById("map-hex-radius-control");
+        const radius = parseInt(radiusControl.value);
+        if(radius > radiusControl.min){
+            radiusControl.value = radius - 1;
+            this.updateHexRadius(radiusControl.value);
+        }
+    }
+    incrementHexRadius(){
+        const radiusControl = document.getElementById("map-hex-radius-control");
+        const radius = parseInt(radiusControl.value);
+        if(radius < radiusControl.max){
+            radiusControl.value = radius + 1;
+            this.updateHexRadius(radiusControl.value);
+        }
+    }
+
+    updateHexRadius(value){
+        document.getElementById("map-hex-radius-value").textContent = value;
+        this.dispatch("hexRadiusUpdate", {
+            detail:{
+                radius: parseInt(value) / 10
+            },
+            bubbles: true
+        });
+    }
 
     updateMapColValue(value) {
         document.getElementById('map-col-value').textContent = value;
+        this.dispatch("hexDimensionUpdate", {
+            detail:{
+                cols: parseInt(value)
+            },
+            bubbles: true
+        });
     }
 
     updateMapRowValue(value) {
       document.getElementById('map-row-value').textContent = value;
+      this.dispatch("hexDimensionUpdate", {
+            detail:{
+                rows: parseInt(value)
+            },
+            bubbles: true
+        });
     }
 
     loadPreview(event){
@@ -154,6 +205,11 @@ export default class extends Controller {
 
         // Close the fly-out window
         document.getElementById("admin-drawer").checked = false;
+
+        // Dispatch event to show the hex map
+        this.dispatch("hexDimensionUpdate", {
+            bubbles: true
+        });
     }
 
     updateHexTransform(){

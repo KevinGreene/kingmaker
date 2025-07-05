@@ -6,16 +6,33 @@ export default class extends Controller {
     static values = {
         mapId: Number,
         hexCols: Number,
-        hexRows: Number
+        hexRows: Number,
+        hexRadius: Number
     }
 
     connect(){
         document.addEventListener('hexDimensionUpdate', (event) => this.regenerateHexes(event.detail));
+        document.addEventListener('maps:hexDimensionUpdate', (event) => this.regenerateHexes(event.detail));
+        document.addEventListener('hexRadiusUpdate', (event) => this.regenerateHexes(event.detail));
+        document.addEventListener('maps:hexRadiusUpdate', (event) => this.regenerateHexes(event.detail));
     }
 
     regenerateHexes(detail){
-        this.hexColsValue = detail.cols;
-        this.hexRowsValue = detail.rows;
+        if(detail.cols != null){
+            this.hexColsValue = detail.cols;
+        } else {
+            this.hexColsValue = parseInt(document.getElementById("map-col-control").value)
+        }
+        if(detail.rows != null){
+            this.hexRowsValue = detail.rows;
+        } else {
+            this.hexRowsValue = parseInt(document.getElementById("map-row-control").value)
+        }
+        if(detail.radius != null){
+            this.hexRadiusValue = detail.radius;
+        } else {
+            this.hexRadiusValue = (parseInt(document.getElementById("map-hex-radius-control").value) / 10)
+        }
         this.generateHexes();
     }
 
@@ -41,7 +58,8 @@ export default class extends Controller {
         // this.createHexesInDatabase(hexData);
         this.dispatch('regenerateHexes', {
             detail: {
-                hexes: hexData
+                hexes: hexData,
+                radius: this.hexRadiusValue
             },
             bubbles: true,
             cancelable: true
