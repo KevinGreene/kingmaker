@@ -1,9 +1,13 @@
 class MapsController < ApplicationController
   before_action :set_map, only: %i[ show edit update destroy update_hex_labels preview ]
+  before_action :validate_player_access, only: %i[ show edit update destroy update_hex_labels preview ]
 
   # GET /maps or /maps.json
   def index
-    @maps = Map.all
+    # Only show maps where the current user is a player
+    @maps = Map.joins(:player_maps)
+               .where(player_maps: { player_id: current_user.player.id })
+               .distinct
   end
 
   # GET /maps/1 or /maps/1.json
@@ -27,6 +31,13 @@ class MapsController < ApplicationController
 
     respond_to do |format|
       if @map.save
+
+        # Automatically add the creator as a GM for this map
+        PlayerMap.create!(
+          player_id: current_user.player.id,
+          map_id: @map.id,
+          gm: true
+        )
         format.html { redirect_to @map, notice: "Map was successfully created." }
         format.json { render :show, status: :created, location: @map }
       else
@@ -77,7 +88,32 @@ class MapsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_map
       @map = Map.find(params.expect(:id))
+    rescue ActiveRecord::RecordNotFound
+      respond_to do |format|
+        format.html {
+          redirect_to maps_path,
+          alert: "The map you're looking for doesn't exist or has been deleted."
+        }
+        format.json {
+          render json: { error: "Map not found" },
+          status: :not_found
+        }
+      end
     end
+
+  def validate_player_access
+    player = current_user.player
+    unless PlayerMap.exists?(player_id: player.id, map_id: @map.id)
+      respond_to do |format|
+        format.html {
+          redirect_to maps_path, alert: "You don't have access to this map."
+        }
+        format.json {
+          render json: { error: "Access denied" }, status: :forbidden
+        }
+      end
+    end
+  end
 
     # Only allow a list of trusted parameters through.
     def map_params
