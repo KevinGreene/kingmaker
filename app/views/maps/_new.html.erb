@@ -26,16 +26,16 @@
     <!-- Join Map Form (initially hidden) -->
     <div id="join-map-form" class="hidden">
       <div class="form-control mb-4">
-        <label for="map-id-input" class="label">
-          <span class="label-text">Enter GM's Map ID:</span>
+        <label for="map-link-input" class="label">
+          <span class="label-text">Enter Map Link Code:</span>
         </label>
-        <input id="map-id-input" type="text" placeholder="Map ID" class="input input-bordered w-full"/>
+        <input id="map-link-input" type="text" placeholder="Map Link Code" class="input input-bordered w-full"/>
       </div>
 
       <!-- Action buttons in lower-right -->
       <div class="flex justify-end space-x-2">
         <button class="btn btn-ghost" data-action="click->map-link#cancelJoinMap">Cancel</button>
-        <button class="btn btn-primary" data-action="click->map-link#acceptJoinMap">Accept</button>
+        <button class="btn btn-success" data-action="click->map-link#acceptJoinMap">Accept</button>
       </div>
     </div>
 

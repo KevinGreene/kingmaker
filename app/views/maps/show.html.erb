@@ -291,16 +291,15 @@
       </div>
     </div>
 
-    <!-- Flyout Tab Toggle -->
-    <div class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
-      <label for="admin-drawer" id="flyout-tab-toggle" aria-label="open sidebar" class="btn btn-primary btn-sm rounded-l-none rounded-r-lg pl-2 pr-3 shadow-lg cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </label>
-    </div>
+      <!-- Flyout Tab Toggle -->
+      <div class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
+        <label for="admin-drawer" id="flyout-tab-toggle" aria-label="open sidebar" class="btn btn-primary btn-sm rounded-l-none rounded-r-lg pl-2 pr-3 shadow-lg cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </label>
+      </div>
 
-    <% if current_player_is_gm_for_map?(@map) %>
       <!-- Drawer -->
       <div class="drawer">
         <input id="admin-drawer" type="checkbox" class="drawer-toggle" data-testid="drawer-toggle"/>
@@ -336,38 +335,40 @@
 
               <div class="divider"></div>
 
-              <!-- Map Management Section -->
-              <div class="space-y-3">
-                <h4 class="font-semibold text-sm text-gray-600 uppercase tracking-wide">Map Management</h4>
+              <% if current_player_is_gm_for_map?(@map) %>
+                <!-- Map Management Section -->
+                <div class="space-y-3">
+                  <h4 class="font-semibold text-sm text-gray-600 uppercase tracking-wide">Map Management</h4>
 
-                <%= button_tag "Manage Map",
-                               type: "button",
-                               id: "edit-map-button",
-                               data: {
-                                 action: "click->maps#showMapEditPane",
-                                 controller: "maps",
-                                 map: @map
-                               },
-                               class: "btn btn-primary w-full" %>
+                  <%= button_tag "Manage Map",
+                                 type: "button",
+                                 id: "edit-map-button",
+                                 data: {
+                                   action: "click->maps#showMapEditPane",
+                                   controller: "maps",
+                                   map: @map
+                                 },
+                                 class: "btn btn-primary w-full" %>
 
-                <%= button_tag "Manage Regions",
-                               type: "button",
-                               id: "manage-regions-button",
-                               data: {
-                                 action: "click->regions#enableRegionEditPane",
-                                 controller: "regions"
-                               },
-                               class: "btn btn-success w-full" %>
+                  <%= button_tag "Manage Regions",
+                                 type: "button",
+                                 id: "manage-regions-button",
+                                 data: {
+                                   action: "click->regions#enableRegionEditPane",
+                                   controller: "regions"
+                                 },
+                                 class: "btn btn-success w-full" %>
 
-                <%= button_tag "Manage Hexes",
-                               type: "button",
-                               data: {
-                                 id: "edit-hexes-button",
-                                 action: "click->hexes#enableHexEditPane",
-                                 controller: "hexes"
-                               },
-                               class: "btn btn-secondary w-full" %>
-              </div>
+                  <%= button_tag "Manage Hexes",
+                                 type: "button",
+                                 data: {
+                                   id: "edit-hexes-button",
+                                   action: "click->hexes#enableHexEditPane",
+                                   controller: "hexes"
+                                 },
+                                 class: "btn btn-secondary w-full" %>
+                </div>
+              <% end %>
             </div>
 
             <div class="divider divider-vertical divider-primary"></div>
@@ -409,7 +410,6 @@
           </div>
         </div>
       </div>
-    <% end %>
   </div>
 </div>
 

@@ -157,6 +157,8 @@ export default class extends Controller {
         const mapId = event.currentTarget.dataset.mapId;
         const isGM = event.currentTarget.dataset.isGm;
 
+        console.log("is gm?", event.currentTarget.dataset.isGm);
+
         if(isGM){
             this.enableEditButton(mapId);
         }
