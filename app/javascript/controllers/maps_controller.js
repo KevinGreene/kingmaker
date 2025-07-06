@@ -3,7 +3,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
 
     static values = {
-        mapId: Number
+        mapId: Number,
+        playerId: Number
     }
     static targets = ["preview"];
 
@@ -249,7 +250,7 @@ export default class extends Controller {
         const mapData = {
             columns: columnCount,
             rows: rowCount,
-            hex_radius: hexRadius
+            hex_radius: hexRadius,
         }
 
         try{
@@ -265,6 +266,36 @@ export default class extends Controller {
 
             if (response.ok) {
                 console.log('Map updated successfully');
+
+                // only save player to map if the map itself was saved successfully
+                await this.savePlayer(true);
+            } else {
+                console.error('Failed to update map');
+            }
+        }catch (e){
+            console.error('Error updating map:', e);
+        }
+    }
+
+    async savePlayer(isGM){
+        const playerData = {
+            player_id: this.playerIdValue,
+            gm: isGM
+        }
+
+        try{
+            const response = await fetch(`/maps/${this.mapIdValue}/player_maps`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ player_map: playerData })
+            });
+
+            if (response.ok) {
+                console.log('User Saved as GM Successfully');
             } else {
                 console.error('Failed to update map');
             }

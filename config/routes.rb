@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       patch :update_hex_labels
       get :preview
     end
+    resources :player_maps, only: [ :create, :update, :destroy ]
   end
   resource :session
   resources :passwords, param: :token
