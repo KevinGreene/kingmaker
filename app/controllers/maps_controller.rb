@@ -1,6 +1,7 @@
 class MapsController < ApplicationController
   before_action :set_map, only: %i[ show edit update destroy update_hex_labels preview ]
   before_action :validate_player_access, only: %i[ show edit update destroy update_hex_labels preview ]
+  before_action :validate_gm_access, only: %i[ edit update destroy update_hex_labels ]
 
   # GET /maps or /maps.json
   def index
@@ -115,8 +116,16 @@ class MapsController < ApplicationController
     end
   end
 
-    # Only allow a list of trusted parameters through.
-    def map_params
-      params.expect(map: [ :name, :description, :image, :columns, :rows, :hex_radius ])
+  def validate_gm_access
+    unless current_player_is_gm_for_map?(@map)
+      respond_to do |format|
+        format.html {
+          redirect_to @map, alert: "Only GMs can edit this map."
+        }
+        format.json {
+          render json: { error: "GM access required" }, status: :forbidden
+        }
+      end
     end
+  end
 end

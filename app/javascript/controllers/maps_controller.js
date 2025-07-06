@@ -194,7 +194,6 @@ export default class extends Controller {
         document.getElementById("edit-map-button").classList.remove("hidden")
         document.getElementById("manage-regions-button").classList.remove("hidden")
         document.getElementById("hexes-edit-button").textContent = "Manage Hexes"
-        document.getElementById("region-container").classList.remove("hidden")
 
         // Switch to hex editing view
         document.getElementById("normal-map-view").classList.remove("hidden")

@@ -98,7 +98,6 @@ export default class extends Controller {
         document.getElementById("edit-map-button").classList.add("hidden");
         document.getElementById("manage-regions-button").classList.add("hidden");
         document.getElementById("hexes-edit-button").textContent = "Go Back";
-        document.getElementById("region-container").classList.add("hidden");
         document.getElementById("hex-flyout-section").classList.remove("hidden");
     }
 
@@ -106,7 +105,6 @@ export default class extends Controller {
         document.getElementById("edit-map-button").classList.remove("hidden");
         document.getElementById("manage-regions-button").classList.remove("hidden");
         document.getElementById("hexes-edit-button").textContent = "Manage Hexes";
-        document.getElementById("region-container").classList.remove("hidden");
         document.getElementById("hex-flyout-section").classList.add("hidden");
     }
 
