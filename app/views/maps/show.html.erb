@@ -319,71 +319,54 @@
             </div>
 
             <!-- Main content section - grows to fill available space -->
-            <div class="flex flex-col items-left space-y-6 flex-1">
-              <!-- Back to Map List -->
-              <%= button_to "Back to Maps List",
-                            maps_url,
-                            method: :get,
-                            data: {
-                              id: "back-to-maps"
-                            },
-                            class: "btn btn-neutral"
-              %>
-              <div class="divider divider-vertical divider-primary"></div>
+            <div class="flex flex-col space-y-4 flex-1">
+              <!-- Navigation Section -->
+              <div class="space-y-3">
+                <%= button_to "Back to Maps List",
+                              maps_url,
+                              method: :get,
+                              data: { id: "back-to-maps" },
+                              class: "btn btn-neutral w-full" %>
 
-              <!-- Default Fly-out Window Contents -->
-              <%= button_tag "Manage Map",
-                             type: "button",
-                             id:"edit-map-button",
-                             data: {
-                               action: "click->maps#showMapEditPane",
-                               controller: "maps",
-                               map: @map
-                             },
-                             class:"btn btn-primary w-full"
-              %>
-              <%= button_tag "Manage Regions",
-                             type:"button",
-                             id:"manage-regions-button",
-                             data: {
-                               action: "click->regions#enableRegionEditPane",
-                               controller: "regions"
-                             },
-                             class:"btn btn-success w-full"
-              %>
-              <%= button_tag "Manage Hexes",
-                             type:"button",
-                             id:"hexes-edit-button",
-                             data: {
-                               action:"click->hexes#toggleHexFlyout",
-                               map: @map
-                             },
-                             class:"btn btn-secondary w-full"
-              %>
+                <button class="btn btn-secondary w-full"
+                        onclick="document.getElementById('share_map_modal_<%= @map.id %>').showModal()">
+                  Share Map
+                </button>
+              </div>
 
-              <!-- Hex Fly-out Window Contents - Initially Hidden -->
-              <div id="hex-flyout-section" class="space-y-4 hidden">
-                <div id="hex-divider-element" class="divider"></div>
-                <%= button_tag "Generate Hexes",
-                               type:"button",
-                               data:{
-                                 id:"generate-hexes-button",
-                                 action:"click->hexes#generateHexes click->hexes#enableHexEditPane",
-                                 controller: "hexes",
-                                 hexes_map_id_value: @map.id,
-                                 hexes_hex_cols_value: 5,
-                                 hexes_hex_rows_value: 2},
-                               class:"btn btn-primary w-full"
-                %>
-                <%= button_tag "Edit Hexes",
-                               type:"button",
-                               data:{
-                                 id:"edit-hexes-button",
-                                 action:"click->hexes#enableHexEditPane",
+              <div class="divider"></div>
+
+              <!-- Map Management Section -->
+              <div class="space-y-3">
+                <h4 class="font-semibold text-sm text-gray-600 uppercase tracking-wide">Map Management</h4>
+
+                <%= button_tag "Manage Map",
+                               type: "button",
+                               id: "edit-map-button",
+                               data: {
+                                 action: "click->maps#showMapEditPane",
+                                 controller: "maps",
+                                 map: @map
+                               },
+                               class: "btn btn-primary w-full" %>
+
+                <%= button_tag "Manage Regions",
+                               type: "button",
+                               id: "manage-regions-button",
+                               data: {
+                                 action: "click->regions#enableRegionEditPane",
+                                 controller: "regions"
+                               },
+                               class: "btn btn-success w-full" %>
+
+                <%= button_tag "Manage Hexes",
+                               type: "button",
+                               data: {
+                                 id: "edit-hexes-button",
+                                 action: "click->hexes#enableHexEditPane",
                                  controller: "hexes"
                                },
-                               class:"btn btn-secondary w-full"
-                %>
+                               class: "btn btn-secondary w-full" %>
               </div>
             </div>
 
@@ -432,3 +415,6 @@
 
 <!-- Render Settings Modal -->
 <%= render 'users/settings' %>
+
+<!-- Share Map Link Modal -->
+<%= render 'share_map', map: @map %>

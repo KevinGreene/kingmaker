@@ -15,6 +15,11 @@ export default class extends Controller {
 
         // Hide fly-out window
         document.getElementById("admin-drawer").checked = false;
+
+        // dispatch event to generate hex SVG
+        this.dispatch("drawHexes", {
+            bubbles: true
+        });
     }
 
 }

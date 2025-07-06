@@ -1,6 +1,6 @@
 class MapsController < ApplicationController
   before_action :set_map, only: %i[ show edit update destroy update_hex_labels preview ]
-  before_action :validate_player_access, only: %i[ show edit update destroy update_hex_labels preview ]
+  before_action :validate_player_access, only: %i[ show preview ]
   before_action :validate_gm_access, only: %i[ edit update destroy update_hex_labels ]
 
   # GET /maps or /maps.json
@@ -117,15 +117,25 @@ class MapsController < ApplicationController
   end
 
   def validate_gm_access
+    Rails.logger.info "=== GM ACCESS DEBUG ==="
+    Rails.logger.info "current_user: #{current_user&.email_address}"
+    Rails.logger.info "current_user.player: #{current_user&.player&.id}"
+    Rails.logger.info "Map: #{@map.id}"
+    Rails.logger.info "Method result: #{current_player_is_gm_for_map?(@map)}"
+
     unless current_player_is_gm_for_map?(@map)
       respond_to do |format|
         format.html {
-          redirect_to @map, alert: "Only GMs can edit this map."
+          redirect_to maps_path, alert: "Only GMs can edit this map."
         }
         format.json {
           render json: { error: "GM access required" }, status: :forbidden
         }
       end
     end
+  end
+
+  def map_params
+    params.require(:map).permit(:name, :description, :image)
   end
 end

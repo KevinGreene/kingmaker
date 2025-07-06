@@ -4,8 +4,22 @@ one:
   name: "Map test 1"
   columns: 12
   rows: 6
+  share_token: "map_unique_token_1"
 
 two:
   name: "Map test 2"
   columns: 9
   rows: 3
+  share_token: "map_unique_token_2"
+
+three:
+  name: "Shared Map"
+  columns: 2
+  rows: 4
+  share_token: "map_unique_token_3"
+
+four:
+  name: "Inaccessible Map"
+  columns: 13
+  rows: 7
+  share_token: "map_unique_token_4"
