@@ -1,6 +1,7 @@
 class HexesController < ApplicationController
   before_action :set_map_and_hex, except: [ :bulk_create ]
   before_action :set_map, only: [ :bulk_create ]
+  before_action :validate_gm_access, only: [ :bulk_create ]
 
   def update
     if @hex.update(hex_params)
@@ -50,5 +51,18 @@ class HexesController < ApplicationController
 
   def hex_params
     params.require(:hex).permit(:region_id)
+  end
+
+  def validate_gm_access
+    unless current_player_is_gm_for_map?(@map)
+      respond_to do |format|
+        format.html {
+          redirect_to @map, alert: "Only GMs can edit hexes."
+        }
+        format.json {
+          render json: { error: "GM access required" }, status: :forbidden
+        }
+      end
+    end
   end
 end

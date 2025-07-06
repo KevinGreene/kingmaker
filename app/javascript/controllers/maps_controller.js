@@ -4,7 +4,8 @@ export default class extends Controller {
 
     static values = {
         mapId: Number,
-        playerId: Number
+        playerId: Number,
+        isGm: Boolean
     }
     static targets = ["preview"];
 
@@ -153,9 +154,12 @@ export default class extends Controller {
 
     loadPreview(event){
         event.preventDefault()
-        const mapId = event.currentTarget.dataset.mapId
+        const mapId = event.currentTarget.dataset.mapId;
+        const isGM = event.currentTarget.dataset.isGm;
 
-        this.enableEditButton(mapId);
+        if(isGM){
+            this.enableEditButton(mapId);
+        }
         this.enablePlayButton(mapId);
 
         fetch(`/maps/${mapId}/preview`, {
@@ -194,7 +198,6 @@ export default class extends Controller {
         document.getElementById("edit-map-button").classList.remove("hidden")
         document.getElementById("manage-regions-button").classList.remove("hidden")
         document.getElementById("hexes-edit-button").textContent = "Manage Hexes"
-        document.getElementById("region-container").classList.remove("hidden")
 
         // Switch to hex editing view
         document.getElementById("normal-map-view").classList.remove("hidden")

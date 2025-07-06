@@ -15,263 +15,271 @@
       <p class="text-base-content/70 mt-1"><%= @map.description %></p>
     </div>
 
-    <!-- CONTROLS -->
-    <div id="controls" class="h-full">
+    <% if current_player_is_gm_for_map?(@map) %>
+      <!-- CONTROLS -->
+      <div id="controls" class="h-full">
 
-      <!-- Hex Edit Controls -->
-      <div id="hex-controls" class="hidden h-full flex items-center">
-        <div class="flex flex-wrap items-center gap-4 w-full">
+        <!-- Hex Edit Controls -->
+        <div id="hex-controls" class="hidden h-full flex items-center">
+          <div class="flex flex-wrap items-center gap-4 w-full">
 
-          <!-- Position Controls -->
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-semibold">Position:</span>
-            <div class="flex items-center gap-2">
-              <label class="text-xs font-medium text-gray-600">
-                X:
-                <%= number_field_tag :position_x, @map.offset_x,
-                                     data:{
-                                       action: "input->maps#updateHexTransform",
-                                       controller: "maps"
-                                     },
-                                     class:"w-16 px-2 py-1 border-1 border-primary",
-                                     autocomplete: "off",
-                                     step: 1, min: -1000, max: 1000 %>
-              </label>
-            </div>
-            <div class="flex items-center gap-2">
-              <label class="text-xs font-medium text-gray-600">
-                Y:
-                <%= number_field_tag :position_y, @map.offset_y,
-                                     data:{
-                                       action: "input->maps#updateHexTransform",
-                                       controller: "maps"
-                                     },
-                                     class:"w-16 px-2 py-1 border-1 border-primary",
-                                     autocomplete: "off",
-                                     step: 1, min: -1000, max: 1000 %>
-              </label>
-            </div>
-          </div>
-
-          <!-- Scale Controls -->
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-semibold">Scale:</span>
-            <div class="flex items-center gap-2">
-              <label class="text-xs font-medium text-gray-600">
-                X:
-                <%= number_field_tag :scale_x, @map.hex_scale_x,
-                                     data:{
-                                       action: "input->maps#updateHexTransform",
-                                       controller: "maps"
-                                     },
-                                     class:"w-16 px-2 py-1 border-1 border-primary",
-                                     autocomplete: "off",
-                                     step: 0.01, min: 0.001, max: 200 %>
-              </label>
-            </div>
-            <div class="flex items-center gap-2 text-center">
-              <label class="text-xs font-medium text-gray-600">
-                Y:
-                      <%= number_field_tag :scale_y, @map.hex_scale_y,
-                                           data:{
-                                             action: "input->maps#updateHexTransform",
-                                             controller: "maps"
-                                           },
-                                           class: "w-16 px-2 py-1 border-1 border-primary",
-                                           autocomplete: "off",
-                                           step: 0.01, min: 0.001, max: 200 %>
-              </label>
-            </div>
-          </div>
-
-          <!-- Orientation Control -->
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-semibold">Orientation:</span>
-            <%= button_tag "⬢",
-                           id: "hex-style-switch",
-                           data:{
-                             action: "click->hexes#flipHexStyle",
-                             controller: "hexes"
-                           },
-                           class: "btn btn-neutral text-4xl text-center"
-            %>
-          </div>
-
-          <!-- Action buttons -->
-          <div class="flex items-center gap-2 ml-auto">
-            <button class="btn btn-primary">
-              Save
-            </button>
-            <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
-              Cancel
-            </button>
-            <div class="divider divider-horizontal"></div>
-            <button id="delete_map_button_hex" class="btn btn-error" onclick="delete_map_confirmation_hex.showModal()">Delete Map</button>
-            <dialog id="delete_map_confirmation_hex" class="modal">
-              <div class="modal-box">
-                <p class="py-4">Are you sure? This action cannot be undone!</p>
-                <div class="modal-action">
-                  <form method="dialog">
-                    <button class="btn btn-neutral">Cancel</button>
-                  </form>
-                  <%= button_to "Delete Map",
-                    map_path(@map),
-                    method: :delete,
-                    data: {
-                      testid: "delete-map-button"
-                    },
-                    class: "btn btn-error" %>
-                </div>
+            <!-- Position Controls -->
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-semibold">Position:</span>
+              <div class="flex items-center gap-2">
+                <label class="text-xs font-medium text-gray-600">
+                  X:
+                  <%= number_field_tag :position_x, @map.offset_x,
+                                       data:{
+                                         action: "input->maps#updateHexTransform",
+                                         controller: "maps"
+                                       },
+                                       class:"w-16 px-2 py-1 border-1 border-primary",
+                                       autocomplete: "off",
+                                       step: 1, min: -1000, max: 1000 %>
+                </label>
               </div>
-            </dialog>
+              <div class="flex items-center gap-2">
+                <label class="text-xs font-medium text-gray-600">
+                  Y:
+                  <%= number_field_tag :position_y, @map.offset_y,
+                                       data:{
+                                         action: "input->maps#updateHexTransform",
+                                         controller: "maps"
+                                       },
+                                       class:"w-16 px-2 py-1 border-1 border-primary",
+                                       autocomplete: "off",
+                                       step: 1, min: -1000, max: 1000 %>
+                </label>
+              </div>
+            </div>
+
+            <!-- Scale Controls -->
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-semibold">Scale:</span>
+              <div class="flex items-center gap-2">
+                <label class="text-xs font-medium text-gray-600">
+                  X:
+                  <%= number_field_tag :scale_x, @map.hex_scale_x,
+                                       data:{
+                                         action: "input->maps#updateHexTransform",
+                                         controller: "maps"
+                                       },
+                                       class:"w-16 px-2 py-1 border-1 border-primary",
+                                       autocomplete: "off",
+                                       step: 0.01, min: 0.001, max: 200 %>
+                </label>
+              </div>
+              <div class="flex items-center gap-2 text-center">
+                <label class="text-xs font-medium text-gray-600">
+                  Y:
+                        <%= number_field_tag :scale_y, @map.hex_scale_y,
+                                             data:{
+                                               action: "input->maps#updateHexTransform",
+                                               controller: "maps"
+                                             },
+                                             class: "w-16 px-2 py-1 border-1 border-primary",
+                                             autocomplete: "off",
+                                             step: 0.01, min: 0.001, max: 200 %>
+                </label>
+              </div>
+            </div>
+
+            <!-- Orientation Control -->
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-semibold">Orientation:</span>
+              <%= button_tag "⬢",
+                             id: "hex-style-switch",
+                             data:{
+                               action: "click->hexes#flipHexStyle",
+                               controller: "hexes"
+                             },
+                             class: "btn btn-neutral text-4xl text-center"
+              %>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2 ml-auto">
+              <button class="btn btn-primary">
+                Save
+              </button>
+              <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
+                Cancel
+              </button>
+              <div class="divider divider-horizontal"></div>
+              <button id="delete_map_button_hex" class="btn btn-error" onclick="delete_map_confirmation_hex.showModal()">Delete Map</button>
+              <dialog id="delete_map_confirmation_hex" class="modal">
+                <div class="modal-box">
+                  <p class="py-4">Are you sure? This action cannot be undone!</p>
+                  <div class="modal-action">
+                    <form method="dialog">
+                      <button class="btn btn-neutral">Cancel</button>
+                    </form>
+                    <%= button_to "Delete Map",
+                      map_path(@map),
+                      method: :delete,
+                      data: {
+                        testid: "delete-map-button"
+                      },
+                      class: "btn btn-error" %>
+                  </div>
+                </div>
+              </dialog>
+            </div>
+          </div>
+        </div>
+
+        <!-- Region controls -->
+        <div id="region-controls" class="hidden h-full flex items-center">
+          <div class="flex flex-wrap items-center gap-4 w-full">
+
+            <!-- Region Management -->
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-semibold">Regions:</span>
+              <button class="btn btn-outline">
+                Edit Labels
+              </button>
+            </div>
+
+            <!-- Selected Hex Actions -->
+            <div class="flex items-center gap-3">
+              <details class="dropdown">
+                <summary class="btn btn-outline">Manage Region</summary>
+                <ul class="menu dropdown-content bg-base-100 rounded-box z-40 w-52 p-2 shadow-sm">
+                  <li><a>Region 1</a></li>
+                  <li><a>Region 2</a></li>
+                  <li><a>Region 3</a></li>
+                  <li><a>Region 4</a></li>
+                  <li><a>Region 5</a></li>
+                </ul>
+              </details>
+              <button class="btn btn-accent">
+                Assign
+              </button>
+              <button class="btn btn-error">
+                Remove
+              </button>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2 ml-auto">
+              <button class="btn btn-primary">
+                Save
+              </button>
+              <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
+                Cancel
+              </button>
+              <div class="divider divider-horizontal"></div>
+              <button id="delete_map_button_region" class="btn btn-error" onclick="delete_map_confirmation_region.showModal()">Delete Map</button>
+              <dialog id="delete_map_confirmation_region" class="modal">
+                <div class="modal-box">
+                  <p class="py-4">Are you sure? This action cannot be undone!</p>
+                  <div class="modal-action">
+                    <form method="dialog">
+                      <button class="btn btn-neutral">Cancel</button>
+                    </form>
+                    <%= button_to "Delete Map",
+                      map_path(@map),
+                      method: :delete,
+                      data: {
+                        testid: "delete_map_button"
+                      },
+                      class: "btn btn-error" %>
+                  </div>
+                </div>
+              </dialog>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Controls -->
+        <div id="map-controls" class="hidden h-full flex items-center">
+          <div class="flex flex-wrap items-center gap-4 w-full">
+
+            <!-- Columns -->
+            <div class="form-control">
+              <label for="map-col-control" id="map-col-view" class="label">
+                <span class="label-text">Map Columns</span>
+                <span id="map-col-value" class="label-text-alt">4</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <button id="map-col-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementCols">-</button>
+                <input id="map-col-control" type="range" min="0" max="60" value="4" class="range range-primary" autocomplete="off"/>
+                <button id="map-col-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementCols">+</button>
+              </div>
+            </div>
+
+            <!-- Rows -->
+            <div class="form-control">
+              <label for="map-row-control" id="map-row-view" class="label">
+                <span class="label-text">Map Rows</span>
+                <span id="map-row-value" class="label-text-alt">3</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <button id="map-row-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementRows">-</button>
+                <input id="map-row-control" type="range" min="0" max="45" value="3" class="range range-primary" autocomplete="off"/>
+                <button id="map-row-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementRows">+</button>
+              </div>
+            </div>
+
+            <!-- Hex Size -->
+            <div>
+              <label for="map-hex-radius-control" id="map-hex-radius-view" class="label">
+                <span class="label-text">Hex Size</span>
+                <span id="map-hex-radius-value" class="label-text-alt">200</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <button id="map-hex-radius-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementHexRadius">-</button>
+                <input id="map-hex-radius-control" type="range" min="1" max="1200" value="200" class="range range-neutral" autocomplete="off"/>
+                <button id="map-hex-radius-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementHexRadius">+</button>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2 ml-auto">
+              <%= link_to "#",
+                          class:"btn btn-primary",
+                          data: {
+                            action: "click->hexes#createHexesInDatabase click->maps#saveMap",
+                            detail: @map
+                          } do
+              %>
+                Save
+              <% end %>
+              <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
+                Cancel
+              </button>
+              <div class="divider divider-horizontal"></div>
+              <button id="delete_map_button_map" class="btn btn-error" onclick="delete_map_confirmation_map.showModal()">Delete Map</button>
+              <dialog id="delete_map_confirmation_map" class="modal">
+                <div class="modal-box">
+                  <p class="py-4">Are you sure? This action cannot be undone!</p>
+                  <div class="modal-action">
+                    <form method="dialog">
+                      <button class="btn btn-neutral">Cancel</button>
+                    </form>
+                    <!-- Your Rails button_to would go here -->
+                    <%= button_to "Delete Map",
+                      map_path(@map),
+                      method: :delete,
+                      data: {
+                        testid: "delete-map-button-map"
+                      },
+                      class: "btn btn-error" %>
+                  </div>
+                </div>
+              </dialog>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Region controls -->
-      <div id="region-controls" class="hidden h-full flex items-center">
-        <div class="flex flex-wrap items-center gap-4 w-full">
-
-          <!-- Region Management -->
-          <div class="flex items-center gap-3">
-            <span class="text-sm font-semibold">Regions:</span>
-            <button class="btn btn-outline">
-              Edit Labels
-            </button>
-          </div>
-
-          <!-- Selected Hex Actions -->
-          <div class="flex items-center gap-3">
-            <details class="dropdown">
-              <summary class="btn btn-outline">Manage Region</summary>
-              <ul class="menu dropdown-content bg-base-100 rounded-box z-40 w-52 p-2 shadow-sm">
-                <li><a>Region 1</a></li>
-                <li><a>Region 2</a></li>
-                <li><a>Region 3</a></li>
-                <li><a>Region 4</a></li>
-                <li><a>Region 5</a></li>
-              </ul>
-            </details>
-            <button class="btn btn-accent">
-              Assign
-            </button>
-            <button class="btn btn-error">
-              Remove
-            </button>
-          </div>
-
-          <!-- Action buttons -->
-          <div class="flex items-center gap-2 ml-auto">
-            <button class="btn btn-primary">
-              Save
-            </button>
-            <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
-              Cancel
-            </button>
-            <div class="divider divider-horizontal"></div>
-            <button id="delete_map_button_region" class="btn btn-error" onclick="delete_map_confirmation_region.showModal()">Delete Map</button>
-            <dialog id="delete_map_confirmation_region" class="modal">
-              <div class="modal-box">
-                <p class="py-4">Are you sure? This action cannot be undone!</p>
-                <div class="modal-action">
-                  <form method="dialog">
-                    <button class="btn btn-neutral">Cancel</button>
-                  </form>
-                  <%= button_to "Delete Map",
-                    map_path(@map),
-                    method: :delete,
-                    data: {
-                      testid: "delete_map_button"
-                    },
-                    class: "btn btn-error" %>
-                </div>
-              </div>
-            </dialog>
-          </div>
-        </div>
+    <% else %>
+      <!-- Show view-only content for non-GM players -->
+      <div class="text-center text-primary">
+        <p>You are viewing this map as a player.</p>
       </div>
-
-      <!-- Map Controls -->
-      <div id="map-controls" class="hidden h-full flex items-center">
-        <div class="flex flex-wrap items-center gap-4 w-full">
-
-          <!-- Columns -->
-          <div class="form-control">
-            <label for="map-col-control" id="map-col-view" class="label">
-              <span class="label-text">Map Columns</span>
-              <span id="map-col-value" class="label-text-alt">4</span>
-            </label>
-            <div class="flex items-center gap-2">
-              <button id="map-col-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementCols">-</button>
-              <input id="map-col-control" type="range" min="0" max="60" value="4" class="range range-primary" autocomplete="off"/>
-              <button id="map-col-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementCols">+</button>
-            </div>
-          </div>
-
-          <!-- Rows -->
-          <div class="form-control">
-            <label for="map-row-control" id="map-row-view" class="label">
-              <span class="label-text">Map Rows</span>
-              <span id="map-row-value" class="label-text-alt">3</span>
-            </label>
-            <div class="flex items-center gap-2">
-              <button id="map-row-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementRows">-</button>
-              <input id="map-row-control" type="range" min="0" max="45" value="3" class="range range-primary" autocomplete="off"/>
-              <button id="map-row-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementRows">+</button>
-            </div>
-          </div>
-
-          <!-- Hex Size -->
-          <div>
-            <label for="map-hex-radius-control" id="map-hex-radius-view" class="label">
-              <span class="label-text">Hex Size</span>
-              <span id="map-hex-radius-value" class="label-text-alt">200</span>
-            </label>
-            <div class="flex items-center gap-2">
-              <button id="map-hex-radius-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#decrementHexRadius">-</button>
-              <input id="map-hex-radius-control" type="range" min="1" max="1200" value="200" class="range range-neutral" autocomplete="off"/>
-              <button id="map-hex-radius-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->maps#incrementHexRadius">+</button>
-            </div>
-          </div>
-
-          <!-- Action buttons -->
-          <div class="flex items-center gap-2 ml-auto">
-            <%= link_to "#",
-                        class:"btn btn-primary",
-                        data: {
-                          action: "click->hexes#createHexesInDatabase click->maps#saveMap",
-                          detail: @map
-                        } do
-            %>
-              Save
-            <% end %>
-            <button class="btn btn-neutral" data-action="click->maps#resetEditPanes">
-              Cancel
-            </button>
-            <div class="divider divider-horizontal"></div>
-            <button id="delete_map_button_map" class="btn btn-error" onclick="delete_map_confirmation_map.showModal()">Delete Map</button>
-            <dialog id="delete_map_confirmation_map" class="modal">
-              <div class="modal-box">
-                <p class="py-4">Are you sure? This action cannot be undone!</p>
-                <div class="modal-action">
-                  <form method="dialog">
-                    <button class="btn btn-neutral">Cancel</button>
-                  </form>
-                  <!-- Your Rails button_to would go here -->
-                  <%= button_to "Delete Map",
-                    map_path(@map),
-                    method: :delete,
-                    data: {
-                      testid: "delete-map-button-map"
-                    },
-                    class: "btn btn-error" %>
-                </div>
-              </div>
-            </dialog>
-          </div>
-        </div>
-      </div>
-    </div>
+    <% end %>
   </div>
 
   <!-- Main Map Container -->
@@ -292,133 +300,121 @@
       </label>
     </div>
 
-    <!-- Drawer -->
-    <div class="drawer">
-      <input id="admin-drawer" type="checkbox" class="drawer-toggle" data-testid="drawer-toggle"/>
+    <% if current_player_is_gm_for_map?(@map) %>
+      <!-- Drawer -->
+      <div class="drawer">
+        <input id="admin-drawer" type="checkbox" class="drawer-toggle" data-testid="drawer-toggle"/>
 
-      <!-- Drawer Side Panel -->
-      <div class="drawer-side z-30">
-        <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-        <div class="menu bg-base-200 h-screen w-80 p-4 flex flex-col">
-          <!-- Top section with close button aligned to the right -->
-          <div class="flex justify-end mb-4">
-            <label id="fly-out-close-button" for="admin-drawer" class="btn btn-ghost btn-sm" data-action="click->maps#resetEditPanes">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </label>
-          </div>
-
-          <!-- Main content section - grows to fill available space -->
-          <div class="flex flex-col items-left space-y-6 flex-1">
-            <!-- Back to Map List -->
-            <%= button_to "Back to Maps List",
-                          maps_url,
-                          method: :get,
-                          data: {
-                            id: "back-to-maps"
-                          },
-                          class: "btn btn-neutral"
-            %>
-            <div class="divider divider-vertical divider-primary"></div>
-
-            <!-- Default Fly-out Window Contents -->
-            <%= button_tag "Manage Map",
-                           type: "button",
-                           id:"edit-map-button",
-                           data: {
-                             action: "click->maps#showMapEditPane",
-                             controller: "maps",
-                             map: @map
-                           },
-                           class:"btn btn-primary w-full"
-            %>
-            <%= button_tag "Manage Regions",
-                           type:"button",
-                           id:"manage-regions-button",
-                           data: {
-                             action: "click->regions#enableRegionEditPane",
-                             controller: "regions"
-                           },
-                           class:"btn btn-success w-full"
-            %>
-            <%= button_tag "Manage Hexes",
-                           type:"button",
-                           id:"hexes-edit-button",
-                           data: {
-                             action:"click->hexes#toggleHexFlyout",
-                             map: @map
-                           },
-                           class:"btn btn-secondary w-full"
-            %>
-
-            <!-- Hex Fly-out Window Contents - Initially Hidden -->
-            <div id="hex-flyout-section" class="space-y-4 hidden">
-              <div id="hex-divider-element" class="divider"></div>
-              <%= button_tag "Generate Hexes",
-                             type:"button",
-                             data:{
-                               id:"generate-hexes-button",
-                               action:"click->hexes#generateHexes click->hexes#enableHexEditPane",
-                               controller: "hexes",
-                               hexes_map_id_value: @map.id,
-                               hexes_hex_cols_value: 5,
-                               hexes_hex_rows_value: 2},
-                             class:"btn btn-primary w-full"
-              %>
-              <%= button_tag "Edit Hexes",
-                             type:"button",
-                             data:{
-                               id:"edit-hexes-button",
-                               action:"click->hexes#enableHexEditPane",
-                               controller: "hexes"
-                             },
-                             class:"btn btn-secondary w-full"
-              %>
+        <!-- Drawer Side Panel -->
+        <div class="drawer-side z-30">
+          <label for="admin-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+          <div class="menu bg-base-200 h-screen w-80 p-4 flex flex-col">
+            <!-- Top section with close button aligned to the right -->
+            <div class="flex justify-end mb-4">
+              <label id="fly-out-close-button" for="admin-drawer" class="btn btn-ghost btn-sm" data-action="click->maps#resetEditPanes">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </label>
             </div>
-          </div>
 
-          <div class="divider divider-vertical divider-primary"></div>
-          <!-- Bottom section - profile and settings buttons -->
-          <div class="flex justify-center gap-2 mt-4">
+            <!-- Main content section - grows to fill available space -->
+            <div class="flex flex-col space-y-4 flex-1">
+              <!-- Navigation Section -->
+              <div class="space-y-3">
+                <%= button_to "Back to Maps List",
+                              maps_url,
+                              method: :get,
+                              data: { id: "back-to-maps" },
+                              class: "btn btn-neutral w-full" %>
 
-            <!-- Settings Icon (Bottom) - Updated with modal trigger -->
-            <label for="settings-modal" class="btn btn-square btn-outline btn-neutral cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </label>
+                <button class="btn btn-secondary w-full"
+                        onclick="document.getElementById('share_map_modal_<%= @map.id %>').showModal()">
+                  Share Map
+                </button>
+              </div>
 
-            <div class="divider divider-horizontal divider-neutral"></div>
+              <div class="divider"></div>
 
-            <!-- User Profile Icon (Bottom) - Updated with dropdown -->
-            <div class="dropdown dropdown-right dropdown-end">
-              <div tabindex="0" role="button" class="btn btn-square btn-outline btn-neutral">
+              <!-- Map Management Section -->
+              <div class="space-y-3">
+                <h4 class="font-semibold text-sm text-gray-600 uppercase tracking-wide">Map Management</h4>
+
+                <%= button_tag "Manage Map",
+                               type: "button",
+                               id: "edit-map-button",
+                               data: {
+                                 action: "click->maps#showMapEditPane",
+                                 controller: "maps",
+                                 map: @map
+                               },
+                               class: "btn btn-primary w-full" %>
+
+                <%= button_tag "Manage Regions",
+                               type: "button",
+                               id: "manage-regions-button",
+                               data: {
+                                 action: "click->regions#enableRegionEditPane",
+                                 controller: "regions"
+                               },
+                               class: "btn btn-success w-full" %>
+
+                <%= button_tag "Manage Hexes",
+                               type: "button",
+                               data: {
+                                 id: "edit-hexes-button",
+                                 action: "click->hexes#enableHexEditPane",
+                                 controller: "hexes"
+                               },
+                               class: "btn btn-secondary w-full" %>
+              </div>
+            </div>
+
+            <div class="divider divider-vertical divider-primary"></div>
+            <!-- Bottom section - profile and settings buttons -->
+            <div class="flex justify-center gap-2 mt-4">
+
+              <!-- Settings Icon (Bottom) - Updated with modal trigger -->
+              <label for="settings-modal" class="btn btn-square btn-outline btn-neutral cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
                   <path stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+                  <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
+              </label>
+
+              <div class="divider divider-horizontal divider-neutral"></div>
+
+              <!-- User Profile Icon (Bottom) - Updated with dropdown -->
+              <div class="dropdown dropdown-right dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-square btn-outline btn-neutral">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+                <%= render 'users/profile' %>
               </div>
-              <%= render 'users/profile' %>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    <% end %>
   </div>
 </div>
 
 <!-- Render Settings Modal -->
 <%= render 'users/settings' %>
+
+<!-- Share Map Link Modal -->
+<%= render 'share_map', map: @map %>

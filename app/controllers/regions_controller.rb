@@ -1,5 +1,6 @@
 class RegionsController < ApplicationController
   before_action :set_map
+  before_action :validate_gm_access
 
   def create
     @region = @map.regions.build(region_params)
@@ -12,6 +13,19 @@ class RegionsController < ApplicationController
   end
 
   private
+
+  def validate_gm_access
+    unless current_player_is_gm_for_map?(@map)
+      respond_to do |format|
+        format.html {
+          redirect_to @map, alert: "Only GMs can edit regions."
+        }
+        format.json {
+          render json: { error: "GM access required" }, status: :forbidden
+        }
+      end
+    end
+  end
 
   def set_map
     @map = Map.find(params[:map_id])

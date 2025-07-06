@@ -33,7 +33,11 @@
         </label>
 
         <!-- Edit/Pencil Icon -->
-        <%= link_to '#', data: { id: "edit-map" }, class:"btn btn-primary btn-circle btn-disabled" do %>
+        <%= link_to '#',
+                    data: {
+                      id: "edit-map"
+                    },
+                    class:"btn btn-primary btn-circle btn-disabled" do %>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
             <path stroke-linecap="round"
                   stroke-linejoin="round"
@@ -44,7 +48,11 @@
         <% end %>
 
         <!-- Play Icon -->
-        <%= link_to '#' , data: {id: "play-map"}, class:"btn btn-secondary btn-circle btn-disabled" do %>
+        <%= link_to '#' ,
+                    data: {
+                      id: "play-map"
+                    },
+                    class:"btn btn-secondary btn-circle btn-disabled" do %>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-2 -2 24 24" class="w-6 h-6 stroke-current">
             <path stroke-linecap="round"
                   stroke-linejoin="round"
@@ -106,7 +114,13 @@
               <div class="space-y-4">
                 <% @maps.each do |map| %>
                   <div class="h-10 min-w-full"></div>
-                  <%= link_to "#", data: {action: "click->maps#loadPreview", map_id: map.id, testid: "map-card-#{map.id}"} do %>
+                  <%= link_to "#",
+                              data: {
+                                action: "click->maps#loadPreview",
+                                map_id: map.id,
+                                testid: "map-card-#{map.id}",
+                                is_gm: current_player_is_gm_for_map?(map)
+                              } do %>
                     <div class="card bg-base-100 p-4 flex flex-row gap-4 hover hover:bg-base-200 hover:border-neutral-content shadow-md">
                       <!-- Map Thumbnail -->
                       <div class="border w-3/5 rounded-md overflow-hidden h-64">

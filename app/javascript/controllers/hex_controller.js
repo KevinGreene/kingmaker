@@ -16,6 +16,8 @@ export default class extends Controller {
         document.addEventListener('maps:hexDimensionUpdate', (event) => this.regenerateHexes(event.detail));
         document.addEventListener('hexRadiusUpdate', (event) => this.regenerateHexes(event.detail));
         document.addEventListener('maps:hexRadiusUpdate', (event) => this.regenerateHexes(event.detail));
+        document.addEventListener('regions:drawHexes', (event) => this.regenerateHexes(event.detail));
+        document.addEventListener('drawHexes', (event) => this.regenerateHexes(event.detail));
     }
 
     regenerateHexes(detail){
@@ -94,22 +96,6 @@ export default class extends Controller {
         }
     }
 
-    enableHexFlyout(){
-        document.getElementById("edit-map-button").classList.add("hidden");
-        document.getElementById("manage-regions-button").classList.add("hidden");
-        document.getElementById("hexes-edit-button").textContent = "Go Back";
-        document.getElementById("region-container").classList.add("hidden");
-        document.getElementById("hex-flyout-section").classList.remove("hidden");
-    }
-
-    disableHexFlyout(){
-        document.getElementById("edit-map-button").classList.remove("hidden");
-        document.getElementById("manage-regions-button").classList.remove("hidden");
-        document.getElementById("hexes-edit-button").textContent = "Manage Hexes";
-        document.getElementById("region-container").classList.remove("hidden");
-        document.getElementById("hex-flyout-section").classList.add("hidden");
-    }
-
     enableHexEditPane(){
         document.getElementById("map-info").classList.add("hidden");
         document.getElementById("controls").classList.remove("hidden");
@@ -117,12 +103,7 @@ export default class extends Controller {
         document.getElementById("region-controls").classList.add("hidden");
         document.getElementById("map-controls").classList.add("hidden");
 
-        // Switch to hex editing view
-        document.getElementById("normal-map-view").classList.add("hidden");
-        document.getElementById("hex-edit-view").classList.remove("hidden");
-
         // Reset and close the fly-out window
-        this.disableHexFlyout();
         document.getElementById("admin-drawer").checked = false;
     }
 

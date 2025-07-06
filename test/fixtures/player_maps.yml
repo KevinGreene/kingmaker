@@ -1,11 +1,25 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+# Player one (GM) on map one
 one:
   player: one
   map: one
-  gm: false
+  gm: true
 
+# Player two (player) on map two
 two:
   player: two
   map: two
+  gm: false
+
+# Player one (GM) on map three
+three:
+  player: one
+  map: three
+  gm: true
+
+# Player two (player) on map three
+four:
+  player: two
+  map: three
   gm: false
