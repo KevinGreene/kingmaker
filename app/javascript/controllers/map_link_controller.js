@@ -28,24 +28,45 @@ export default class extends Controller {
     }
 
     cancelJoinMap() {
-        const input = document.getElementById('map-id-input');
+        const input = document.getElementById('map-link-input');
         input.value = '';
         this.toggleJoinMapForm();
     }
 
     acceptJoinMap() {
-        const mapId = document.getElementById('map-id-input').value;
+        const link = document.getElementById('map-link-input').value;
 
-        if (mapId.trim() === '') {
+        if (link.trim() === '') {
             alert('Please enter a Map ID');
             return;
         }
 
-        // TODO: Implement join map logic here
-        console.log('Joining map with ID:', mapId);
-
-        // For now, just close the modal
-        document.getElementById('new-map-modal').checked = false;
-        this.cancelJoinMap();
+        fetch('/join_map', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                share_token: link.trim()
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Successfully joined the map!');
+                // Close modal and redirect or refresh
+                document.getElementById('new-map-modal').checked = false;
+                this.cancelJoinMap();
+                // Optionally redirect to the map
+                window.location.href = `/maps/${data.map_id}`;
+            } else {
+                alert('Error: ' + data.errors.join(', '));
+            }
+        })
+        .catch(error => {
+            console.error('Error joining map:', error);
+            alert('An error occurred while joining the map');
+        });
     }
 }
