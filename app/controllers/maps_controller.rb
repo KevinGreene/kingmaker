@@ -117,7 +117,6 @@ class MapsController < ApplicationController
   end
 
   def validate_gm_access
-
     Rails.logger.info "=== GM ACCESS DEBUG ==="
     Rails.logger.info "current_user: #{current_user&.email_address}"
     Rails.logger.info "current_user.player: #{current_user&.player&.id}"
