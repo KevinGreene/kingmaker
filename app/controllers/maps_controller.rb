@@ -9,6 +9,7 @@ class MapsController < ApplicationController
   # GET /maps/1 or /maps/1.json
   def show
     @map = Map.find(params[:id])
+    @player = current_user.player
   end
 
   # GET /maps/new
