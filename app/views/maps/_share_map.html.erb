@@ -1,0 +1,31 @@
+
+<dialog id="share_map_modal_<%= map.id %>"
+        class="modal"
+        data-controller="map-share"
+        data-map-share-map-id-value="<%= @map.id %>"
+>
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Share Map</h3>
+    <p class="py-4">Share this token with others to give them access to the map:</p>
+
+    <div class="form-control">
+      <input type="text"
+             id="share_token_<%= map.id %>"
+             value="<%= map_share_token(map) %>"
+             class="input input-bordered w-full font-mono"
+             readonly
+             onclick="this.select()" />
+    </div>
+
+    <div class="modal-action">
+      <button id="copy_btn_<%= map.id %>"
+              class="btn btn-primary"
+              data-action="click->map-share#copyShareToken">
+        Copy Token
+      </button>
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>

@@ -18,5 +18,4 @@ class ApplicationController < ActionController::Base
 
   # Make both methods available in views
   helper_method :player_is_gm_for_map?, :current_player_is_gm_for_map?
-
 end

@@ -22,4 +22,7 @@ application.register("map-link", MapLinkController);
 import MapFormController from "./map_form_controller";
 application.register("map-form", MapFormController);
 
+import MapShareController from "./map_share_controller";
+application.register("map-share", MapShareController);
+
 export { application }
