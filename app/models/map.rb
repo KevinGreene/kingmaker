@@ -16,4 +16,12 @@ class Map < ApplicationRecord
       end
     end
   end
+
+  private
+    def image_format
+      return unless image.attached?
+      unless image.content_type.in?(%w[image/jpeg image/jpg image/png])
+        errors.add(:image, "must be a JPG or PNG file")
+      end
+    end
 end

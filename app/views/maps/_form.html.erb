@@ -1,32 +1,123 @@
-<%= form_with(model: map, data: { testid: "map-form" }) do |form| %>
+<%= form_with(model: map,
+              data: {
+                testid: "map-form",
+                controller: "map-form",
+                "map-form-is-edit-value": map.persisted?
+              },
+              local: true,
+              html: {
+                class: "space-y-6",
+                multipart: true
+              }) do |form| %>
   <% if map.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(map.errors.count, "error") %> prohibited this map from being saved:</h2>
-
-      <ul>
-        <% map.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div class="alert alert-error shadow-lg">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <div>
+          <h3 class="font-bold">
+            <%= pluralize(map.errors.count, "error") %> prohibited this map from being saved:
+          </h3>
+          <ul class="list-disc list-inside mt-2">
+            <% map.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
     </div>
   <% end %>
 
-  <div data-testid="form-name-field">
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="form-control w-full" data-testid="form-name-field">
+    <%= form.label :name, class: "label" do %>
+      <span class="label-text text-base font-medium">
+        Map Name
+        <span class="text-error">*</span>
+      </span>
+    <% end %>
+    <%= form.text_field :name,
+                        class: "input input-bordered w-full #{map.errors[:name].any? ? 'input-error' : ''}",
+                        placeholder: "Enter a descriptive name for your map"
+    %>
+    <% if map.errors[:name].any? %>
+      <div class="label">
+        <span class="label-text-alt text-error">
+          <%= map.errors[:name].first %>
+        </span>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_area :description %>
+  <div class="form-control w-full">
+    <%= form.label :description, class: "label" do %>
+      <span class="label-text text-base font-medium">
+        Description
+        <span class="text-error">*</span>
+      </span>
+    <% end %>
+    <%= form.text_area :description,
+        class: "textarea textarea-bordered w-full h-32 #{map.errors[:description].any? ? 'textarea-error' : ''}",
+        placeholder: "Describe your map, its purpose, or any important details..."%>
+    <% if map.errors[:description].any? %>
+      <div class="label">
+        <span class="label-text-alt text-error">
+          <%= map.errors[:description].first %>
+        </span>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.label :image, style: "display: block" %>
-    <%= form.file_field :image %>
+  <div class="form-control w-full">
+    <%= form.label :image, class: "label" do %>
+      <span class="label-text text-base font-medium">
+        Map Image
+        <% unless map.persisted? && map.image.attached? %>
+          <span class="text-error">*</span>
+        <% end %>
+      </span>
+    <% end %>
+
+    <% if map.persisted? && map.image.attached? %>
+      <div class="mb-4 p-4 bg-base-200 rounded-lg">
+        <div class="flex items-center space-x-3">
+          <div class="avatar">
+            <div class="w-16 h-16 rounded">
+              <%= image_tag map.image, alt: "Current map image", class: "w-full h-full object-cover" %>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-medium">Current image attached</p>
+            <p class="text-xs text-base-content/70">Choose a new file to replace it</p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <%= form.file_field :image,
+        class: "file-input file-input-bordered w-full #{map.errors[:image].any? ? 'file-input-error' : ''}",
+        accept: "image/jpeg,image/jpg,image/png,.jpg,.jpeg,.png"%>
+    <div class="label">
+      <span class="label-text-alt">
+        Only JPG and PNG files are accepted
+        <% if map.persisted? && map.image.attached? %>
+          • Leave empty to keep current image
+        <% end %>
+      </span>
+    </div>
+    <% if map.errors[:image].any? %>
+      <div class="label">
+        <span class="label-text-alt text-error">
+          <%= map.errors[:image].first %>
+        </span>
+      </div>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.submit data: { testid: "submit-map" } %>
+  <div class="form-control mt-8">
+    <%= form.submit (map.persisted? ? "Update Map" : "Create Map"),
+        class: "btn btn-primary btn-lg w-full",
+        data: {
+          testid: "submit-map"
+        }
+    %>
   </div>
 <% end %>

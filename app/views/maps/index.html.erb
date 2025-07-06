@@ -22,7 +22,7 @@
         </label>
 
         <!-- Add/Plus Icon -->
-        <%= link_to new_map_path, data: { testid: "new-map" }, class:"btn btn-accent btn-circle" do %>
+        <label for="new-map-modal" data-testid="new-map" class="btn btn-accent btn-circle cursor-pointer" >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-gray-900">
             <path stroke-linecap="round"
                   stroke-linejoin="round"
@@ -30,7 +30,7 @@
                   d="M12 4v16m8-8H4"
             />
           </svg>
-        <% end %>
+        </label>
 
         <!-- Edit/Pencil Icon -->
         <%= link_to '#', data: { id: "edit-map" }, class:"btn btn-primary btn-circle btn-disabled" do %>
@@ -152,3 +152,6 @@
 
 <!-- Render Settings Modal -->
 <%= render 'users/settings' %>
+
+<!-- Render New Map Modal -->
+<%= render 'maps/new' %>

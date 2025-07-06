@@ -18,49 +18,57 @@ export default class extends Controller {
         /**
          * Columns Controls Section
          */
-        sliderCols.addEventListener('input', function() {
-            valueDisplayCols.textContent = this.value;
-            const event = new CustomEvent('hexDimensionUpdate', {
-                detail: {
-                    cols: sliderCols.value,
-                    rows: sliderRows.value
-                },
-                bubbles: true,
-                cancelable: true
+        if(sliderCols) {
+            sliderCols.addEventListener('input', function () {
+                valueDisplayCols.textContent = this.value;
+                const event = new CustomEvent('hexDimensionUpdate', {
+                    detail: {
+                        cols: sliderCols.value,
+                        rows: sliderRows.value
+                    },
+                    bubbles: true,
+                    cancelable: true
+                });
+                document.dispatchEvent(event);
             });
-            document.dispatchEvent(event);
-        });
+        }
+
 
         /**
          * Rows Controls Section
          */
-        sliderRows.addEventListener('input', function() {
-            valueDisplayRows.textContent = this.value;
-            const event = new CustomEvent('hexDimensionUpdate', {
-                detail: {
-                    cols: sliderCols.value,
-                    rows: sliderRows.value
-                },
-                bubbles: true,
-                cancelable: true
+        if(sliderRows) {
+            sliderRows.addEventListener('input', function () {
+                valueDisplayRows.textContent = this.value;
+                const event = new CustomEvent('hexDimensionUpdate', {
+                    detail: {
+                        cols: sliderCols.value,
+                        rows: sliderRows.value
+                    },
+                    bubbles: true,
+                    cancelable: true
+                });
+                document.dispatchEvent(event);
             });
-            document.dispatchEvent(event);
-        });
+        }
+
 
         /**
          * Radius Control Section
          */
-        radiusSize.addEventListener('input', function() {
-            radiusDisplay.textContent = this.value;
-            const event = new CustomEvent('hexRadiusUpdate', {
-                detail: {
-                    radius: (radiusSize.value / 10)
-                },
-                bubbles: true,
-                cancelable: true
-            });
-            document.dispatchEvent(event);
-        });
+        if(radiusSize) {
+            radiusSize.addEventListener('input', function () {
+                radiusDisplay.textContent = this.value;
+                const event = new CustomEvent('hexRadiusUpdate', {
+                    detail: {
+                        radius: (radiusSize.value / 10)
+                    },
+                    bubbles: true,
+                    cancelable: true
+                });
+                document.dispatchEvent(event);
+            })
+        }
     }
 
     decrementCols(){
