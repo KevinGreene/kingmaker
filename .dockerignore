@@ -49,3 +49,6 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+
+# OAuth Info
+/client_secret_google_oauth*

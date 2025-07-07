@@ -42,3 +42,6 @@
 
 # Ignore PNG maps generated while testing
 /public/maps
+
+# OAuth Info
+/client_secret_google_oauth*
