@@ -48,7 +48,6 @@ gem "mini_magick"
 gem "omniauth"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
-gem "dotenv-rails", groups: [ :development, :test ]
 
 # Typescript
 gem "jsbundling-rails"
