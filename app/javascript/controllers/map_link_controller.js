@@ -9,21 +9,24 @@ export default class extends Controller {
     }
 
     toggleJoinMapForm() {
+        // _new partial
         const form = document.getElementById('join-map-form');
         const buttons = document.querySelector('.modal-action');
         const initialForm = document.getElementById("initial-form");
         const title = document.getElementById("card-title");
 
-        if (form.classList.contains('hidden')) {
-            form.classList.remove('hidden');
-            buttons.classList.add('hidden');
-            initialForm.classList.add("hidden");
-            title.textContent = "Link to an Existing Map";
-        } else {
-            form.classList.add('hidden');
-            buttons.classList.remove('hidden');
-            initialForm.classList.remove("hidden");
-            title.textContent = "Create or Join a Map";
+        if(form != null){
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                buttons.classList.add('hidden');
+                initialForm.classList.add("hidden");
+                title.textContent = "Link to an Existing Map";
+            } else {
+                form.classList.add('hidden');
+                buttons.classList.remove('hidden');
+                initialForm.classList.remove("hidden");
+                title.textContent = "Create or Join a Map";
+            }
         }
     }
 
@@ -34,7 +37,8 @@ export default class extends Controller {
     }
 
     acceptJoinMap() {
-        const link = document.getElementById('map-link-input').value;
+        const link = document.getElementById('map-link-input').value.toString();
+        const modal = document.getElementById('new-map-modal');
 
         if (link.trim() === '') {
             alert('Please enter a Map ID');
@@ -56,9 +60,11 @@ export default class extends Controller {
             if (data.status === 'success') {
                 alert('Successfully joined the map!');
                 // Close modal and redirect or refresh
-                document.getElementById('new-map-modal').checked = false;
+                if(modal != null){
+                    modal.checked = false;
+                }
                 this.cancelJoinMap();
-                // Optionally redirect to the map
+                // Redirect to the map
                 window.location.href = `/maps/${data.map_id}`;
             } else {
                 alert('Error: ' + data.errors.join(', '));

@@ -56,17 +56,17 @@
                         <div class="card-body items-center text-center">
                             <div class="avatar placeholder mb-4">
                                 <div class="bg-secondary text-secondary-content rounded-full w-16">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="2"
-                                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"
-                                          />
-                                    </svg>
+                                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                                      />
+                                  </svg>
                                 </div>
                             </div>
-                            <h3 class="card-title text-lg">Join Campaign</h3>
-                            <p class="text-base-content/70 text-sm mb-4">Enter your GM's map code to join an existing campaign</p>
+                            <h3 class="card-title text-lg">Preview Campaign</h3>
+                            <p class="text-base-content/70 text-sm mb-4">Enter your GM's map code to preview an existing campaign</p>
                             <div class="card-actions">
                                 <button class="btn btn-secondary btn-block" onclick="join_modal.showModal()">Join Now</button>
                             </div>
@@ -100,20 +100,23 @@
     </div>
 
     <!-- Join Campaign Modal -->
-    <dialog id="join_modal" class="modal">
+    <dialog id="join_modal" class="modal" data-controller="map-link">
         <div class="modal-box">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
             <h3 class="font-bold text-lg mb-4">Join Campaign</h3>
             <div class="form-control">
-                <label class="label">
+                <label class="label" for="map-link-input">
                     <span class="label-text">Map Code</span>
                 </label>
-                <input type="text" placeholder="Enter your GM's map code" class="input input-bordered" />
+                <input type="text" id="map-link-input" placeholder="Enter your GM's map code" class="input input-bordered" />
             </div>
             <div class="modal-action">
-                <button class="btn btn-primary">Join Campaign</button>
+              <form method="dialog">
+                <button class="btn btn-ghost">Cancel</button>
+              </form>
+              <button class="btn btn-success" data-action="click->map-link#acceptJoinMap">Accept</button>
             </div>
         </div>
     </dialog>
