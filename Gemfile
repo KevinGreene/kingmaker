@@ -44,6 +44,11 @@ gem "image_processing", "~> 1.2"
 gem "chunky_png"
 gem "mini_magick"
 
+# Auth Services
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
+
 # Typescript
 gem "jsbundling-rails"
 

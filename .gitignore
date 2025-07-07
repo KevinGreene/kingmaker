@@ -34,7 +34,7 @@
 /config/master.key
 
 # Ignore files from IDEs, i.e. RubyMine for KZ
-.idea/
+.idea/*
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
@@ -42,3 +42,6 @@
 
 # Ignore PNG maps generated while testing
 /public/maps
+
+# OAuth Info
+/client_secret_google_oauth*
