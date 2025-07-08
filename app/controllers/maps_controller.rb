@@ -1,7 +1,12 @@
 class MapsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [ :preview_by_link ]
+  allow_unauthenticated_access only: [ :preview_by_link, :show ]
+
   before_action :set_map, only: %i[ show edit update destroy update_hex_labels preview ]
   before_action :validate_player_access, only: %i[ show preview ]
   before_action :validate_gm_access, only: %i[ edit update destroy update_hex_labels ]
+  skip_before_action :validate_player_access, only: [ :preview_by_link ]
+  skip_before_action :validate_gm_access, only: [ :preview_by_link ]
 
   # GET /maps or /maps.json
   def index
@@ -14,7 +19,18 @@ class MapsController < ApplicationController
   # GET /maps/1 or /maps/1.json
   def show
     @map = Map.find(params[:id])
-    @player = current_user.player
+
+    if params[:share_token].present?
+      # Share token access - verify token matches
+      unless @map.share_token == params[:share_token]
+        redirect_to root_path, alert: "Invalid share token for this map"
+        return
+      end
+      @player = nil
+    else
+      # Normal access - user must be authenticated (enforced by validate_player_access)
+      @player = current_user.player
+    end
   end
 
   # GET /maps/new
@@ -77,6 +93,17 @@ class MapsController < ApplicationController
     end
   end
 
+  def preview_by_link
+    share_token = params[:share_token]
+    @map = Map.find_by(share_token: share_token)
+
+    if @map
+      render json: { status: "success", map_id: @map.id }
+    else
+      render json: { status: "error", errors: [ "Invalid share token" ] }
+    end
+  end
+
   def update_hex_labels
     @map.hexes.each do |hex|
       hex.update(label: hex.default_label)
@@ -103,6 +130,15 @@ class MapsController < ApplicationController
     end
 
   def validate_player_access
+    # Skip validation if accessing via share token
+    return if params[:share_token].present?
+
+    # For normal access, ensure user is authenticated
+    unless authenticated?
+      request_authentication
+      return
+    end
+
     player = current_user.player
     unless PlayerMap.exists?(player_id: player.id, map_id: @map.id)
       respond_to do |format|

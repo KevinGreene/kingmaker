@@ -4,13 +4,32 @@
     <span>Account</span>
   </li>
   <li>
-    <%= button_to "My Preferences", edit_user_path(current_user), method: :get,
-                  form: {class: "btn btn-primary btn-sm justify-center m-2"}
-    %>
+    <% if current_user %>
+      <%= button_to "My Preferences", edit_user_path(current_user), method: :get,
+                    form: {class: "btn btn-primary btn-sm justify-center m-2"}
+      %>
+    <% end %>
+
   </li>
   <li>
-    <%= button_to "Sign Out", session_path, method: :delete,
-                  form: {class: "btn btn-error btn-sm justify-center m-2"}
-    %>
+    <% if  current_user %>
+      <%= button_to "Sign Out", session_path, method: :delete,
+                    form: {class: "btn btn-error btn-sm justify-center m-2"}
+      %>
+    <% end %>
+  </li>
+  <li>
+    <% unless current_user %>
+      <%=link_to "Sign In", new_session_url,
+                   form: {class: "btn btn-error btn-sm justify-center m-2"}
+      %>
+    <% end %>
+  </li>
+  <li>
+    <% unless current_user %>
+      <%=link_to "Create Account", new_user_url,
+                   form: {class: "btn btn-error btn-sm justify-center m-2"}
+      %>
+    <% end %>
   </li>
 </ul>

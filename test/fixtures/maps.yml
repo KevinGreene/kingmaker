@@ -19,7 +19,7 @@ three:
   share_token: "map_unique_token_3"
 
 four:
-  name: "Inaccessible Map"
+  name: "Map Without Linked Players or GM"
   columns: 13
   rows: 7
   share_token: "map_unique_token_4"
