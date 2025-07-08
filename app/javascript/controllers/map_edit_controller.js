@@ -3,7 +3,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
     static targets = ["container", "mapImage", "hexImage"]
     static values = {
-        mapId: Number,
+        mapName: String,
+        mapDescription: String,
         hexes: Array,
         mapWidth: Number,
         mapHeight: Number,
@@ -13,7 +14,9 @@ export default class extends Controller {
         hexScaleY: Number,
         offsetX: Number,
         offsetY: Number,
-        hexRadius: Number
+        hexRadius: Number,
+        playerId: Number,
+        hexPointyTop: Boolean
     }
 
     connect() {
@@ -29,29 +32,21 @@ export default class extends Controller {
         this.zoomRate = 0.2;
 
         // Hex variables
-        this.hexStyle = "⬢";
+        this.hexStyle = this.hexPointyTopValue ? "⬢" : "⬣";
         this.offsetXValue = document.getElementById("position_x")?.value || 0;
         this.offsetYValue = document.getElementById("position_y")?.value || 0;
         this.hexScaleXValue = document.getElementById("scale_x")?.value || 1;
         this.hexScaleYValue = document.getElementById("scale_y")?.value || 1;
         this.hexOverlayArray = this.hexesValue;
-
-        // Set default values for anything that is undefined
-        const pageColValue = parseInt(document.getElementById("map-col-value").textContent);
-        const pageRowValue = parseInt(document.getElementById("map-row-value").textContent);
-
-        if(!this.colsValue) this.colsValue = pageColValue !== undefined ? pageColValue : 10;
-        if(!this.rowsValue) this.rowsValue = pageRowValue !== undefined ? pageRowValue : 10;
-
         if(!this.mapWidthValue) this.mapWidthValue = 800;
         if(!this.mapHeightValue) this.mapHeightValue = 600;
-        if(!this.hexRadiusValue) this.hexRadiusValue = 20;
 
         // additional variables
         this.currentMapTranslateX = 0;
         this.currentMapTranslateY = 0;
         this.svgScaleX = 1;
         this.svgScaleY = 1;
+
 
         // Bind mouse listeners
         this.boundMouseMove = this.handleMouseMove.bind(this);
@@ -70,6 +65,7 @@ export default class extends Controller {
         document.addEventListener("map-control:rowChange", (event) => this.updateDimensions(event.detail));
         document.addEventListener("radiusChange", (event) => this.updateRadius(event.detail.radius));
         document.addEventListener("dimensionChange", (event) => this.updateDimensions(event.detail));
+        document.addEventListener("map-control:saveAll", (event) => this.saveAll(event.detail));
 
         // Initialize image position
         this.updateTransform();
@@ -173,10 +169,10 @@ export default class extends Controller {
 
     drawHexes() {
         if (!this.hasHexImageTarget) {
-            console.log("no hex image target found");
             return;
         }
 
+        console.log("hex radius:", this.hexRadiusValue);
         this.updateHexOverlay();
 
         const svg = this.hexImageTarget;
@@ -189,11 +185,13 @@ export default class extends Controller {
 
     drawHex(svg, hex, currentHexStyle) {
 
+        const radius = this.hexRadiusValue / 100;
+
         let hexWidth, hexHeight, horizontalSpacing, verticalSpacing;
         if (currentHexStyle === "⬣") { // Flat-top hexagon
             // For flat-top: width = 2 * radius, height = √3 * radius
-            hexHeight = Math.sqrt(3) * this.hexRadiusValue;
-            hexWidth = 2 * this.hexRadiusValue;
+            hexHeight = Math.sqrt(3) * radius;
+            hexWidth = 2 * radius;
 
             // Calculate spacing needed
             horizontalSpacing = hexWidth * 0.75; // 75% overlap horizontally
@@ -201,8 +199,8 @@ export default class extends Controller {
 
         } else { // Pointy-top hexagon
             // For pointy-top: width = √3 * radius, height = 2 * radius
-            hexWidth = Math.sqrt(3) * this.hexRadiusValue;
-            hexHeight = 2 * this.hexRadiusValue;
+            hexWidth = Math.sqrt(3) * radius;
+            hexHeight = 2 * radius;
 
             // Calculate spacing needed
             horizontalSpacing = hexWidth; // Full width horizontally
@@ -215,14 +213,14 @@ export default class extends Controller {
         if (currentHexStyle === "⬣") { // Flat-top hexagon
             // Every other column is offset horizontally by half the horizontal spacing
             const colOffset = (hex.x_coordinate % 2) * (verticalSpacing / 2);
-            centerX = this.hexRadiusValue + (hex.x_coordinate * horizontalSpacing);
+            centerX = radius + (hex.x_coordinate * horizontalSpacing);
             centerY = (hexHeight / 2) + (hex.y_coordinate * verticalSpacing) + colOffset;
 
         } else { // Pointy-top hexagon
             // Every other row is offset vertically by half the vertical spacing
             const rowOffset = (hex.y_coordinate % 2) * (horizontalSpacing / 2);
             centerX = (hexWidth / 2) + (hex.x_coordinate * horizontalSpacing) + rowOffset;
-            centerY = this.hexRadiusValue + (hex.y_coordinate * verticalSpacing);
+            centerY = radius + (hex.y_coordinate * verticalSpacing);
         }
 
         // Generate hexagon points
@@ -231,15 +229,15 @@ export default class extends Controller {
         if (currentHexStyle === "⬣") { // Flat-top hexagon
             for (let i = 0; i < 6; i++) {
                 const angle = (Math.PI / 3) * i;
-                const x = centerX + this.hexRadiusValue * Math.cos(angle);
-                const y = centerY + this.hexRadiusValue * Math.sin(angle);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
                 points.push(`${x},${y}`);
             }
         } else { // Pointy-top hexagon
             for (let i = 0; i < 6; i++) {
                 const angle = (Math.PI / 3) * i - (Math.PI / 2);
-                const x = centerX + this.hexRadiusValue * Math.cos(angle);
-                const y = centerY + this.hexRadiusValue * Math.sin(angle);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
                 points.push(`${x},${y}`);
             }
         }
@@ -348,5 +346,104 @@ export default class extends Controller {
     updateHexStyle(style){
         this.hexStyle = style;
         this.drawHexes();
+    }
+
+    /**
+     * Save Functionality
+     */
+
+    async saveAll(detail){
+        await this.saveMap(detail.mapId, detail.playerId);
+        await this.saveHexes(detail.mapId);
+    }
+
+    async saveMap(mapId, playerId) {
+
+        const isPointyTop = this.hexStyle === "⬢";
+        const mapData = {
+            columns: this.colsValue,
+            rows: this.rowsValue,
+            hex_radius: this.hexRadiusValue,
+            offset_x: this.offsetXValue,
+            offset_y: this.offsetYValue,
+            hex_scale_x: this.hexScaleXValue,
+            hex_scale_y: this.hexScaleYValue,
+            is_hex_pointy_top: isPointyTop
+        }
+
+        try {
+            const response = await fetch(`/maps/${mapId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({map: mapData})
+            });
+
+            if (response.ok) {
+                await this.savePlayer(mapId, playerId, true);
+            } else {
+                console.error('Failed to update map');
+            }
+        } catch (e) {
+            console.error('Error updating map:', e);
+        }
+        console.log("map saved successfully");
+    }
+
+    async savePlayer(mapId, playerId, isGM){
+        console.log("savePlayer running");
+        const playerData = {
+            player_id: playerId,
+            gm: isGM
+        }
+
+        try{
+            const response = await fetch(`/maps/${mapId}/player_maps`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ player_map: playerData })
+            });
+
+            if (response.ok) {
+                console.log('User Saved as GM Successfully');
+            } else {
+                console.error('Failed to update map');
+            }
+        }catch (e){
+            console.error('Error updating map:', e);
+        }
+
+        console.log("player saved successfully");
+    }
+
+    async saveHexes(mapId) {
+        console.log("beginning to save hexes");
+        try {
+            const response = await fetch(`/maps/${mapId}/hexes/bulk_create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    hexes: this.hexOverlayArray,
+                    map_id: mapId
+                })
+            });
+            if (!response.ok) {
+                console.error('Failed to create hexes');
+            }
+        } catch (error) {
+            console.error('Error creating hexes:', error);
+        }
+
+        console.log("hexes saved successfully");
     }
 }

@@ -1,7 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-
+    static values = {
+        playerId: Number,
+        mapId: Number
+    }
 
     connect(){
         const sliderCols = document.getElementById('map-col-control');
@@ -55,7 +58,7 @@ export default class extends Controller {
                 radiusDisplay.textContent = this.value;
                 const event = new CustomEvent('radiusChange', {
                     detail: {
-                        radius: (radiusSize.value / 10)
+                        radius: (radiusSize.value)
                     },
                     bubbles: true,
                     cancelable: true
@@ -63,6 +66,16 @@ export default class extends Controller {
                 document.dispatchEvent(event);
             })
         }
+    }
+
+    saveAll(){
+        this.dispatch("saveAll", {
+            detail:{
+                playerId: this.playerIdValue,
+                mapId: this.mapIdValue
+            },
+            bubbles: true
+        });
     }
 
     updateHexTransform() {
@@ -152,7 +165,7 @@ export default class extends Controller {
         document.getElementById("map-hex-radius-value").textContent = value;
         this.dispatch("radiusChange", {
             detail:{
-                radius: parseInt(value) / 10
+                radius: parseInt(value)
             },
             bubbles: true
         });

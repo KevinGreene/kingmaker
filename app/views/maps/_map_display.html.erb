@@ -2,15 +2,21 @@
   <div class="w-full h-full bg-base-300 rounded overflow-hidden"
        data-controller="map-edit"
        data-map-edit-map-id-value="<%= map.id %>"
-       data-map-edit-hexes-value="<%= map.hexes.to_json(only: [:id, :x_coordinate, :y_coordinate, :region_id]) %>"
+       data-map-edit-map-name-value="<%= map.name %>"
+       data-map-edit-map-description-value="<%= map.description %>"
+       data-map-edit-map-image-value="<%= map.image %>"
+       data-map-edit-hexes-value="<%= map.hexes.to_json %>"
        data-map-edit-map-width-value="<%= map.image.attached? ? map.image.metadata[:width] : 800 %>"
        data-map-edit-map-height-value="<%= map.image.attached? ? map.image.metadata[:height] : 600 %>"
-       data-map-edit-max-cols-value="<%= map.columns %>"
-       data-map-edit-max-rows-value="<%= map.rows %>"
+       data-map-edit-cols-value="<%= map.columns %>"
+       data-map-edit-rows-value="<%= map.rows %>"
        data-map-edit-hex-scale-x-value="<%= map.hex_scale_x %>"
        data-map-edit-hex-scale-y-value="<%= map.hex_scale_y %>"
        data-map-edit-offset-x-value="<%= map.offset_x %>"
-       data-map-edit-offset-y-value="<%= map.offset_y %>">
+       data-map-edit-offset-y-value="<%= map.offset_y %>"
+       data-map-edit-hex-pointy-top-value="<%= map.is_hex_pointy_top %>"
+       data-map-edit-hex-radius-value="<%= map.hex_radius %>"
+  >
 
     <% if map.image.attached? %>
       <div class="w-full h-full relative overflow-hidden cursor-grab"

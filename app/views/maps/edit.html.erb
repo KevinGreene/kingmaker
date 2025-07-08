@@ -3,205 +3,210 @@
 <div id="<%= dom_id @map %>"
      class="h-screen w-screen overflow-hidden flex flex-col"
      data-controller="map-control maps hexes"
-     data-testid="map-edit-page"
+     data-testid="map-controls"
      data-hexes-map-id-value="<%= @map.id %>"
      data-maps-map-id-value="<%= @map.id %>"
-     <% if @player&.id %>
-      data-maps-player-id-value="<%= @player.id %>"
-     <% end %>
+     data-map-control-map-id-value="<%= @map.id %>"
+     data-map-control-player-id-value="<%= @player.id %>"
 >
 
-  <!-- Edit Controls Header -->
-  <div id="edit-controls-header" class="bg-base-200 p-4 border-b border-base-300">
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h1 class="text-2xl font-bold"><%= @map.name %></h1>
-        <p class="text-base-content/70 mt-1">Editing Mode</p>
+  <!-- Compact Edit Controls Header -->
+  <div id="edit-controls-header" class="bg-base-200 p-3 border-b border-base-300">
+    <!-- Title and Navigation Row -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-4">
+        <div>
+          <h1 class="text-lg font-bold"><%= @map.name %></h1>
+          <p class="text-xs text-base-content/70">Editing Mode</p>
+        </div>
       </div>
-
-      <!-- Top Action Buttons -->
       <div class="flex items-center gap-2">
-        <button class="btn btn-neutral" onclick="map_details_modal.showModal()">
+        <button class="btn btn-sm btn-neutral" onclick="map_details_modal.showModal()">
           Edit Details
         </button>
-        <%= link_to @map, class: "btn btn-outline" do %>
+        <%= link_to @map, class: "btn btn-sm btn-outline" do %>
           View Map
         <% end %>
-        <%= link_to maps_path, class: "btn btn-ghost" do %>
+        <%= link_to maps_path, class: "btn btn-sm btn-ghost" do %>
           Back to Maps
         <% end %>
       </div>
     </div>
 
-    <!-- All Controls Combined -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Compact Controls in Single Row -->
+    <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
 
-      <!-- Map Settings -->
-      <div class="space-y-4">
-        <h3 class="text-lg font-semibold text-primary">Map Settings</h3>
+      <!-- Map Settings - Horizontal Layout -->
+      <div class="space-y-2">
+        <h3 class="text-sm font-semibold text-primary">Map Settings</h3>
 
-        <!-- Columns -->
-        <div class="form-control">
-          <label for="map-col-control" class="label">
-            <span class="label-text">Columns</span>
-            <span id="map-col-value" class="label-text-alt"><%= @map.columns || 4 %></span>
-          </label>
-          <div class="flex items-center gap-2">
-            <button id="map-col-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->map-control#decrementCols">-</button>
-            <input id="map-col-control" type="range" min="0" max="60" value="<%= @map.columns || 4 %>" class="range range-primary" autocomplete="off"/>
-            <button id="map-col-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->map-control#incrementCols">+</button>
+        <div class="grid grid-cols-3 gap-2">
+          <!-- Columns -->
+          <div class="form-control">
+            <label for="map-col-control" class="label py-1">
+              <span class="label-text text-xs">Cols</span>
+              <span id="map-col-value" class="label-text-alt text-xs"><%= @map.columns || 4 %></span>
+            </label>
+            <div class="flex items-center gap-1">
+              <button id="map-col-control-dec" class="btn btn-xs btn-outline btn-primary" data-action="click->map-control#decrementCols">-</button>
+              <input id="map-col-control" type="range" min="0" max="60" value="<%= @map.columns || 4 %>" class="range range-primary range-xs" autocomplete="off"/>
+              <button id="map-col-control-inc" class="btn btn-xs btn-outline btn-primary" data-action="click->map-control#incrementCols">+</button>
+            </div>
           </div>
-        </div>
 
-        <!-- Rows -->
-        <div class="form-control">
-          <label for="map-row-control" class="label">
-            <span class="label-text">Rows</span>
-            <span id="map-row-value" class="label-text-alt"><%= @map.rows || 3 %></span>
-          </label>
-          <div class="flex items-center gap-2">
-            <button id="map-row-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->map-control#decrementRows">-</button>
-            <input id="map-row-control" type="range" min="0" max="45" value="<%= @map.rows || 3 %>" class="range range-primary" autocomplete="off"/>
-            <button id="map-row-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->map-control#incrementRows">+</button>
+          <!-- Rows -->
+          <div class="form-control">
+            <label for="map-row-control" class="label py-1">
+              <span class="label-text text-xs">Rows</span>
+              <span id="map-row-value" class="label-text-alt text-xs"><%= @map.rows || 3 %></span>
+            </label>
+            <div class="flex items-center gap-1">
+              <button id="map-row-control-dec" class="btn btn-xs btn-outline btn-primary" data-action="click->map-control#decrementRows">-</button>
+              <input id="map-row-control" type="range" min="0" max="45" value="<%= @map.rows || 3 %>" class="range range-primary range-xs" autocomplete="off"/>
+              <button id="map-row-control-inc" class="btn btn-xs btn-outline btn-primary" data-action="click->map-control#incrementRows">+</button>
+            </div>
           </div>
-        </div>
 
-        <!-- Hex Size -->
-        <div class="form-control">
-          <label for="map-hex-radius-control" class="label">
-            <span class="label-text">Hex Size</span>
-            <span id="map-hex-radius-value" class="label-text-alt"><%= (@map.hex_radius || 20) * 10 %></span>
-          </label>
-          <div class="flex items-center gap-2">
-            <button id="map-hex-radius-control-dec" class="btn btn-sm btn-outline btn-primary" data-action="click->map-control#decrementHexRadius">-</button>
-            <input id="map-hex-radius-control" type="range" min="1" max="1200" value="<%= (@map.hex_radius || 20) * 10 %>" class="range range-neutral" autocomplete="off"/>
-            <button id="map-hex-radius-control-inc" class="btn btn-sm btn-outline btn-primary" data-action="click->map-control#incrementHexRadius">+</button>
+          <!-- Hex Size -->
+          <div class="form-control">
+            <label for="map-hex-radius-control" class="label py-1">
+              <span class="label-text text-xs">Size</span>
+              <span id="map-hex-radius-value" class="label-text-alt text-xs"><%= (@map.hex_radius) %></span>
+            </label>
+            <div class="flex items-center gap-1">
+              <button id="map-hex-radius-control-dec" class="btn btn-xs btn-outline btn-primary" data-action="click->map-control#decrementHexRadius">-</button>
+              <input id="map-hex-radius-control" type="range" min="1" max="12000" value="<%= (@map.hex_radius) %>" class="range range-neutral range-xs" autocomplete="off"/>
+              <button id="map-hex-radius-control-inc" class="btn btn-xs btn-outline btn-primary" data-action="click->map-control#incrementHexRadius">+</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Hex Positioning -->
-      <div class="space-y-4">
-        <h3 class="text-lg font-semibold text-secondary">Hex Positioning</h3>
+      <!-- Hex Positioning - Compact Grid -->
+      <div class="space-y-2">
+        <h3 class="text-sm font-semibold text-secondary">Positioning</h3>
 
-        <!-- Position Controls -->
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium w-8">X:</label>
-            <%= number_field_tag :position_x, @map.offset_x || 0,
-                                 data:{
-                                   action: "input->map-control#updateHexTransform",
-                                   controller: "map-control"
-                                 },
-                                 class:"input input-sm input-bordered flex-1",
-                                 autocomplete: "off",
-                                 step: 1, min: -1000, max: 1000 %>
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Position Controls -->
+          <div class="space-y-1">
+            <div class="flex items-center gap-1">
+              <label class="text-xs font-medium w-4">X:</label>
+              <%= number_field_tag :position_x, @map.offset_x || 0,
+                                   data:{
+                                     action: "input->map-control#updateHexTransform",
+                                     controller: "map-control"
+                                   },
+                                   class:"input input-xs input-bordered flex-1",
+                                   autocomplete: "off",
+                                   step: 1, min: -1000, max: 1000 %>
+            </div>
+            <div class="flex items-center gap-1">
+              <label class="text-xs font-medium w-4">Y:</label>
+              <%= number_field_tag :position_y, @map.offset_y || 0,
+                                   data:{
+                                     action: "input->map-control#updateHexTransform",
+                                     controller: "map-control"
+                                   },
+                                   class:"input input-xs input-bordered flex-1",
+                                   autocomplete: "off",
+                                   step: 1, min: -1000, max: 1000 %>
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium w-8">Y:</label>
-            <%= number_field_tag :position_y, @map.offset_y || 0,
-                                 data:{
-                                   action: "input->map-control#updateHexTransform",
-                                   controller: "map-control"
-                                 },
-                                 class:"input input-sm input-bordered flex-1",
-                                 autocomplete: "off",
-                                 step: 1, min: -1000, max: 1000 %>
-          </div>
-        </div>
 
-        <!-- Scale Controls -->
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium w-8">Scale X:</label>
-            <%= number_field_tag :scale_x, @map.hex_scale_x || 1,
-                                 data:{
-                                   action: "input->map-control#updateHexTransform",
-                                   controller: "map-control"
-                                 },
-                                 class:"input input-sm input-bordered flex-1",
-                                 autocomplete: "off",
-                                 step: 0.01, min: 0.001, max: 200 %>
-          </div>
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium w-8">Scale Y:</label>
-            <%= number_field_tag :scale_y, @map.hex_scale_y || 1,
-                                 data:{
-                                   action: "input->map-control#updateHexTransform",
-                                   controller: "map-control"
-                                 },
-                                 class:"input input-sm input-bordered flex-1",
-                                 autocomplete: "off",
-                                 step: 0.01, min: 0.001, max: 200 %>
+          <!-- Scale Controls -->
+          <div class="space-y-1">
+            <div class="flex items-center gap-1">
+              <label class="text-xs font-medium w-6">SX:</label>
+              <%= number_field_tag :scale_x, @map.hex_scale_x || 1,
+                                   data:{
+                                     action: "input->map-control#updateHexTransform",
+                                     controller: "map-control"
+                                   },
+                                   class:"input input-xs input-bordered flex-1",
+                                   autocomplete: "off",
+                                   step: 0.01, min: 0.001, max: 200 %>
+            </div>
+            <div class="flex items-center gap-1">
+              <label class="text-xs font-medium w-6">SY:</label>
+              <%= number_field_tag :scale_y, @map.hex_scale_y || 1,
+                                   data:{
+                                     action: "input->map-control#updateHexTransform",
+                                     controller: "map-control"
+                                   },
+                                   class:"input input-xs input-bordered flex-1",
+                                   autocomplete: "off",
+                                   step: 0.01, min: 0.001, max: 200 %>
+            </div>
           </div>
         </div>
 
         <!-- Orientation Control -->
-        <div class="flex items-center gap-3">
-          <span class="text-sm font-medium">Orientation:</span>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-medium">Orientation:</span>
           <%= button_tag "⬢",
                          id: "hex-style-switch",
                          data:{
                            action: "click->map-control#flipHexStyle",
                            controller: "map-control"
                          },
-                         class: "btn btn-neutral text-2xl" %>
+                         class: "btn btn-xs btn-neutral text-lg" %>
         </div>
       </div>
 
-      <!-- Region Management -->
-      <div class="space-y-4">
-        <h3 class="text-lg font-semibold text-success">Region Management</h3>
+      <!-- Region Management - Compact -->
+      <div class="space-y-2">
+        <h3 class="text-sm font-semibold text-success">Regions</h3>
 
-        <div class="space-y-3">
-          <button class="btn btn-outline btn-success w-full">
+        <div class="space-y-1">
+          <button class="btn btn-xs btn-outline btn-success w-full">
             Edit Labels
           </button>
 
           <details class="dropdown w-full">
-            <summary class="btn btn-outline btn-success w-full">Manage Region</summary>
+            <summary class="btn btn-xs btn-outline btn-success w-full">Manage Region</summary>
             <ul class="menu dropdown-content bg-base-100 rounded-box z-40 w-full p-2 shadow-sm">
-              <li><a>Region 1</a></li>
-              <li><a>Region 2</a></li>
-              <li><a>Region 3</a></li>
-              <li><a>Region 4</a></li>
-              <li><a>Region 5</a></li>
+              <li><a class="text-xs">Region 1</a></li>
+              <li><a class="text-xs">Region 2</a></li>
+              <li><a class="text-xs">Region 3</a></li>
+              <li><a class="text-xs">Region 4</a></li>
+              <li><a class="text-xs">Region 5</a></li>
             </ul>
           </details>
 
-          <div class="flex gap-2">
-            <button class="btn btn-accent flex-1">Assign</button>
-            <button class="btn btn-error flex-1">Remove</button>
+          <div class="flex gap-1">
+            <button class="btn btn-xs btn-accent flex-1">Assign</button>
+            <button class="btn btn-xs btn-error flex-1">Remove</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Save/Cancel Actions -->
-    <div class="flex items-center justify-between mt-6 pt-4 border-t border-base-300">
-      <div class="flex items-center gap-2">
-        <%= link_to "#",
-                    class:"btn btn-primary",
-                    data: {
-                      action: "click->hexes#createHexesInDatabase click->maps#saveMap",
-                      detail: @map
-                    } do %>
-          Save All Changes
-        <% end %>
-        <button class="btn btn-neutral" onclick="window.location.href='<%= map_path(@map) %>'">
-          Cancel
-        </button>
-      </div>
+      <!-- Actions - Compact -->
+      <div class="space-y-2">
+        <h3 class="text-sm font-semibold text-info">Actions</h3>
 
-      <div class="flex items-center gap-2">
-        <button class="btn btn-error" onclick="delete_map_confirmation.showModal()">
-          Delete Map
-        </button>
+        <div class="space-y-1">
+          <%= link_to "#",
+                      class:"btn btn-xs btn-primary w-full",
+                      data: {
+                        action: "click->map-control#saveAll",
+                        detail: @map
+                      } do %>
+            Save All Changes
+          <% end %>
+
+          <button class="btn btn-xs btn-neutral w-full" onclick="window.location.href='<%= map_path(@map) %>'">
+            Cancel
+          </button>
+
+          <button class="btn btn-xs btn-error w-full" onclick="delete_map_confirmation.showModal()">
+            Delete Map
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Map Display Area -->
+  <!-- Map Display Area - Now Much Larger -->
   <div class="flex-1 relative overflow-hidden">
     <div class="w-full h-full bg-neutral">
       <%= render 'map_display', map: @map %>

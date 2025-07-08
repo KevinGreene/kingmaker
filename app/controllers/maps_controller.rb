@@ -40,6 +40,9 @@ class MapsController < ApplicationController
 
   # GET /maps/1/edit
   def edit
+    if current_user&.player
+      @player = current_user.player
+    end
   end
 
   # POST /maps or /maps.json
@@ -166,6 +169,20 @@ class MapsController < ApplicationController
   end
 
   def map_params
-    params.require(:map).permit(:name, :description, :image)
+    params.require(:map).permit(
+      :name,
+      :description,
+      :image,
+      :image_scale_horizontal,
+      :image_scale_vertical,
+      :columns,
+      :rows,
+      :offset_x,
+      :offset_y,
+      :hex_scale_x,
+      :hex_scale_y,
+      :hex_radius,
+      :is_hex_pointy_top
+    )
   end
 end
