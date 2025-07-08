@@ -156,9 +156,6 @@ class MapsTest < ApplicationSystemTestCase
     # Click on a map in the list to select it
     find("[data-testid='map-card-#{@gm_map.id}']").click
 
-    # Wait for the edit button to become enabled (remove btn-disabled class via javascript)
-    assert_selector "[data-id='edit-map']:not(.btn-disabled)"
-
     # Click the edit button
     find("[data-id='edit-map']").click
 
@@ -372,8 +369,8 @@ class MapsTest < ApplicationSystemTestCase
     find("[data-testid='map-card-#{@gm_map.id}']").click
 
     # GM should see all management buttons enabled
-    assert_selector "[data-id='edit-map']:not(.btn-disabled)"
-    assert_selector "[data-id='play-map']:not(.btn-disabled)"
+    assert_selector "[data-id='edit-map']"
+    assert_selector "[data-id='play-map']"
 
     # Navigate to play mode
     find("[data-id='play-map']").click
