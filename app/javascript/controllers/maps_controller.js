@@ -6,7 +6,7 @@ export default class extends Controller {
         mapId: Number,
         playerId: Number,
         isGm: Boolean
-    }
+    };
     static targets = ["preview"];
 
     connect(){
@@ -157,8 +157,6 @@ export default class extends Controller {
         const mapId = event.currentTarget.dataset.mapId;
         const isGM = event.currentTarget.dataset.isGm;
 
-        console.log("is gm?", event.currentTarget.dataset.isGm);
-
         if(isGM){
             this.enableEditButton(mapId);
         }
@@ -170,7 +168,26 @@ export default class extends Controller {
         .then(response => response.text())
         .then(html => {
             this.previewTarget.innerHTML = html
-        })
+        });
+
+        // const Thumbnail properties
+        const defaultThumbnailClassList = ['bg-base-100', 'hover:bg-base-200', 'shadow-md'];
+        const selectedThumbnailClassList = ['bg-neutral', 'border', 'border-neutral-500', 'shadow-xl'];
+
+        // deselect all thumbnails
+        const allThumbnails = document.querySelectorAll(".map-thumbnail");
+            allThumbnails.forEach(thumbnail => {
+                thumbnail.classList.remove(...selectedThumbnailClassList);
+                thumbnail.classList.add(...defaultThumbnailClassList);
+            });
+
+        const targetId = "thumbnail-" + mapId;
+        const targetThumbnail = document.getElementById(targetId);
+        if(targetThumbnail != null){
+            targetThumbnail.classList.remove(...defaultThumbnailClassList);
+            targetThumbnail.classList.add(...selectedThumbnailClassList);
+        }
+
     }
 
     enableEditButton(mapID){

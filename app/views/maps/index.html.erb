@@ -121,7 +121,7 @@
                                 testid: "map-card-#{map.id}",
                                 is_gm: current_player_is_gm_for_map?(map)
                               } do %>
-                    <div class="card bg-base-100 p-4 flex flex-row gap-4 hover hover:bg-base-200 hover:border-neutral-content shadow-md">
+                    <div id="thumbnail-<%= map.id %>" class="map-thumbnail card bg-base-100 p-4 flex flex-row gap-4 hover hover:bg-base-200 hover:border-neutral-content shadow-md">
                       <!-- Map Thumbnail -->
                       <div class="border w-3/5 rounded-md overflow-hidden h-64">
                         <%= image_tag map.image, class: "w-full h-full object-cover" if map.image.present? %>
