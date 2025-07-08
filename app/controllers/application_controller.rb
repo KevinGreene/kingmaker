@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   # Convenience method for current user
   def current_player_is_gm_for_map?(map)
+    return false unless current_user&.player
     player_is_gm_for_map?(current_user.player, map)
   end
 

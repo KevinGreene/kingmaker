@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%= csrf_meta_tags %>
     <title>TOOL NAME HERE</title>
     <style>
         .hero-gradient {
@@ -63,7 +64,7 @@
                                   </svg>
                                 </div>
                             </div>
-                            <h3 class="card-title text-lg">Preview Campaign</h3>
+                            <h3 class="card-title text-lg">Join a Campaign</h3>
                             <p class="text-base-content/70 text-sm mb-4">Enter your GM's map code to preview an existing campaign</p>
                             <div class="card-actions">
                                 <button class="btn btn-secondary btn-block" onclick="join_modal.showModal()">Join Now</button>
@@ -97,26 +98,26 @@
         </div>
     </div>
 
-    <!-- Join Campaign Modal -->
-    <dialog id="join_modal" class="modal" data-controller="map-link">
-        <div class="modal-box">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <h3 class="font-bold text-lg mb-4">Join Campaign</h3>
-            <div class="form-control">
-                <label class="label" for="map-link-input">
-                    <span class="label-text">Map Code</span>
-                </label>
-                <input type="text" id="map-link-input" placeholder="Enter your GM's map code" class="input input-bordered" />
-            </div>
-            <div class="modal-action">
-              <form method="dialog">
-                <button class="btn btn-ghost">Cancel</button>
-              </form>
-              <button class="btn btn-success" data-action="click->map-link#acceptJoinMap">Accept</button>
-            </div>
+    <!-- Join (Preview) Campaign Modal -->
+    <dialog id="join_modal" class="modal" data-controller="map-link" >
+      <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg mb-4">Join Campaign</h3>
+        <div class="form-control">
+            <label class="label" for="map-link-input">
+                <span class="label-text">Map Code</span>
+            </label>
+            <input type="text" id="map-link-input" placeholder="Enter your GM's map code" class="input input-bordered" />
         </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn btn-ghost">Cancel</button>
+          </form>
+          <button class="btn btn-success" data-action="click->map-link#previewMap">Accept</button>
+        </div>
+      </div>
     </dialog>
 
     <!-- Login Modal -->

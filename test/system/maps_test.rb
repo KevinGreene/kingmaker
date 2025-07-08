@@ -9,7 +9,7 @@ class MapsTest < ApplicationSystemTestCase
     @gm_map = maps(:one)
     @player_map = maps(:two)
     @shared_map = maps(:three)
-    @inaccessible_map = maps(:four)
+    @abandoned_map = maps(:four)
     @gm_player = players(:one)  # Player one is the GM (gm: true in player_maps)
     @player = players(:two)  # Player two is a regular player (gm: false in player_maps)
 
@@ -37,6 +37,12 @@ class MapsTest < ApplicationSystemTestCase
     )
     @shared_map.save!
     @shared_map.reload
+    @abandoned_map.image.attach(io: File.open(Rails.root.join("test", "fixtures", "files", "test_image.png")),
+      filename: "test_image.png",
+      content_type: "image/png"
+    )
+    @abandoned_map.save!
+    @abandoned_map.reload
   end
 
   def login_as_gm
@@ -390,5 +396,23 @@ class MapsTest < ApplicationSystemTestCase
     # This could be a redirect to maps index, login page, or error message
     # Adjust based on your implementation
     assert_no_selector "[data-testid='map-form']" # Should not show the edit form
+  end
+
+  test "should preview map without auth" do
+    page.driver.browser.manage.delete_all_cookies
+    visit maps_url
+    assert_current_path(new_session_path)
+    click_link("← Back to Home")
+    click_button("Join Now")
+
+    assert_selector "[data-controller='map-link']"
+
+    fill_in "map-link-input", with: "map_unique_token_4"
+
+    within("#join_modal") do
+      click_button("Accept")
+    end
+
+    assert_text(@abandoned_map.name)
   end
 end

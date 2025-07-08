@@ -58,7 +58,6 @@ export default class extends Controller {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Successfully joined the map!');
                 // Close modal and redirect or refresh
                 if(modal != null){
                     modal.checked = false;
@@ -66,6 +65,35 @@ export default class extends Controller {
                 this.cancelJoinMap();
                 // Redirect to the map
                 window.location.href = `/maps/${data.map_id}`;
+            } else {
+                alert('Error: ' + data.errors.join(', '));
+            }
+        })
+        .catch(error => {
+            console.error('Error joining map:', error);
+            alert('An error occurred while joining the map');
+        });
+    }
+
+    previewMap(){
+        const link = document.getElementById('map-link-input').value.toString();
+
+        if (link.trim() === '') {
+            alert('Please enter a Map ID');
+            return;
+        }
+
+        fetch(`/preview_by_link?share_token=${encodeURIComponent(link.trim())}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Redirect to the map
+                window.location.href = `/maps/${data.map_id}?share_token=${link.trim()}`;
             } else {
                 alert('Error: ' + data.errors.join(', '));
             }
