@@ -25,7 +25,6 @@ class MapsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Map.count") do
       post maps_url, params: { map: { name: @map.name } }
     end
-
     assert_redirected_to map_url(Map.last)
   end
 
@@ -41,14 +40,13 @@ class MapsControllerTest < ActionDispatch::IntegrationTest
 
   test "should update map" do
     patch map_url(@map), params: { map: { name: @map.name } }
-    assert_redirected_to map_url(@map)
+    assert_redirected_to edit_map_url(@map)
   end
 
   test "should destroy map" do
     assert_difference("Map.count", -1) do
       delete map_url(@map)
     end
-
     assert_redirected_to maps_url
   end
 end

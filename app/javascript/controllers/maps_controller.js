@@ -14,8 +14,10 @@ export default class extends Controller {
         const mapId = event.currentTarget.dataset.mapId;
         const isGM = event.currentTarget.dataset.isGm;
 
-        if(isGM){
+        if(isGM === "true"){
             this.enableEditButton(mapId);
+        } else {
+            this.disableEditButton();
         }
         this.enablePlayButton(mapId);
 
@@ -52,6 +54,14 @@ export default class extends Controller {
         if (editButton) {
             editButton.href = `/maps/${mapID}/edit`
             editButton.classList.remove('btn-disabled')
+        }
+    }
+
+    disableEditButton(){
+        const editButton = document.querySelector('[data-id="edit-map"]');
+        if(editButton){
+            editButton.href = '';
+            editButton.classList.add('btn-disabled');
         }
     }
 
