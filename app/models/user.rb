@@ -23,6 +23,7 @@ class User < ApplicationRecord
         google_token: auth.credentials.token,
         google_refresh_token: auth.credentials.refresh_token
       )
+      user.ensure_player_exists
     else
       # Create new user
       user = create!(
@@ -40,6 +41,10 @@ class User < ApplicationRecord
 
   def google_oauth?
     provider == "google_oauth2"
+  end
+
+  def ensure_player_exists
+    player || create_player!
   end
 
   private

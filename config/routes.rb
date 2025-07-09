@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :maps do
     resources :regions, only: [ :create ]
-    resources :hexes, only: [ :update ] do
+    resources :hexes, only: [ :create, :update ] do
       collection do
         post "bulk_create"
         post "bulk_replace"

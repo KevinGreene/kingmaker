@@ -25,4 +25,10 @@ application.register("map-form", MapFormController);
 import MapShareController from "./map_share_controller";
 application.register("map-share", MapShareController);
 
+import MapEditController from "./map_edit_controller";
+application.register("map-edit", MapEditController);
+
+import MapControlController from "./map_control_controller";
+application.register("map-control", MapControlController);
+
 export { application }

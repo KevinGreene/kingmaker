@@ -34,7 +34,7 @@ export default class extends Controller {
         if(detail.radius != null){
             this.hexRadiusValue = detail.radius;
         } else {
-            this.hexRadiusValue = (parseInt(document.getElementById("map-hex-radius-control").value) / 10)
+            this.hexRadiusValue = (parseInt(document.getElementById("map-hex-radius-control").value))
         }
         this.generateHexes();
     }

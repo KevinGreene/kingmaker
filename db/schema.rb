@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_07_154751) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_08_213457) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -91,6 +91,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_154751) do
     t.decimal "hex_scale_y"
     t.decimal "hex_radius", precision: 8, scale: 2
     t.string "share_token"
+    t.boolean "is_hex_pointy_top", default: false, null: false
     t.index ["share_token"], name: "index_maps_on_share_token", unique: true
   end
 
