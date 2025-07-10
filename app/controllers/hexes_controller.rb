@@ -87,6 +87,27 @@ class HexesController < ApplicationController
     render json: { success: false, error: e.message }, status: 422
   end
 
+  def bulk_update
+    hex_ids = params[:hex_ids]
+    updates = params[:updates]
+
+    begin
+      Hex.transaction do
+        hexes = Hex.where(id: hex_ids, map_id: params[:map_id])
+
+        # Convert permitted parameters to hash
+        permitted_updates = updates.permit(:region_id).to_h
+        hexes.update_all(permitted_updates)
+
+        # Return updated hexes
+        updated_hexes = hexes.reload
+        render json: { success: true, hexes: updated_hexes }
+      end
+    rescue => e
+      render json: { success: false, error: e.message }, status: 422
+    end
+  end
+
   private
 
   def set_map_and_hex

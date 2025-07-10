@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :hexes, only: [ :create, :update ] do
       collection do
         post "bulk_create"
+        post "bulk_update"
         post "bulk_replace"
       end
     end

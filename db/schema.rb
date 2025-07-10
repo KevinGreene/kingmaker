@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_08_213457) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_10_220640) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -168,7 +168,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_08_213457) do
   add_foreign_key "hex_resources", "hexes"
   add_foreign_key "hex_resources", "resources"
   add_foreign_key "hexes", "maps"
-  add_foreign_key "hexes", "regions"
+  add_foreign_key "hexes", "regions", on_delete: :nullify
   add_foreign_key "kingdoms", "maps"
   add_foreign_key "notes", "hexes"
   add_foreign_key "notes", "maps"
