@@ -58,7 +58,7 @@ export default class extends Controller {
         }
 
         // event listeners for dispatches from 'map-control'
-        document.addEventListener("map-control:hexStyleChange", (event) => this.updateHexStyle(event.detail.hexStyle));
+        document.addEventListener("map-control:hexStyleChange", (event) => this.updateHexStyle(event.detail.isPointyTop));
         document.addEventListener("map-control:svgTransformChange", (event) => this.updateSVGTransform(event.detail));
         document.addEventListener("map-control:radiusChange", (event) => this.updateRadius(event.detail.radius));
         document.addEventListener("map-control:colChange", (event) => this.updateDimensions(event.detail));
@@ -172,12 +172,10 @@ export default class extends Controller {
             return;
         }
 
-        console.log("hex radius:", this.hexRadiusValue);
         this.updateHexOverlay();
 
         const svg = this.hexImageTarget;
         svg.innerHTML = '';
-
         this.hexOverlayArray.forEach(hex => {
             this.drawHex(svg, hex, this.hexStyle)
         });
@@ -343,8 +341,8 @@ export default class extends Controller {
         this.drawHexes();
     }
 
-    updateHexStyle(style){
-        this.hexStyle = style;
+    updateHexStyle(isPointyTop){
+        this.hexStyle = isPointyTop ? "⬢" : "⬣";
         this.drawHexes();
     }
 

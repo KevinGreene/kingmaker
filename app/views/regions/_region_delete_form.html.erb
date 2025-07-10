@@ -1,0 +1,65 @@
+<% if @map.regions.any? %>
+  <%= form_with url: bulk_destroy_map_regions_path(@map), method: :delete, local: true, class: "space-y-4" do |form| %>
+    <div class="space-y-2">
+      <h3 class="font-semibold text-lg">Select regions to delete:</h3>
+      <div class="max-h-60 overflow-y-auto border rounded-lg p-2">
+        <% @map.regions.includes(:hexes).each do |region| %>
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start space-x-3">
+              <input type="checkbox" name="region_ids[]" value="<%= region.id %>" class="checkbox checkbox-primary" />
+              <span class="label-text">
+                <span class="font-medium"><%= region.name %></span>
+                <span class="text-sm text-gray-500">(<%= pluralize(region.hexes.count, 'hex') %>)</span>
+              </span>
+            </label>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button type="button" class="btn btn-ghost" onclick="remove_region_modal.close()">Cancel</button>
+      <button type="button" class="btn btn-error" onclick="confirmDeletion()">Delete Selected</button>
+    </div>
+  <% end %>
+<% else %>
+  <div class="text-center py-8">
+    <p class="text-gray-500">You don't have any regions to delete.</p>
+    <div class="modal-action">
+      <button type="button" class="btn btn-ghost" onclick="remove_region_modal.close()">Close</button>
+    </div>
+  </div>
+<% end %>
+
+<!-- Confirmation Modal -->
+<dialog id="delete_confirmation_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Confirm Deletion</h3>
+    <p class="py-4">Are you sure you want to delete the selected regions? This action cannot be undone.</p>
+    <div class="modal-action">
+      <button type="button" class="btn btn-ghost" onclick="delete_confirmation_modal.close()">Cancel</button>
+      <button type="button" class="btn btn-error" onclick="submitDeletion()">Delete</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+      function confirmDeletion() {
+            const checkboxes = document.querySelectorAll('input[name="region_ids[]"]:checked');
+
+            if (checkboxes.length === 0) {
+                  alert('Please select at least one region to delete.');
+                  return;
+            }
+
+            delete_confirmation_modal.showModal();
+      }
+
+      function submitDeletion() {
+            const form = document.querySelector('form[action*="bulk_destroy"]');
+            if (form) {
+                  form.submit();
+            }
+            delete_confirmation_modal.close();
+      }
+</script>

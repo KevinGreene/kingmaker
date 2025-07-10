@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :maps do
-    resources :regions, only: [ :create ]
+    resources :regions, only: [ :create, :update, :destroy ] do
+      collection do
+        delete :bulk_destroy
+      end
+    end
     resources :hexes, only: [ :create, :update ] do
       collection do
         post "bulk_create"

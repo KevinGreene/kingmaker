@@ -1,0 +1,11 @@
+<%= form_with model: [@map, @map.regions.build], local: true, class: "space-y-4" do |form| %>
+      <div class="form-control">
+        <%= form.label :name, class: "label" %>
+        <%= form.text_field :name, class: "input input-bordered w-full", placeholder: "Enter region name", required: true %>
+      </div>
+
+      <div class="modal-action">
+        <button type="button" class="btn btn-ghost" onclick="create_region_modal.close()">Cancel</button>
+        <%= form.submit "Create Region", class: "btn btn-primary" %>
+      </div>
+    <% end %>

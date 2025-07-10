@@ -6,9 +6,37 @@ class RegionsController < ApplicationController
     @region = @map.regions.build(region_params)
 
     if @region.save
-      redirect_to @map, notice: "Region was successfully created."
+      redirect_to edit_map_path(@map), notice: "Region was successfully created."
     else
-      redirect_to @map, alert: "Failed to create region."
+      redirect_to edit_map_path(@map), alert: "Failed to create region."
+    end
+  end
+
+  def update
+    @region = @map.regions.find(params[:id])
+
+    if @region.update(region_params)
+      render json: { success: true }
+    else
+      render json: { success: false, errors: @region.errors.full_messages }
+    end
+  end
+
+  def bulk_destroy
+    region_ids = params[:region_ids] || []
+
+    if region_ids.empty?
+      redirect_to edit_map_path(@map), alert: "No regions selected for deletion."
+      return
+    end
+
+    regions_to_delete = @map.regions.where(id: region_ids)
+    deleted_count = regions_to_delete.count
+
+    if regions_to_delete.destroy_all
+      redirect_to edit_map_path(@map), notice: "Successfully deleted #{deleted_count} region(s)."
+    else
+      redirect_to edit_map_path(@map), alert: "Failed to delete regions."
     end
   end
 
