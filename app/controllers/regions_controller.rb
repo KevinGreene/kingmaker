@@ -12,6 +12,16 @@ class RegionsController < ApplicationController
     end
   end
 
+  def update
+    @region = @map.regions.find(params[:id])
+
+    if @region.update(region_params)
+      render json: { success: true }
+    else
+      render json: { success: false, errors: @region.errors.full_messages }
+    end
+  end
+
   def bulk_destroy
     region_ids = params[:region_ids] || []
 

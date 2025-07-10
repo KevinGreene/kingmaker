@@ -1,0 +1,96 @@
+<!-- Region Rename Modal -->
+<div data-controller="regions" data-regions-map-id-value="<%= @map.id %>">
+  <% if @map.regions.any? %>
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <h3 class="font-semibold text-lg">Select a region to rename:</h3>
+        <div class="max-h-60 overflow-y-auto border rounded-lg p-2">
+          <% @map.regions.includes(:hexes).each do |region| %>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start space-x-3">
+                <input type="radio" name="selected_region" value="<%= region.id %>" class="radio radio-primary"
+                       data-region-name="<%= region.name %>"
+                       data-action="change->regions#selectRegion"/>
+                <span class="label-text">
+                  <span class="font-medium"><%= region.name %></span>
+                  <span class="text-sm text-gray-500">(<%= pluralize(region.hexes.count, 'hex') %>)</span>
+                </span>
+              </label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Rename Section (hidden by default) -->
+      <div data-regions-target="renameSection" class="hidden space-y-3 border-t pt-4">
+        <h4 class="font-semibold">Rename Region:</h4>
+        <div class="form-control">
+          <label for="name-input" class="label">
+            <span class="label-text">New Name:</span>
+          </label>
+          <input id="name-input"
+                 type="text"
+                 data-regions-target="nameInput"
+                 class="input input-bordered w-full"
+                 placeholder="Enter new name"
+                 data-action="input->regions#clearInputError" />
+        </div>
+        <div class="flex space-x-2">
+          <button type="button" class="btn btn-primary" data-regions-target="saveButton" data-action="click->regions#saveRegionName">Save Name</button>
+          <button type="button" class="btn btn-ghost" data-action="click->regions#clearSelection">Clear Selection</button>
+        </div>
+      </div>
+
+      <div class="modal-action">
+        <button type="button" class="btn btn-ghost" data-action="click->regions#closeRenameModal">Close</button>
+      </div>
+    </div>
+  <% else %>
+    <div class="text-center py-8">
+      <p class="text-gray-500">You don't have any regions to rename.</p>
+      <div class="modal-action">
+        <button type="button" class="btn btn-ghost" data-action="click->regions#closeRenameModal">Close</button>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Unsaved Changes Warning Modal -->
+  <dialog data-regions-target="unsavedModal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Unsaved Changes</h3>
+      <p class="py-4">You have unsaved changes to the region name. What would you like to do?</p>
+      <div class="modal-action">
+        <button type="button" class="btn btn-ghost" data-action="click->regions#discardChanges">Discard Changes</button>
+        <button type="button" class="btn btn-primary" data-action="click->regions#saveAndContinue">Save Changes</button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  /* Modal toast positioning */
+  .modal-toast-container {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .modal-toast-container .alert {
+    pointer-events: auto;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Custom input error styling */
+  .input-error {
+    border-color: hsl(var(--er));
+    background-color: hsl(var(--er) / 0.1);
+  }
+
+  .input-error:focus {
+    outline: 2px solid hsl(var(--er));
+    outline-offset: 2px;
+  }
+</style>

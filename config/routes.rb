@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :maps do
-    resources :regions, only: [ :create, :destroy ] do
+    resources :regions, only: [ :create, :update, :destroy ] do
       collection do
         delete :bulk_destroy
       end

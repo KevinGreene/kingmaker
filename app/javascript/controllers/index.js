@@ -28,4 +28,7 @@ application.register("map-edit", MapEditController);
 import MapControlController from "./map_control_controller";
 application.register("map-control", MapControlController);
 
+import RegionController from "./region_controller";
+application.register("regions", RegionController);
+
 export { application }
