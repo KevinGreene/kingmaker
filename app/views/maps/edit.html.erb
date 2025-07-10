@@ -2,7 +2,7 @@
 
 <div id="<%= dom_id @map %>"
      class="h-screen w-screen overflow-hidden flex flex-col"
-     data-controller="map-control maps hexes"
+     data-controller="map-control"
      data-testid="map-controls"
      data-hexes-map-id-value="<%= @map.id %>"
      data-maps-map-id-value="<%= @map.id %>"
@@ -83,9 +83,25 @@
       </div>
 
       <!-- Hex Positioning - Compact Grid -->
-      <div class="space-y-2">
-        <h3 class="text-sm font-semibold text-secondary">Positioning</h3>
-
+      <div class="space-y-2 ">
+        <div class="grid grid-cols-2">
+          <h3 class="text-sm font-semibold text-secondary">Positioning</h3>
+          <!-- Orientation Control -->
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium">Orientation:</span>
+            <%= button_tag id: "hex-style-switch",
+               data:{
+                 action: "click->map-control#flipHexStyle",
+                 controller: "map-control",
+                 pointy_top: true
+               },
+                           class: "btn btn-xs btn-ghost flex items-center justify-center p-1" do %>
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polygon points="10,2 16.93,6 16.93,14 10,18 3.07,14 3.07,6"></polygon>
+              </svg>
+            <% end %>
+          </div>
+        </div>
         <div class="grid grid-cols-2 gap-2">
           <!-- Position Controls -->
           <div class="space-y-1">
@@ -139,43 +155,43 @@
             </div>
           </div>
         </div>
-
-        <!-- Orientation Control -->
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-medium">Orientation:</span>
-          <%= button_tag "⬢",
-                         id: "hex-style-switch",
-                         data:{
-                           action: "click->map-control#flipHexStyle",
-                           controller: "map-control"
-                         },
-                         class: "btn btn-xs btn-neutral text-lg" %>
-        </div>
       </div>
 
-      <!-- Region Management - Compact -->
+      <!-- Region Management -->
       <div class="space-y-2">
         <h3 class="text-sm font-semibold text-success">Regions</h3>
 
-        <div class="space-y-1">
-          <button class="btn btn-xs btn-outline btn-success w-full">
-            Edit Labels
-          </button>
+        <!-- Region Management Buttons -->
+        <div class="grid grid-cols-2 gap-2">
+          <div class="btn btn-xs btn-success btn-outline" onclick="create_region_modal.showModal()">
+            Add Region
+          </div>
+          <div class="btn btn-xs btn-error btn-outline" onclick="remove_region_modal.showModal()">
+            Remove Region
+          </div>
+        </div>
 
-          <details class="dropdown w-full">
-            <summary class="btn btn-xs btn-outline btn-success w-full">Manage Region</summary>
-            <ul class="menu dropdown-content bg-base-100 rounded-box z-40 w-full p-2 shadow-sm">
-              <li><a class="text-xs">Region 1</a></li>
-              <li><a class="text-xs">Region 2</a></li>
-              <li><a class="text-xs">Region 3</a></li>
-              <li><a class="text-xs">Region 4</a></li>
-              <li><a class="text-xs">Region 5</a></li>
-            </ul>
-          </details>
+        <!-- Region Assignment -->
+        <div>
+          <div class="grid grid-cols-2 gap-2">
+            <!-- Assign Region Dropdown -->
+            <div class="dropdown dropdown-hover">
+              <div role="button" class="btn btn-xs btn-outline btn-success w-full">
+                Assign Region
+              </div>
+              <ul class="menu dropdown-content bg-base-100 rounded-box z-40 w-full p-2 shadow-sm">
+                <% @map.regions.each do |region| %>
+                  <li><a class="text-xs" data-region="<%= region.name %>"><%= region.name %></a></li>
+                <% end %>
+                <li><a class="text-xs" data-region="Sample Region A">Sample Region A</a></li>
+                <li><a class="text-xs" data-region="Sample Region B">Sample Region B</a></li>
+              </ul>
+            </div>
 
-          <div class="flex gap-1">
-            <button class="btn btn-xs btn-accent flex-1">Assign</button>
-            <button class="btn btn-xs btn-error flex-1">Remove</button>
+            <!-- Unassign Region Button -->
+            <div class="btn btn-xs btn-outline btn-error w-full">
+              Unassign Region
+            </div>
           </div>
         </div>
       </div>
@@ -243,5 +259,21 @@
         },
         class: "btn btn-error" %>
     </div>
+  </div>
+</dialog>
+
+<!-- Create Region Modal -->
+<dialog id="create_region_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-2xl">
+    <h3 class="font-bold text-lg mb-4">Create a new Region</h3>
+    <%= render 'region_create_form', map: @map %>
+  </div>
+</dialog>
+
+<!-- Remove Region Modal -->
+<dialog id="remove_region_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-md">
+    <h3 class="font-bold text-lg mb-4">Remove Region</h3>
+    <%= render 'region_delete_form', map: @map %>
   </div>
 </dialog>

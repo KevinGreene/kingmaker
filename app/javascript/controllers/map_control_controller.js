@@ -6,7 +6,7 @@ export default class extends Controller {
         mapId: Number
     }
 
-    connect(){
+    connect() {
         const sliderCols = document.getElementById('map-col-control');
         const valueDisplayCols = document.getElementById('map-col-value');
         const sliderRows = document.getElementById('map-row-control');
@@ -17,7 +17,7 @@ export default class extends Controller {
         /**
          * Column Controls
          */
-        if(sliderCols) {
+        if (sliderCols) {
             sliderCols.addEventListener('input', function () {
                 valueDisplayCols.textContent = this.value;
                 const event = new CustomEvent('dimensionChange', {
@@ -35,7 +35,7 @@ export default class extends Controller {
         /**
          * Row Controls
          */
-        if(sliderRows) {
+        if (sliderRows) {
             sliderRows.addEventListener('input', function () {
                 valueDisplayRows.textContent = this.value;
                 const event = new CustomEvent('dimensionChange', {
@@ -53,7 +53,7 @@ export default class extends Controller {
         /**
          * Radius Controls
          */
-        if(radiusSize) {
+        if (radiusSize) {
             radiusSize.addEventListener('input', function () {
                 radiusDisplay.textContent = this.value;
                 const event = new CustomEvent('radiusChange', {
@@ -95,21 +95,21 @@ export default class extends Controller {
         })
     }
 
-    flipHexStyle() {
-        const flipHexButton = document.getElementById("hex-style-switch");
-        if (flipHexButton.textContent.charAt(0) === "⬢") {
-            flipHexButton.textContent = "⬣";
-            this.hexStyle = "⬣";
-        } else {
-            flipHexButton.textContent = "⬢";
-            this.hexStyle = "⬢";
-        }
+    flipHexStyle(event) {
+        const button = event.currentTarget;
+        const isPointyTop = button.dataset.pointyTop === "true";
+        const newState = !isPointyTop;
+        button.dataset.pointyTop = newState.toString();
+
         this.dispatch("hexStyleChange", {
             detail:{
-                hexStyle: this.hexStyle
+                isPointyTop: newState
             },
             bubbles: true
         });
+
+        const svg = button.querySelector("svg");
+        svg.style.transform = newState ? 'rotate(0deg)' : "rotate(30deg)";
     }
 
     decrementCols(){
