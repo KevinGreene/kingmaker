@@ -27,13 +27,14 @@
             alt: map.name,
             data: {
               map_edit_target: "mapImage",
-              action: "mousedown->map-edit#startDrag wheel->map-edit#handleZoom"
+              action: "mousedown->map-edit#mouseDown wheel->map-edit#handleZoom"
             },
             class: "absolute top-0 left-0 select-none transition-transform duration-100 ease-out origin-top-left" %>
 
         <!-- SVG overlay for live hex editing -->
-        <svg class="absolute top-0 left-0 w-full h-full pointer-events-none"
+        <svg class="absolute top-0 left-0 w-full h-full pointer-events-auto"
              data-map-edit-target="hexImage"
+             data-action="mousedown->map-edit#mouseDown wheel->map-edit#handleZoom"
              style="transform-origin: top left;">
         </svg>
       </div>

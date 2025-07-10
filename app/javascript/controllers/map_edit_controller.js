@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+
     static targets = ["container", "mapImage", "hexImage"]
     static values = {
         mapName: String,
@@ -20,8 +21,14 @@ export default class extends Controller {
     }
 
     connect() {
+
+        /**
+         * Mouse Leniency Variable - increase to allow more movement during clicks to still "count" as a click instead of a drag
+         */
+        this.mouseMoveLeniency = 15;
+
+
         // Map Variables
-        this.isDragging = false;
         this.startX = 0;
         this.startY = 0;
         this.currentX = 0;
@@ -41,16 +48,35 @@ export default class extends Controller {
         if(!this.mapWidthValue) this.mapWidthValue = 800;
         if(!this.mapHeightValue) this.mapHeightValue = 600;
 
+        // Hex selection functionality
+        this.isDragging = false;
+        this.targetedHex = null; // hex that is potentially selected - identified at mouseDown event
+        this.selectedHexArray = []; // selected hex or hexes
+        this.mouseDownLocationX = 0; // initial X position of the mouse when mouseDown event occurs
+        this.mouseDownLocationY = 0; // initial Y position of the mouse when mouseDown event occurs
+        this.mouseDownDelta = 0; // total distance the mouse has moved since mouseDown event began.  Resets to 0 on handleMouseUp.
+        this.mouseButtonDown = false; // local variable to track if the mouse button is down or up
+
+        // Bind mouse listeners
+        this.boundMouseMove = this.handleMouseMove.bind(this);
+        this.boundMouseUp = this.handleMouseUp.bind(this);
+
+        // Region Assignment Functionality
+        this.regionManager = document.getElementById("hex-region-manage");
+        this.regionManagerButton = document.getElementById("hex-region-manage-button");
+        this.regionUnassignmentButton = document.getElementById("hex-region-unassign");
+        if(this.regionUnassignmentButton){
+            this.regionUnassignmentButton.addEventListener('click', () => this.unassignRegions());
+        }
+        document.querySelectorAll('[id^="hex-region-assign-"]').forEach(button => {
+            button.addEventListener('click', (event) => this.assignRegions(event.target.dataset));
+        });
+
         // additional variables
         this.currentMapTranslateX = 0;
         this.currentMapTranslateY = 0;
         this.svgScaleX = 1;
         this.svgScaleY = 1;
-
-
-        // Bind mouse listeners
-        this.boundMouseMove = this.handleMouseMove.bind(this);
-        this.boundMouseUp = this.handleMouseUp.bind(this);
 
         // Prevent context menu on right click
         if(this.hasContainerTarget){
@@ -83,35 +109,105 @@ export default class extends Controller {
      * Map Movement Controls
      */
 
-    startDrag(event) {
-        event.preventDefault();
-
-        this.isDragging = true;
-        this.startX = event.clientX - this.currentX;
-        this.startY = event.clientY - this.currentY;
-
-        this.containerTarget.style.cursor = 'grabbing';
+    mouseDown(event){
+        this.targetedHex = event.target;
+        this.mouseButtonDown = event.button === 0;
+        this.mouseDownLocationX = event.clientX;
+        this.mouseDownLocationY = event.clientY;
 
         document.addEventListener('mousemove', this.boundMouseMove);
         document.addEventListener('mouseup', this.boundMouseUp);
     }
 
     handleMouseMove(event) {
-        if (!this.isDragging) return;
-
         event.preventDefault();
 
-        this.currentX = event.clientX - this.startX;
-        this.currentY = event.clientY - this.startY;
+        if (this.mouseButtonDown && !this.isDragging) {
+            // not (yet) dragging - check if drag should be initiated
+            if (this.calcShouldInitiateDrag(event)) this.startDrag(event);
+        } else {
+            // dragging logic
+            this.currentX = event.clientX - this.startX;
+            this.currentY = event.clientY - this.startY;
 
-        this.updateTransform();
+            this.updateTransform();
+        }
+
+    }
+
+    calcShouldInitiateDrag(event){
+        // calculate difference in X and Y direction
+        let distX = this.mouseDownLocationX - event.clientX;
+        let distY = this.mouseDownLocationY - event.clientY;
+
+        // normalize distance to postive vector
+        distX = Math.abs(distX);
+        distY = Math.abs(distY);
+
+        // calculate total distance moved
+        this.mouseDownDelta += distX + distY;
+        return this.mouseDownDelta >= this.mouseMoveLeniency;
+    }
+
+    startDrag(event) {
+        this.isDragging = true;
+        this.mouseDownDelta = 0;
+        this.containerTarget.style.cursor = 'grabbing';
+        this.startX = event.clientX - this.currentX;
+        this.startY = event.clientY - this.currentY;
     }
 
     handleMouseUp(event) {
-        if (!this.isDragging) return;
+        // if not dragging, mouse has clicked - check for hex selection
+        if(!this.isDragging){
+            // CTRL key is not held, so reset all hex selection
+            if(!event.ctrlKey) {
+                // Disable Region assignment functionality
+                this.regionManager.classList.remove("dropdown-hover");
+                this.regionManagerButton.classList.add("btn-disabled");
+
+                // Deselect all hexes
+                this.selectedHexArray = [];
+                const polygons = this.hexImageTarget.querySelectorAll('polygon');
+                polygons.forEach(polygon => {
+                    const hexId = polygon.getAttribute('data-hex-id');
+
+                    // Find the corresponding hex data
+                    const hex = this.hexOverlayArray.find(h => h.id == hexId);
+
+                    if (hex) {
+                        // Reset to original color using your existing getHexColor method
+                        polygon.setAttribute('stroke', 'rgba(0, 0, 0, 0.01)');
+                        polygon.setAttribute('stroke-width', '2');
+                    }
+                });
+            }
+
+            // not dragging - select the hex
+            if (this.targetedHex.tagName === 'polygon') {
+                // enable the Region Assignment functionality
+                this.regionManager.classList.add("dropdown-hover");
+                this.regionManagerButton.classList.remove("btn-disabled");
+
+                // update the polygon outline to a different color, to indicate it's selected
+                this.targetedHex.setAttribute('stroke', '#FF00FF');
+                this.targetedHex.setAttribute('stroke-width', '4');
+                this.targetedHex.parentNode.appendChild(this.targetedHex);
+
+                // insert this hex into selected hex array
+                const hex = this.hexOverlayArray.find(h => h.id == this.targetedHex.getAttribute('data-hex-id'));
+                if(hex && !this.selectedHexArray.find(h => h.id == hex.id)){
+                    this.selectedHexArray.push(hex);
+                }
+
+                // Prevent the event from bubbling to the map image
+                event.stopPropagation();
+            }
+        }
 
         this.isDragging = false;
         this.containerTarget.style.cursor = 'grab';
+        this.mouseButtonDown = false;
 
         document.removeEventListener('mousemove', this.boundMouseMove);
         document.removeEventListener('mouseup', this.boundMouseUp);
@@ -242,8 +338,8 @@ export default class extends Controller {
 
         const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
         polygon.setAttribute('points', points.join(' '));
-        polygon.setAttribute('fill', 'transparent');
-        polygon.setAttribute('stroke', this.getHexColor(hex));
+        polygon.setAttribute('fill', this.getHexColor(hex));
+        polygon.setAttribute('stroke', 'rgba(0,0,0, 0.01)');
         polygon.setAttribute('stroke-width', '2');
         polygon.setAttribute('data-hex-id', hex.id);
 
@@ -252,11 +348,25 @@ export default class extends Controller {
     }
 
     getHexColor(hex) {
+        const transparency = 0.1;
         if (!hex.region_id) {
-            return '#808080'
+            return `rgba(255,255,255,${transparency})`
         } else {
-            const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF']
-            return colors[hex.region_id % 6]
+            const colors = [
+                `rgba(255, 0, 0, ${transparency})`,     // Red
+                `rgba(0, 128, 255, ${transparency})`,   // Blue
+                `rgba(0, 200, 0, ${transparency})`,     // Green
+                `rgba(255, 165, 0, ${transparency})`,   // Orange
+                `rgba(128, 0, 128, ${transparency})`,   // Purple
+                `rgba(255, 255, 0, ${transparency})`,   // Yellow
+                `rgba(255, 20, 147, ${transparency})`,  // Deep Pink
+                `rgba(0, 255, 255, ${transparency})`,   // Cyan
+                `rgba(139, 69, 19, ${transparency})`,   // Brown
+                `rgba(128, 128, 128, ${transparency})`, // Gray
+                `rgba(50, 205, 50, ${transparency})`,   // Lime Green
+                `rgba(255, 105, 180, ${transparency})`  // Hot Pink
+            ];
+            return colors[hex.region_id % colors.length];
         }
     }
 
@@ -344,6 +454,114 @@ export default class extends Controller {
     updateHexStyle(isPointyTop){
         this.hexStyle = isPointyTop ? "⬢" : "⬣";
         this.drawHexes();
+    }
+
+    /**
+     * Region Section
+     */
+    async assignRegions(detail) {
+        if (!this.selectedHexArray || this.selectedHexArray.length === 0) {
+            console.warn('No hexes selected for region assignment');
+            return { success: false, error: 'No hexes selected' };
+        }
+
+        // Show loading overlay
+        this.showSavingOverlay();
+
+        try {
+            const hexIds = this.selectedHexArray.map(hex => hex.id);
+            const mapId = this.selectedHexArray[0].map_id;
+
+            const response = await fetch(`/maps/${mapId}/hexes/bulk_update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    hex_ids: hexIds,
+                    updates: {
+                        region_id: detail.regionId
+                    }
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                this.hideSavingOverlay();
+                return {
+                    success: false,
+                    error: data.errors || data.error
+                };
+            }
+
+            // Success - refresh the page to show updated hex colors
+            window.location.reload();
+
+            return {
+                success: true,
+                message: `Region assigned to ${hexIds.length} hexes`,
+                updatedHexes: data.hexes
+            };
+        } catch (e) {
+            this.hideSavingOverlay();
+            console.error('Error assigning regions:', e);
+            return { success: false, error: e.message };
+        }
+    }
+
+    async unassignRegions() {
+        if (!this.selectedHexArray || this.selectedHexArray.length === 0) {
+            console.warn('No hexes selected for region unassignment');
+            return { success: false, error: 'No hexes selected' };
+        }
+
+        this.showSavingOverlay();
+
+        try {
+            const hexIds = this.selectedHexArray.map(hex => hex.id);
+            const mapId = this.selectedHexArray[0].map_id;
+
+            const response = await fetch(`/maps/${mapId}/hexes/bulk_update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    hex_ids: hexIds,
+                    updates: {
+                        region_id: null
+                    }
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                this.hideSavingOverlay();
+                return {
+                    success: false,
+                    error: data.errors || data.error
+                };
+            }
+
+            // Success - refresh the page to show updated hex colors
+            window.location.reload();
+
+            return {
+                success: true,
+                message: `Region unassigned from ${hexIds.length} hexes`,
+                updatedHexes: data.hexes
+            };
+        } catch (e) {
+            this.hideSavingOverlay();
+            console.error('Error unassigning regions:', e);
+            return { success: false, error: e.message };
+        }
     }
 
     /**
@@ -443,5 +661,76 @@ export default class extends Controller {
         }
 
         console.log("hexes saved successfully");
+    }
+
+    showSavingOverlay() {
+        // Create overlay if it doesn't exist
+        if (!document.getElementById('saving-overlay')) {
+            const overlay = document.createElement('div');
+            overlay.id = 'saving-overlay';
+            overlay.innerHTML = `
+                <div class="overlay-background">
+                    <div class="overlay-content">
+                        <div class="spinner"></div>
+                        <p>Saving changes...</p>
+                    </div>
+                </div>
+            `;
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                pointer-events: auto;
+            `;
+
+            const overlayCSS = `
+                .overlay-background {
+                    background: rgba(0, 0, 0, 0.7);
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .overlay-content {
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 8px;
+                    text-align: center;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                .spinner {
+                    width: 40px;
+                    height: 40px;
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #3498db;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 1rem;
+                }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+
+            const style = document.createElement('style');
+            style.textContent = overlayCSS;
+            document.head.appendChild(style);
+
+            document.body.appendChild(overlay);
+        }
+
+        document.getElementById('saving-overlay').style.display = 'block';
+    }
+
+    hideSavingOverlay() {
+        const overlay = document.getElementById('saving-overlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
     }
 }

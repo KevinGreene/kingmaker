@@ -1,7 +1,7 @@
 class HexesController < ApplicationController
   before_action :set_map_and_hex, only: [ :update ]
-  before_action :set_map, only: [ :bulk_create ]
-  before_action :validate_gm_access, only: [ :bulk_create ]
+  before_action :set_map, only: [ :bulk_create, :bulk_update ]
+  before_action :validate_gm_access, only: [ :bulk_create, :bulk_update ]
 
   def update
     if @hex.update(hex_params)
@@ -85,6 +85,54 @@ class HexesController < ApplicationController
     end
   rescue => e
     render json: { success: false, error: e.message }, status: 422
+  end
+
+  def bulk_update
+    # Validate and sanitize input parameters
+    hex_ids = Array(params[:hex_ids]).map(&:to_i).reject(&:zero?)
+    map_id = params[:map_id].to_i
+    region_id = params.dig(:updates, :region_id)
+
+    # Validate required parameters
+    if hex_ids.empty? || map_id.zero?
+      render json: { success: false, error: "Invalid parameters" }, status: 400
+      return
+    end
+
+    # Validate region_id if provided (allow null for unassigning)
+    if region_id.present?
+      region_id = region_id.to_i
+      unless Region.exists?(id: region_id, map_id: map_id)
+        render json: { success: false, error: "Invalid region" }, status: 400
+        return
+      end
+    else
+      region_id = nil
+    end
+
+    begin
+      Hex.transaction do
+        # Use parameterized queries - Rails will properly escape these
+        hexes = Hex.where(id: hex_ids, map_id: map_id)
+
+        if hexes.empty?
+          render json: { success: false, error: "No hexes found to update" }, status: 404
+          return
+        end
+
+        # Explicitly build the update hash with validated values
+        update_attributes = { region_id: region_id }
+
+        # Use update_all with our sanitized hash
+        hexes.update_all(update_attributes)
+
+        # Return updated hexes
+        updated_hexes = hexes.reload
+        render json: { success: true, hexes: updated_hexes, count: updated_hexes.count }
+      end
+    rescue => e
+      render json: { success: false, error: "Update failed" }, status: 422
+    end
   end
 
   private

@@ -175,13 +175,19 @@
           </div>
 
           <!-- Selected Hexes Region Assignment  -->
-          <div class="dropdown dropdown-hover w-full">
-            <div id="hex-region-assignment" role="button" class="btn btn-xs btn-outline btn-success w-full btn-disabled">
+          <div id="hex-region-manage" class="dropdown w-full">
+            <div id="hex-region-manage-button" role="button" class="btn btn-xs btn-outline btn-success w-full btn-disabled">
               Selected Region Assignment
             </div>
-            <ul id="hex-region-assignment-options" class="menu dropdown-content outline outline-1 outline-success bg-base-300 rounded-box z-40 w-full shadow-sm">
-              <li><a>Assign Region</a></li>
-              <li><a>Unassign Region</a></li>
+            <ul class="menu dropdown-content outline outline-1 outline-success bg-base-300 rounded-box z-40 w-full shadow-sm">
+              <% @map.regions.each do |region| %>
+                <li><a id="hex-region-assign-<%=region.id %>"
+                       class="btn btn-success btn-xs"
+                       data-region-id="<%= region.id %>"
+                       data-map-id="<%= @map.id %>"
+                > Assign <%= region.name %></a></li>
+              <% end %>
+              <li><a id="hex-region-unassign" class="btn btn-error btn-outline btn-xs"> Remove Region </a></li>
             </ul>
           </div>
         </div>
