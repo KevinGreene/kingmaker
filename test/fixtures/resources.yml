@@ -3,7 +3,9 @@
 one:
   name: MyString
   description: MyString
+  map: one
 
 two:
   name: MyString
   description: MyString
+  map: one

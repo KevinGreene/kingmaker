@@ -12,6 +12,7 @@ Rails.application.routes.draw do
         post "bulk_replace"
       end
     end
+    resources :resources, only: [ :create, :update, :destroy ]
     member do
       patch :update_hex_labels
       get :preview

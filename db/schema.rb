@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_10_220640) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_11_133307) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -138,6 +138,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_10_220640) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "map_id", null: false
+    t.index ["map_id"], name: "index_resources_on_map_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -177,5 +179,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_10_220640) do
   add_foreign_key "player_maps", "players"
   add_foreign_key "players", "users"
   add_foreign_key "regions", "maps"
+  add_foreign_key "resources", "maps"
   add_foreign_key "sessions", "users"
 end
