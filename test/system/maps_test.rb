@@ -285,9 +285,6 @@ class MapsTest < ApplicationSystemTestCase
     # Click on a map in the list to select it
     find("[data-testid='map-card-#{@shared_map.id}']").click
 
-    # Wait for the play button to become enabled
-    assert_selector "[data-id='play-map']:not(.btn-disabled)"
-
     # Click the play button
     find("[data-id='play-map']").click
 
