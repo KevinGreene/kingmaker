@@ -17,7 +17,8 @@ export default class extends Controller {
         offsetY: Number,
         hexRadius: Number,
         playerId: Number,
-        hexPointyTop: Boolean
+        hexPointyTop: Boolean,
+
     }
 
     connect() {
@@ -27,6 +28,10 @@ export default class extends Controller {
          */
         this.mouseMoveLeniency = 15;
 
+        /**
+         * TESTING
+         */
+        document.getElementById("hex-details-flyout").classList.remove()
 
         // Map Variables
         this.startX = 0;
@@ -92,6 +97,10 @@ export default class extends Controller {
         document.addEventListener("radiusChange", (event) => this.updateRadius(event.detail.radius));
         document.addEventListener("dimensionChange", (event) => this.updateDimensions(event.detail));
         document.addEventListener("map-control:saveAll", (event) => this.saveAll(event.detail));
+
+        // event listeners from 'hex-details'
+        document.addEventListener("hex-details:deselectAllHexes", () => this.deselectAllHexes());
+        document.addEventListener("hex-details:hexNameChange", (event) => this.hexNameChange(event.detail));
 
         // Initialize image position
         this.updateTransform();
@@ -162,25 +171,7 @@ export default class extends Controller {
         if(!this.isDragging){
             // CTRL key is not held, so reset all hex selection
             if(!event.ctrlKey) {
-                // Disable Region assignment functionality
-                this.regionManager.classList.remove("dropdown-hover");
-                this.regionManagerButton.classList.add("btn-disabled");
-
-                // Deselect all hexes
-                this.selectedHexArray = [];
-                const polygons = this.hexImageTarget.querySelectorAll('polygon');
-                polygons.forEach(polygon => {
-                    const hexId = polygon.getAttribute('data-hex-id');
-
-                    // Find the corresponding hex data
-                    const hex = this.hexOverlayArray.find(h => h.id == hexId);
-
-                    if (hex) {
-                        // Reset to original color using your existing getHexColor method
-                        polygon.setAttribute('stroke', 'rgba(0, 0, 0, 0.01)');
-                        polygon.setAttribute('stroke-width', '2');
-                    }
-                });
+                this.deselectAllHexes();
             }
 
             // not dragging - select the hex
@@ -194,7 +185,7 @@ export default class extends Controller {
                 this.targetedHex.setAttribute('stroke-width', '4');
                 this.targetedHex.parentNode.appendChild(this.targetedHex);
 
-                // insert this hex into selected hex array
+                // insert this hex into selected hex array if not already there
                 const hex = this.hexOverlayArray.find(h => h.id == this.targetedHex.getAttribute('data-hex-id'));
                 if(hex && !this.selectedHexArray.find(h => h.id == hex.id)){
                     this.selectedHexArray.push(hex);
@@ -203,6 +194,9 @@ export default class extends Controller {
                 // Prevent the event from bubbling to the map image
                 event.stopPropagation();
             }
+
+            this.broadcastHexData();
+
         }
 
         this.isDragging = false;
@@ -211,6 +205,28 @@ export default class extends Controller {
 
         document.removeEventListener('mousemove', this.boundMouseMove);
         document.removeEventListener('mouseup', this.boundMouseUp);
+    }
+
+    deselectAllHexes() {
+        // Disable Region assignment functionality
+        this.regionManager.classList.remove("dropdown-hover");
+        this.regionManagerButton.classList.add("btn-disabled");
+
+        // Deselect all hexes
+        this.selectedHexArray = [];
+        const polygons = this.hexImageTarget.querySelectorAll('polygon');
+        polygons.forEach(polygon => {
+            const hexId = polygon.getAttribute('data-hex-id');
+
+            // Find the corresponding hex data
+            const hex = this.hexOverlayArray.find(h => h.id == hexId);
+
+            if (hex) {
+                // Reset to original color using your existing getHexColor method
+                polygon.setAttribute('stroke', 'rgba(0, 0, 0, 0.01)');
+                polygon.setAttribute('stroke-width', '2');
+            }
+        });
     }
 
     handleZoom(event) {
@@ -456,6 +472,26 @@ export default class extends Controller {
         this.drawHexes();
     }
 
+    broadcastHexData() {
+        if(this.selectedHexArray.length === 1) {
+            this.dispatch("hexSelectionUpdate", {
+                detail: {
+                    hex: this.selectedHexArray[0]
+                },
+                bubbles: true
+            });
+        } else {
+            this.dispatch("hexDeselected", {
+                bubbles: true
+            })
+        }
+    }
+
+    hexNameChange(detail) {
+        this.hexOverlayArray.find(h => h.id == detail.hex.id).label = detail.newName;
+        this.saveHex(this.hexOverlayArray.find(h => h.id == detail.hex.id));
+    }
+
     /**
      * Region Section
      */
@@ -587,6 +623,8 @@ export default class extends Controller {
             is_hex_pointy_top: isPointyTop
         }
 
+        console.log(mapData);
+
         try {
             const response = await fetch(`/maps/${mapId}`, {
                 method: 'PATCH',
@@ -659,8 +697,29 @@ export default class extends Controller {
         } catch (error) {
             console.error('Error creating hexes:', error);
         }
-
         console.log("hexes saved successfully");
+    }
+
+    async saveHex(hex){
+        console.log("saving hex", hex);
+        try{
+            const response = await fetch(`/maps/${hex.map_id}/hexes/${hex.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    hex: hex
+                })
+            });
+            if(!response.ok){
+                console.error('failed to save hex', hex);
+            }
+        } catch (error){
+            console.log("error saving hex: ", hex, error);
+        }
+        console.log(`hex ${hex.id} saved successfully`);
     }
 
     showSavingOverlay() {
