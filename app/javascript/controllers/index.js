@@ -31,4 +31,7 @@ application.register("map-control", MapControlController);
 import RegionController from "./region_controller";
 application.register("regions", RegionController);
 
+import HexDetailsController from "./hex_details_controller";
+application.register("hex-details", HexDetailsController);
+
 export { application }

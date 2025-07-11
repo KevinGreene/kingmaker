@@ -1,0 +1,106 @@
+<!-- _hex_details.html.erb partial -->
+<div id="hex-details-flyout"
+     class="fixed top-0 right-0 h-full w-80 bg-base-100 shadow-2xl border-l border-base-300 z-50 transform translate-x-full transition-transform duration-300 ease-in-out"
+     data-controller="hex-details">
+
+  <!-- Header with Close Button -->
+  <div class="flex items-center justify-between p-4">
+    <h2 id="hex-name-display" class="text-xl font-semibold text-primary">Hex Name</h2>
+    <button id="hex-details-close"
+            class="btn btn-ghost btn-sm btn-square"
+            data-action="click->hex-details#hide">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+  <details id="hex-change-name" class="dropdown" data-controller="hex-details">
+    <summary class="mx-4 btn btn-outline btn-primary btn-xs">
+      Change Name
+    </summary>
+    <div class="menu dropdown-content bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm">
+      <div>
+        <label>
+          <input id="hex-new-name-value">
+        </label>
+        <button class="btn btn-outline btn-primary btn-sm"
+                data-action="click->hex-details#nameChange">
+          Submit
+        </button>
+      </div>
+    </div>
+  </details>
+  <div class="divider"></div>
+
+  <!-- Hex Information -->
+  <div class="flex-1 p-4 space-y-4 overflow-y-auto">
+
+    <!-- Hex Coordinates -->
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text text-xs text-base-content/70">Coordinates</span>
+      </label>
+      <div id="hex-coordinates-display"
+           class="text-xs text-base-content/70 px-3 py-2 bg-base-200 rounded">
+        (0, 0)
+      </div>
+    </div>
+
+    <!-- Status Information -->
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Reconnoitered -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-sm">Reconnoitered</span>
+        </label>
+        <div class="flex items-center gap-2">
+          <label for="hex-reconnoitered">
+
+          </label>
+          <input id="hex-reconnoitered"
+                 type="checkbox"
+                 class="checkbox checkbox-primary checkbox-sm"
+                 disabled />
+          <span id="hex-reconnoitered-text" class="text-sm">No</span>
+        </div>
+      </div>
+
+      <!-- Claimed -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-sm">Claimed</span>
+        </label>
+        <div class="flex items-center gap-2">
+          <label for="hex-claimed">
+
+          </label>
+          <input id="hex-claimed"
+                 type="checkbox"
+                 class="checkbox checkbox-secondary checkbox-sm"
+                 disabled />
+          <span id="hex-claimed-text" class="text-sm">No</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Region -->
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text font-medium">Region</span>
+      </label>
+      <div id="hex-region-display"
+           class="px-3 py-2 bg-base-200 rounded text-base-content/70">
+        No region assigned
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="divider"></div>
+    <div class="space-y-2">
+      <button id="hex-manage-resources"
+              class="btn btn-outline btn-info w-full">
+        Manage Resources
+      </button>
+    </div>
+  </div>
+</div>

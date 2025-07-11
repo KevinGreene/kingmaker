@@ -128,7 +128,11 @@ class HexesController < ApplicationController
 
         # Return updated hexes
         updated_hexes = hexes.reload
-        render json: { success: true, hexes: updated_hexes, count: updated_hexes.count }
+        render json: {
+          success: true,
+          hexes: updated_hexes,
+          count: updated_hexes.count
+        }
       end
     rescue => e
       render json: { success: false, error: "Update failed" }, status: 422
@@ -147,7 +151,7 @@ class HexesController < ApplicationController
   end
 
   def hex_params
-    params.require(:hex).permit(:reconnoitered, :claimed, :visible, :region_id)
+    params.require(:hex).permit(:reconnoitered, :claimed, :visible, :region_id, :label)
   end
 
   def validate_gm_access
