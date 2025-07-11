@@ -7,6 +7,7 @@ class Map < ApplicationRecord
   has_many :player_maps, dependent: :destroy
   has_many :players, through: :player_maps
   has_many :hex_notes, through: :hexes, source: :notes
+  has_many :resources, dependent: :destroy
 
   before_create :generate_share_token
   before_validation :generate_share_token, on: :create

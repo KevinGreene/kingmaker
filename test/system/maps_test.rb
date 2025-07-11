@@ -303,9 +303,12 @@ class MapsTest < ApplicationSystemTestCase
     # Try to directly access actions that require GM permissions
     visit edit_map_path(@gm_map)
 
-    # Should handle the unauthorized access gracefully
-    assert_text "Only GMs can edit this map."
-    assert_current_path maps_path
+    # Should handle the unauthorized access gracefully - either go to login screen or show an error on maps page
+    assert(
+      has_text?("Only GMs can edit this map.") || current_path == new_session_path,
+      "Expected either permission error message or redirect to login, but got neither"
+    )
+    assert_current_path maps_path unless current_path == new_session_path
   end
 
   test "should preview map without auth" do

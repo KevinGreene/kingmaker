@@ -21,6 +21,9 @@
         </div>
       </div>
       <div class="flex items-center gap-2">
+        <button class="btn btn-sm btn-secondary" onclick="resources_modal.showModal()">
+          Manage Map Resources
+        </button>
         <button class="btn btn-sm btn-neutral" onclick="map_details_modal.showModal()">
           Edit Details
         </button>
@@ -283,5 +286,13 @@
   <div class="modal-box w-11/12 max-w-md">
     <h3 class="font-bold text-lg mb-4">Remove Region</h3>
     <%= render 'regions/region_delete_form', map: @map %>
+  </div>
+</dialog>
+
+<!-- Resources Modal -->
+<dialog id="resources_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-6xl"> <!-- Changed from max-w-d to max-w-6xl -->
+    <h3 class="font-bold text-lg mb-4">Manage Resources</h3>
+    <%= render 'resources/resource_management_form', map: @map %>
   </div>
 </dialog>
