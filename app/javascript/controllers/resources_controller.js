@@ -24,6 +24,14 @@ export default class extends Controller {
     this.hasUnsavedChanges = false
     this.pendingAction = null
     this.selectedRadio = null
+
+    // force reload on modal close, even if by "ESC"
+    const modal = document.getElementById('resources_modal')
+    if (modal) {
+      modal.addEventListener('close', () => {
+        location.reload();
+      });
+    }
   }
 
   // Create new resource
@@ -310,6 +318,7 @@ export default class extends Controller {
     const modal = document.getElementById('resources_modal')
     if (modal) {
       modal.close()
+      location.reload();
     }
   }
 

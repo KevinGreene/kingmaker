@@ -27,6 +27,17 @@
     </div>
   <% end %>
 
+  <!-- Hidden fields for default values -->
+  <%= form.hidden_field :columns, value: 5 %>
+  <%= form.hidden_field :rows, value: 3 %>
+  <%= form.hidden_field :offset_x, value: 0 %>
+  <%= form.hidden_field :offset_y, value: 0 %>
+  <%= form.hidden_field :hex_scale_x, value: 1 %>
+  <%= form.hidden_field :hex_scale_y, value: 1 %>
+  <%= form.hidden_field :hex_radius, value: 3000 %>
+  <%= form.hidden_field :is_hex_pointy_top, value: true %>
+
+  <!-- Visible Form Elements -->
   <div class="form-control w-full" data-testid="form-name-field">
     <%= form.label :name, class: "label" do %>
       <span class="label-text text-base font-medium">

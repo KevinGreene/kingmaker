@@ -10,8 +10,10 @@ application.register("map-play", MapPlayController);
 import HexController from "./hex_controller";
 application.register("hexes", HexController);
 
+/*
 import HexEditorController from "./hex_editor_controller";
 application.register("hex-editor", HexEditorController);
+*/
 
 import MapLinkController from "./map_link_controller";
 application.register("map-link", MapLinkController);
@@ -36,5 +38,8 @@ application.register("hex-details", HexDetailsController);
 
 import ResourceController from "./resources_controller";
 application.register("resources", ResourceController);
+
+import HexResourceController from "./hex_resource_controller";
+application.register("hex-resources", HexResourceController);
 
 export { application }

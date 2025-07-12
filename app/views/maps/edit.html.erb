@@ -4,8 +4,6 @@
      class="h-screen w-screen overflow-hidden flex flex-col"
      data-controller="map-control"
      data-testid="map-controls"
-     data-hexes-map-id-value="<%= @map.id %>"
-     data-maps-map-id-value="<%= @map.id %>"
      data-map-control-map-id-value="<%= @map.id %>"
      data-map-control-player-id-value="<%= @player.id %>"
 >
@@ -96,10 +94,10 @@
                data:{
                  action: "click->map-control#flipHexStyle",
                  controller: "map-control",
-                 pointy_top: true
+                 pointy_top: false
                },
                            class: "btn btn-xs btn-ghost flex items-center justify-center p-1" do %>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="rotate-[30deg]">
                 <polygon points="10,2 16.93,6 16.93,14 10,18 3.07,14 3.07,6"></polygon>
               </svg>
             <% end %>
@@ -231,7 +229,7 @@
 </div>
 
 <!-- Hex Fly-out -->
-<%= render 'hexes/hex_details' %>
+<%= render 'hexes/hex_details', map: @map, resources: @map.resources %>
 
 <!-- Map Details Modal -->
 <dialog id="map_details_modal" class="modal">

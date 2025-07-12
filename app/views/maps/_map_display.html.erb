@@ -5,7 +5,7 @@
        data-map-edit-map-name-value="<%= map.name %>"
        data-map-edit-map-description-value="<%= map.description %>"
        data-map-edit-map-image-value="<%= map.image %>"
-       data-map-edit-hexes-value="<%= map.hexes.includes(:region).to_json(include: :region) %>"
+       data-map-edit-hexes-value="<%= map.hexes.includes(:region, :resources).to_json(include: [:region, :resources]) %>"
        data-map-edit-map-width-value="<%= map.image.attached? ? map.image.metadata[:width] : 800 %>"
        data-map-edit-map-height-value="<%= map.image.attached? ? map.image.metadata[:height] : 600 %>"
        data-map-edit-cols-value="<%= map.columns %>"

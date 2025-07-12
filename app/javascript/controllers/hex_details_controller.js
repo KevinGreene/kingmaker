@@ -39,6 +39,14 @@ export default class extends Controller {
         this.hexIsClaimed.checked = hex.claimed;
         this.hexIsClaimedText.textContent = hex.claimed.toString();
         this.hexRegion.textContent = hex.region ? hex.region.name : "No Region Assigned";
+
+        // dispatch event for other controllers
+        this.dispatch("hexSelected", {
+            detail: {
+                hex: this.selectedHex
+            },
+            bubbles: true
+        });
     }
 
     deselectHex(){
@@ -73,6 +81,49 @@ export default class extends Controller {
 
     closeNameChange(){
         this.hexNameChange.open = false;
+    }
+
+    changeResource(event){
+        const selectedResourceId = event.target.value
+
+        if(selectedResourceId === "No Resource"){
+            // unassign resource
+            this.updateHexResource(null);
+        } else {
+            // assign selected resource
+            this.updateHexResource(selectedResourceId);
+        }
+    }
+
+    async updateHexResource(newResourceId){
+        let url = "";
+        let method = "";
+        if(newResourceId === "No Resource"){
+            url = `/maps/${this.selectedHex.map_id}/hexes/${this.selectedHex.id}/unassign_resource`;
+            method = "DELETE";
+        } else {
+            url = `/maps/${this.selectedHex.map_id}/hexes/${this.selectedHex.id}/assign_resource`;
+            method = "POST";
+        }
+
+        try{
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    resource_id: newResourceId
+                })
+            });
+            if(!response.ok){
+                console.error('failed to save hex', this.selectedHex);
+            }
+        } catch (error){
+            console.log("error saving hex: ", this.selectedHex, error);
+        }
+        console.log(`hex ${this.selectedHex.id} saved successfully`);
     }
 
 }

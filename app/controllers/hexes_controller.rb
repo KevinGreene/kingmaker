@@ -1,7 +1,7 @@
 class HexesController < ApplicationController
-  before_action :set_map_and_hex, only: [ :update ]
+  before_action :set_map_and_hex, only: [ :update, :assign_resource, :unassign_resource ]
   before_action :set_map, only: [ :bulk_create, :bulk_update ]
-  before_action :validate_gm_access, only: [ :bulk_create, :bulk_update ]
+  before_action :validate_gm_access, only: [ :bulk_create, :bulk_update, :assign_resource, :unassign_resource ]
 
   def update
     if @hex.update(hex_params)
@@ -139,11 +139,65 @@ class HexesController < ApplicationController
     end
   end
 
+  def assign_resource
+    resource = @map.resources.find(params[:resource_id])
+
+    # Check if already assigned
+    if @hex.hex_resources.exists?(resource: resource)
+      render json: {
+        success: false,
+        error: "Resource already assigned to this hex"
+      }, status: :unprocessable_entity
+      return
+    end
+
+    hex_resource = @hex.hex_resources.build(resource: resource)
+
+    if hex_resource.save
+      render json: {
+        success: true,
+        message: "Resource assigned successfully",
+        hex_resource: hex_resource
+      }, status: :created
+    else
+      render json: {
+        success: false,
+        errors: hex_resource.errors.full_messages
+      }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { success: false, error: "Resource not found" }, status: :not_found
+  rescue => e
+    render json: { success: false, error: e.message }, status: :unprocessable_entity
+  end
+
+  def unassign_resource
+    resource = @map.resources.find(params[:resource_id])
+    hex_resource = @hex.hex_resources.find_by(resource: resource)
+
+    if hex_resource
+      hex_resource.destroy
+      render json: {
+        success: true,
+        message: "Resource unassigned successfully"
+      }
+    else
+      render json: {
+        success: false,
+        error: "Resource not assigned to this hex"
+      }, status: :not_found
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { success: false, error: "Resource not found" }, status: :not_found
+  rescue => e
+    render json: { success: false, error: e.message }, status: :unprocessable_entity
+  end
+
   private
 
   def set_map_and_hex
     @map = Map.find(params[:map_id])
-    @hex = @map.hexes.find(params[:id])
+    @hex = @map.hexes.includes(:resources).find(params[:id])
   end
 
   def set_map
@@ -151,7 +205,7 @@ class HexesController < ApplicationController
   end
 
   def hex_params
-    params.require(:hex).permit(:reconnoitered, :claimed, :visible, :region_id, :label)
+    params.require(:hex).permit(:reconnoitered, :claimed, :visible, :region_id, :label, :resource)
   end
 
   def validate_gm_access

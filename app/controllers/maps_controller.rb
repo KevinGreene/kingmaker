@@ -48,16 +48,29 @@ class MapsController < ApplicationController
   # POST /maps or /maps.json
   def create
     @map = Map.new(map_params)
-
     respond_to do |format|
       if @map.save
-
         # Automatically add the creator as a GM for this map
         PlayerMap.create!(
           player_id: current_user.player.id,
           map_id: @map.id,
           gm: true
         )
+
+        # Generate hexes based on rows and columns
+        @map.rows.times do |row|
+          @map.columns.times do |col|
+            Hex.create!(
+              map_id: @map.id,
+              y_coordinate: row,
+              x_coordinate: col,
+              reconnoitered: false,
+              claimed: false,
+              visible: true
+            )
+          end
+        end
+
         format.html { redirect_to @map, notice: "Map was successfully created." }
         format.json { render :show, status: :created, location: @map }
       else

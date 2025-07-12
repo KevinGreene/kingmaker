@@ -1,7 +1,8 @@
-<!-- _hex_details.html.erb partial -->
 <div id="hex-details-flyout"
      class="fixed top-0 right-0 h-full w-80 bg-base-100 shadow-2xl border-l border-base-300 z-50 transform translate-x-full transition-transform duration-300 ease-in-out"
-     data-controller="hex-details">
+     data-controller="hex-details hex-resources"
+     data-hex-resources-map-value="<%= map.to_json(include: [:resources, :hexes]) %>"
+>
 
   <!-- Header with Close Button -->
   <div class="flex items-center justify-between p-4">
@@ -14,7 +15,7 @@
       </svg>
     </button>
   </div>
-  <details id="hex-change-name" class="dropdown" data-controller="hex-details">
+  <details id="hex-change-name" class="dropdown">
     <summary class="mx-4 btn btn-outline btn-primary btn-xs">
       Change Name
     </summary>
@@ -94,13 +95,25 @@
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="divider"></div>
-    <div class="space-y-2">
-      <button id="hex-manage-resources"
-              class="btn btn-outline btn-info w-full">
-        Manage Resources
-      </button>
+    <!-- Resources -->
+    <div class="divider">Resources</div>
+    <div class="space-y-4">
+      <!-- Add new Resource -->
+      <label>
+        <select data-hex-resources-target="newResourceList" class="select" data-action="change->hex-resources#addResource">
+          <option disabled selected>Assign a New Resource</option>
+        </select>
+      </label>
+
+      <!-- Assigned Resources Area -->
+      <div class="space-y-2">
+        <div class="border-t-2 border-neutral border-dotted pb-2 pt-3">
+          <ul>
+            <li data-hex-resources-target="allocatedResourceList" class="list-item">
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
