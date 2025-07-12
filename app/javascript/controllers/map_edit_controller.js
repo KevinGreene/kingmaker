@@ -96,6 +96,10 @@ export default class extends Controller {
         document.addEventListener("hex-details:deselectAllHexes", () => this.deselectAllHexes());
         document.addEventListener("hex-details:hexNameChange", (event) => this.hexNameChange(event.detail));
 
+        // event listener from 'hex-resources'
+        // In your connect() method, update this line:
+        document.addEventListener("hex-resources:resourcesUpdated", (event) => this.updateHexResources(event));
+
         // Initialize image position
         this.updateTransform();
 
@@ -794,5 +798,63 @@ export default class extends Controller {
         if (overlay) {
             overlay.style.display = 'none';
         }
+    }
+
+    updateHexResources(event) {
+        // Extract the hex and resources from the event detail
+        const {hex, resources} = event.detail;
+
+        if (!hex || !hex.id) {
+            console.error("Invalid hex data received in updateHexResources", hex);
+            return;
+        }
+
+        console.log(`Updating resources for hex ${hex.id}:`, resources);
+
+        // Find the hex in your hexOverlayArray and update its resources
+        const hexIndex = this.hexOverlayArray.findIndex(h => h.id == hex.id);
+
+        if (hexIndex !== -1) {
+            // Update the hex's resources in your local data
+            this.hexOverlayArray[hexIndex].resources = [...resources]; // Create a copy to avoid reference issues
+
+            console.log(`Updated hex ${hex.id} resources:`, this.hexOverlayArray[hexIndex].resources);
+
+            // Optional: If you need to visually update anything based on resources
+            // (like changing hex color based on resource count), you can do it here
+            this.updateHexVisualState(this.hexOverlayArray[hexIndex]);
+
+        } else {
+            console.warn(`Hex with id ${hex.id} not found in hexOverlayArray`);
+
+            // If the hex isn't in your array yet (shouldn't normally happen),
+            // you might want to add it or refresh your hex data
+            console.log("Current hexOverlayArray hex IDs:", this.hexOverlayArray.map(h => h.id));
+        }
+    }
+
+    updateHexVisualState(hex) {
+        // Find the polygon element for this hex
+        const polygon = this.hexImageTarget.querySelector(`polygon[data-hex-id="${hex.id}"]`);
+
+        if (!polygon) {
+            console.warn(`Polygon not found for hex ${hex.id}`);
+            return;
+        }
+
+        // Example: Update hex appearance based on resource count
+        // You can customize this based on your needs
+        if (hex.resources && hex.resources.length > 0) {
+            // Hex has resources - maybe add a subtle border or change opacity
+            polygon.setAttribute('stroke-width', '3');
+            polygon.setAttribute('stroke', 'rgba(255, 215, 0, 0.3)'); // Subtle gold border
+        } else {
+            // No resources - revert to default appearance
+            polygon.setAttribute('stroke-width', '2');
+            polygon.setAttribute('stroke', 'rgba(0, 0, 0, 0.01)');
+        }
+
+        // You could also update a data attribute for CSS styling
+        polygon.setAttribute('data-has-resources', hex.resources && hex.resources.length > 0 ? 'true' : 'false');
     }
 }
