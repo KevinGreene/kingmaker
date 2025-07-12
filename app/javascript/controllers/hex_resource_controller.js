@@ -52,9 +52,6 @@ export default class extends Controller {
 
         if (!resourceId) {
             console.error("No resource ID found on button");
-            console.log("event", event);
-            console.log("target", event.target);
-            console.log("dataset", event.target.dataset);
             return;
         }
 
@@ -112,7 +109,7 @@ export default class extends Controller {
     }
 
     addToAssignedList(resource) {
-        const newResourceHtml = this.allocatedResourceTemplate(resource.id, resource.name);
+        const newResourceHtml = this.allocatedResourceTemplate(resource);
         this.allocatedResourceListTarget.innerHTML += newResourceHtml;
     }
 
@@ -222,11 +219,6 @@ export default class extends Controller {
         // Make sure we're broadcasting the current state
         const currentHex = this.getCurrentHex();
         const assignedResources = this.getAssignedResources();
-
-        console.log("Broadcasting changes:", {
-            hex: currentHex,
-            resources: assignedResources
-        });
 
         this.dispatch("resourcesUpdated", {
             detail: {

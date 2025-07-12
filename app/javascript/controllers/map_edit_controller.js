@@ -37,6 +37,11 @@ export default class extends Controller {
         this.maxScale = 3.5;
         this.zoomRate = 0.2;
 
+        // controls
+        this.mapRowControl = document.getElementById("map-row-control");
+        this.mapColControl = document.getElementById("map-col-control");
+        this.hexRadiusControl = document.getElementById("map-hex-radius-control");
+
         // Hex variables
         this.hexStyle = this.hexPointyTopValue ? "⬢" : "⬣";
         this.offsetXValue = document.getElementById("position_x")?.value || 0;
@@ -71,12 +76,6 @@ export default class extends Controller {
             button.addEventListener('click', (event) => this.assignRegions(event.target.dataset));
         });
 
-        // additional variables
-        this.currentMapTranslateX = 0;
-        this.currentMapTranslateY = 0;
-        this.svgScaleX = 1;
-        this.svgScaleY = 1;
-
         // Prevent context menu on right click
         if(this.hasContainerTarget){
             this.containerTarget.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -105,6 +104,7 @@ export default class extends Controller {
 
         // Draw hexes on the map
         this.drawHexes();
+
     }
 
     disconnect() {
@@ -165,20 +165,17 @@ export default class extends Controller {
     }
 
     handleMouseUp(event) {
-        // if not dragging, mouse has clicked - check for hex selection
-        if (!this.isDragging) {
-            let hexSelectionChanged = false;
 
-            // CTRL key is not held, so reset all hex selection
+        let hexSelectionChanged = false;
+
+        if (!this.isDragging) {
+            // not dragging, therefore this is a click
+
             if (!event.ctrlKey) {
-                const hadSelection = this.selectedHexArray.length > 0;
+                // deselect all hexes if CTRL is not held
                 this.deselectAllHexes();
-                if (hadSelection) {
-                    hexSelectionChanged = true;
-                }
             }
 
-            // not dragging - select the hex
             if (this.targetedHex.tagName === 'polygon') {
                 // enable the Region Assignment functionality
                 this.regionManager.classList.add("dropdown-hover");
@@ -287,10 +284,6 @@ export default class extends Controller {
      */
 
     drawHexes() {
-        if (!this.hasHexImageTarget) {
-            return;
-        }
-
         this.updateHexOverlay();
 
         const svg = this.hexImageTarget;
@@ -301,8 +294,12 @@ export default class extends Controller {
     }
 
     drawHex(svg, hex, currentHexStyle) {
-
-        const radius = this.hexRadiusValue / 100;
+        let radius;
+        if(this.hasHexRadiusValue && this.hexRadiusValue !== 0){
+            radius = this.hexRadiusValue / 100;
+        } else {
+            radius = this.hexRadiusControl.value / 100;
+        }
 
         let hexWidth, hexHeight, horizontalSpacing, verticalSpacing;
         if (currentHexStyle === "⬣") { // Flat-top hexagon
@@ -404,25 +401,16 @@ export default class extends Controller {
     updateHexOverlay() {
         // Create a map of existing hexes by coordinates for quick lookup
         const existingHexMap = new Map();
-        this.hexesValue.forEach(hex => {
-            const key = `${hex.x_coordinate},${hex.y_coordinate}`;
-            existingHexMap.set(key, hex);
-        });
 
         // Generate the complete grid based on current rows and cols
         const newHexOverlay = [];
 
-        for (let y = 0; y < this.rowsValue; y++) {
-            for (let x = 0; x < this.colsValue; x++) {
-                const key = `${x},${y}`;
-
-                if (existingHexMap.has(key)) {
-                    // Use existing hex data if it exists
-                    newHexOverlay.push(existingHexMap.get(key));
-                } else {
-                    // Create new hex with default values
+        if(this.hexesValue.length < 1){
+            // hexes haven't been saved to the map yet - time to generate some!
+            for (let y = 0; y < this.mapRowControl.value; y++) {
+                for (let x = 0; x < this.mapColControl.value; x++) {
                     const newHex = {
-                        id: null, // Will be set when saved to database
+                        id: null,
                         x_coordinate: x,
                         y_coordinate: y,
                         label: null,
@@ -437,8 +425,40 @@ export default class extends Controller {
                     newHexOverlay.push(newHex);
                 }
             }
-        }
+        } else {
+            // there are hexes loaded from the database, handle them normally
+            this.hexesValue.forEach(hex => {
+                const key = `${hex.x_coordinate},${hex.y_coordinate}`;
+                existingHexMap.set(key, hex);
+            });
 
+            for (let y = 0; y < this.rowsValue; y++) {
+                for (let x = 0; x < this.colsValue; x++) {
+                    const key = `${x},${y}`;
+
+                    if (existingHexMap.has(key)) {
+                        // Use existing hex data if it exists
+                        newHexOverlay.push(existingHexMap.get(key));
+                    } else {
+                        // Create new hex with default values
+                        const newHex = {
+                            id: null,
+                            x_coordinate: x,
+                            y_coordinate: y,
+                            label: null,
+                            reconnoitered: false,
+                            claimed: false,
+                            visible: true,
+                            map_id: this.mapIdValue,
+                            created_at: null,
+                            updated_at: null,
+                            region_id: null
+                        };
+                        newHexOverlay.push(newHex);
+                    }
+                }
+            }
+        }
         // Sort the array properly: first by y_coordinate (rows), then by x_coordinate (columns)
         newHexOverlay.sort((a, b) => {
             if (a.y_coordinate !== b.y_coordinate) {
@@ -446,7 +466,6 @@ export default class extends Controller {
             }
             return a.x_coordinate - b.x_coordinate;
         });
-
         // Update the overlay array
         this.hexOverlayArray = newHexOverlay;
     }
@@ -630,7 +649,9 @@ export default class extends Controller {
             is_hex_pointy_top: isPointyTop
         }
 
-        console.log(mapData);
+        if(mapData.columns === 0) mapData.columns = this.mapColControl.value;
+        if(mapData.rows === 0) mapData.rows = this.mapRowControl.value;
+        if(mapData.radius === 0) mapData.radius = this.hexRadiusControl.value;
 
         try {
             const response = await fetch(`/maps/${mapId}`, {
@@ -651,11 +672,9 @@ export default class extends Controller {
         } catch (e) {
             console.error('Error updating map:', e);
         }
-        console.log("map saved successfully");
     }
 
     async savePlayer(mapId, playerId, isGM){
-        console.log("savePlayer running");
         const playerData = {
             player_id: playerId,
             gm: isGM
@@ -673,19 +692,15 @@ export default class extends Controller {
             });
 
             if (response.ok) {
-                console.log('User Saved as GM Successfully');
             } else {
                 console.error('Failed to update map');
             }
         }catch (e){
             console.error('Error updating map:', e);
         }
-
-        console.log("player saved successfully");
     }
 
     async saveHexes(mapId) {
-        console.log("beginning to save hexes");
         try {
             const response = await fetch(`/maps/${mapId}/hexes/bulk_create`, {
                 method: 'POST',
@@ -704,11 +719,9 @@ export default class extends Controller {
         } catch (error) {
             console.error('Error creating hexes:', error);
         }
-        console.log("hexes saved successfully");
     }
 
     async saveHex(hex){
-        console.log("saving hex", hex);
         try{
             const response = await fetch(`/maps/${hex.map_id}/hexes/${hex.id}`, {
                 method: 'PATCH',
@@ -724,9 +737,8 @@ export default class extends Controller {
                 console.error('failed to save hex', hex);
             }
         } catch (error){
-            console.log("error saving hex: ", hex, error);
+            console.error("error saving hex: ", hex, error);
         }
-        console.log(`hex ${hex.id} saved successfully`);
     }
 
     showSavingOverlay() {
@@ -809,8 +821,6 @@ export default class extends Controller {
             return;
         }
 
-        console.log(`Updating resources for hex ${hex.id}:`, resources);
-
         // Find the hex in your hexOverlayArray and update its resources
         const hexIndex = this.hexOverlayArray.findIndex(h => h.id == hex.id);
 
@@ -818,43 +828,13 @@ export default class extends Controller {
             // Update the hex's resources in your local data
             this.hexOverlayArray[hexIndex].resources = [...resources]; // Create a copy to avoid reference issues
 
-            console.log(`Updated hex ${hex.id} resources:`, this.hexOverlayArray[hexIndex].resources);
-
-            // Optional: If you need to visually update anything based on resources
-            // (like changing hex color based on resource count), you can do it here
-            this.updateHexVisualState(this.hexOverlayArray[hexIndex]);
+            /* TODO: Optional - Handle visual changes to hex here,
+                if not handled automatically by drawHexes()*/
 
         } else {
             console.warn(`Hex with id ${hex.id} not found in hexOverlayArray`);
 
-            // If the hex isn't in your array yet (shouldn't normally happen),
-            // you might want to add it or refresh your hex data
-            console.log("Current hexOverlayArray hex IDs:", this.hexOverlayArray.map(h => h.id));
+            // TODO: Add the hex if it isn't in the array (safeguard - shouldn't ever happen)
         }
-    }
-
-    updateHexVisualState(hex) {
-        // Find the polygon element for this hex
-        const polygon = this.hexImageTarget.querySelector(`polygon[data-hex-id="${hex.id}"]`);
-
-        if (!polygon) {
-            console.warn(`Polygon not found for hex ${hex.id}`);
-            return;
-        }
-
-        // Example: Update hex appearance based on resource count
-        // You can customize this based on your needs
-        if (hex.resources && hex.resources.length > 0) {
-            // Hex has resources - maybe add a subtle border or change opacity
-            polygon.setAttribute('stroke-width', '3');
-            polygon.setAttribute('stroke', 'rgba(255, 215, 0, 0.3)'); // Subtle gold border
-        } else {
-            // No resources - revert to default appearance
-            polygon.setAttribute('stroke-width', '2');
-            polygon.setAttribute('stroke', 'rgba(0, 0, 0, 0.01)');
-        }
-
-        // You could also update a data attribute for CSS styling
-        polygon.setAttribute('data-has-resources', hex.resources && hex.resources.length > 0 ? 'true' : 'false');
     }
 }
