@@ -37,4 +37,7 @@ application.register("hex-details", HexDetailsController);
 import ResourceController from "./resources_controller";
 application.register("resources", ResourceController);
 
+import HexResourceController from "./hex_resource_controller";
+application.register("hex-resources", HexResourceController);
+
 export { application }

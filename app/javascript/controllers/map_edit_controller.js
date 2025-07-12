@@ -18,7 +18,6 @@ export default class extends Controller {
         hexRadius: Number,
         playerId: Number,
         hexPointyTop: Boolean,
-
     }
 
     connect() {
@@ -27,11 +26,6 @@ export default class extends Controller {
          * Mouse Leniency Variable - increase to allow more movement during clicks to still "count" as a click instead of a drag
          */
         this.mouseMoveLeniency = 15;
-
-        /**
-         * TESTING
-         */
-        document.getElementById("hex-details-flyout").classList.remove()
 
         // Map Variables
         this.startX = 0;
@@ -168,10 +162,16 @@ export default class extends Controller {
 
     handleMouseUp(event) {
         // if not dragging, mouse has clicked - check for hex selection
-        if(!this.isDragging){
+        if (!this.isDragging) {
+            let hexSelectionChanged = false;
+
             // CTRL key is not held, so reset all hex selection
-            if(!event.ctrlKey) {
+            if (!event.ctrlKey) {
+                const hadSelection = this.selectedHexArray.length > 0;
                 this.deselectAllHexes();
+                if (hadSelection) {
+                    hexSelectionChanged = true;
+                }
             }
 
             // not dragging - select the hex
@@ -187,16 +187,19 @@ export default class extends Controller {
 
                 // insert this hex into selected hex array if not already there
                 const hex = this.hexOverlayArray.find(h => h.id == this.targetedHex.getAttribute('data-hex-id'));
-                if(hex && !this.selectedHexArray.find(h => h.id == hex.id)){
+                if (hex && !this.selectedHexArray.find(h => h.id == hex.id)) {
                     this.selectedHexArray.push(hex);
+                    hexSelectionChanged = true;
                 }
 
                 // Prevent the event from bubbling to the map image
                 event.stopPropagation();
             }
 
-            this.broadcastHexData();
-
+            // Only broadcast if there was actually a change in hex selection
+            if (hexSelectionChanged) {
+                this.broadcastHexData();
+            }
         }
 
         this.isDragging = false;

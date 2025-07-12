@@ -11,6 +11,10 @@ Rails.application.routes.draw do
         post "bulk_update"
         post "bulk_replace"
       end
+      member do
+        post :assign_resource
+        delete :unassign_resource
+      end
     end
     resources :resources, only: [ :create, :update, :destroy ]
     member do
