@@ -6,8 +6,10 @@
   <!-- Map Info Header -->
   <div id="header-section" class="bg-base-200 p-4 border-b border-base-300 h-24">
     <div class="flex items-center justify-between h-full">
-      <!-- Left side - Back button -->
-      <div class="flex items-center">
+      <!-- Left side -->
+
+      <div class="flex flex-col items-left space-y-1">
+        <!-- Back button -->
         <%= button_to maps_url,
                       method: :get,
                       class: "btn btn-ghost btn-sm flex items-center gap-2" do %>
@@ -16,6 +18,11 @@
           </svg>
           Back to Maps
         <% end %>
+        <!-- Players List -->
+        <button class="btn btn-primary btn-sm"
+                onclick="document.getElementById('player_list_modal_<%= @map.id %>').showModal()">
+          Show Players
+        </button>
       </div>
 
       <!-- Center - Map info -->
@@ -55,3 +62,5 @@
 
 <!-- Share Map Link Modal -->
 <%= render 'share_map', map: @map %>
+
+<%= render 'players/player_list', map: @map %>

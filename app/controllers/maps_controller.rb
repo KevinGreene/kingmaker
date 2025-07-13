@@ -18,8 +18,6 @@ class MapsController < ApplicationController
 
   # GET /maps/1 or /maps/1.json
   def show
-    @map = Map.find(params[:id])
-
     if params[:share_token].present?
       # Share token access - verify token matches
       unless @map.share_token == params[:share_token]
@@ -131,7 +129,7 @@ class MapsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_map
-      @map = Map.find(params.expect(:id))
+      @map = Map.includes(player_maps: { player: :user }).find(params.expect(:id))
     rescue ActiveRecord::RecordNotFound
       respond_to do |format|
         format.html {

@@ -54,6 +54,13 @@
         <%= form_with(model: @user, local: true) do |form| %>
           <div class="form-control pb-4">
             <label class="label">
+              <span class="label-text">Display Name</span>
+            </label>
+            <%= form.display_name :display_name, class: "input input-bordered" %>
+          </div>
+
+          <div class="form-control pb-4">
+            <label class="label">
               <span class="label-text">Email</span>
             </label>
             <%= form.email_field :email_address, class: "input input-bordered" %>

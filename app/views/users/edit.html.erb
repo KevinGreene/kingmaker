@@ -1,6 +1,6 @@
 <% content_for :title, "Edit Profile" %>
 
-<div class="min-h-screen bg-base-200 py-8">
+<div class="min-h-screen bg-base-200 py-8" data-controller="image-cropper">
   <div class="container mx-auto px-4">
     <div class="max-w-2xl mx-auto">
       <!-- Header -->
@@ -9,91 +9,141 @@
         <p class="text-base-content/70 mt-2">Update your account information</p>
       </div>
 
-      <%= form_with model: @user, local: true, class: "space-y-6" do |form| %>
+      <%= form_with model: @user, local: true, multipart: true, class: "space-y-6" do |form| %>
+        <!-- Profile Information Card -->
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <h2 class="card-title text-primary">Profile Information</h2>
+
+            <div class="space-y-4">
+              <!-- Display Name Field -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Display Name</span>
+                </label>
+                <%= form.text_field :display_name, class: "input input-bordered w-full", placeholder: "How you want to appear to other players", required: true %>
+                <label class="label">
+                  <span class="label-text-alt">This is what other players will see in maps and player lists</span>
+                </label>
+              </div>
+
+              <!-- Profile Picture Section -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Profile Picture</span>
+                </label>
+
+                <!-- Current Avatar Display -->
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="avatar">
+                    <div class="w-16 h-16 rounded-full bg-base-300">
+                      <% if @user.avatar_url %>
+                        <img data-image-cropper-target="currentAvatar" src="<%= @user.avatar_url %>" alt="Current profile picture" class="rounded-full" />
+                      <% else %>
+                        <div class="flex items-center justify-center w-full h-full text-base-content/50">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 717.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                          </svg>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <button type="button" class="btn btn-primary btn-sm" data-action="click->image-cropper#selectFile">
+                      Upload Image
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-action="click->image-cropper#showUrlModal">
+                      Use URL
+                    </button>
+                    <% if @user.avatar_url %>
+                      <button type="button" class="btn btn-error btn-sm" data-action="click->image-cropper#removeAvatar">
+                        Remove
+                      </button>
+                    <% end %>
+                  </div>
+                </div>
+
+                <!-- Hidden file input -->
+                <input type="file" data-image-cropper-target="fileInput" accept="image/*" style="display: none;" data-action="change->image-cropper#handleFileUpload">
+
+                <!-- Hidden field for cropped image data -->
+                <input type="hidden" data-image-cropper-target="croppedData" name="user[cropped_avatar]">
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Account Information Card -->
         <div class="card bg-base-100 shadow-lg">
           <div class="card-body">
             <h2 class="card-title text-primary">Account Information</h2>
 
             <div class="space-y-4">
-              <!-- Email Field -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Email Address</span>
-                </label>
-                <%= form.email_field :email_address, class: "input input-bordered w-full", placeholder: "your@email.com", required: true %>
-                <label class="label">
-                  <span class="label-text-alt">This will be used for login and notifications</span>
-                </label>
-              </div>
+              <% unless @user.google_oauth? %>
+                <!-- Email Field -->
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Email Address</span>
+                  </label>
+                  <%= form.email_field :email_address, class: "input input-bordered w-full", placeholder: "your@email.com", required: true %>
+                  <label class="label">
+                    <span class="label-text-alt">This will be used for login and notifications</span>
+                  </label>
+                </div>
 
-              <!-- Current Password (for verification) -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Current Password</span>
-                </label>
-                <%= password_field_tag :current_password, "", class: "input input-bordered w-full", placeholder: "Enter your current password", required: true %>
-                <label class="label">
-                  <span class="label-text-alt">Required to verify it's really you</span>
-                </label>
-              </div>
+                <!-- Current Password (for verification) - Only for non-OAuth users -->
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Current Password</span>
+                  </label>
+                  <%= password_field_tag :current_password, "", class: "input input-bordered w-full", placeholder: "Enter your current password", required: true %>
+                  <label class="label">
+                    <span class="label-text-alt">Required to verify it's really you</span>
+                  </label>
+                </div>
+              <% else %>
+                <!-- OAuth User Notice -->
+                <div class="alert alert-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span>You're signed in with Google OAuth - email and password management is handled by Google.</span>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>
 
-        <!-- Change Password Card -->
-        <div class="card bg-base-100 shadow-lg">
-          <div class="card-body">
-            <h2 class="card-title text-secondary">Change Password</h2>
-            <p class="text-sm text-base-content/70 mb-4">Leave blank if you don't want to change your password</p>
+        <% unless @user.google_oauth? %>
+          <!-- Change Password Card - Only for non-OAuth users -->
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <h2 class="card-title text-secondary">Change Password</h2>
+              <p class="text-sm text-base-content/70 mb-4">Leave blank if you don't want to change your password</p>
 
-            <div class="space-y-4">
-              <!-- New Password -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">New Password</span>
-                </label>
-                <%= form.password_field :password, class: "input input-bordered w-full", placeholder: "Enter new password" %>
-                <label class="label">
-                  <span class="label-text-alt">Must be at least 6 characters</span>
-                </label>
-              </div>
+              <div class="space-y-4">
+                <!-- New Password -->
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">New Password</span>
+                  </label>
+                  <%= form.password_field :password, class: "input input-bordered w-full", placeholder: "Enter new password" %>
+                  <label class="label">
+                    <span class="label-text-alt">Must be at least 8 characters</span>
+                  </label>
+                </div>
 
-              <!-- Confirm New Password -->
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Confirm New Password</span>
-                </label>
-                <%= form.password_field :password_confirmation, class: "input input-bordered w-full", placeholder: "Confirm new password" %>
+                <!-- Confirm New Password -->
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Confirm New Password</span>
+                  </label>
+                  <%= form.password_field :password_confirmation, class: "input input-bordered w-full", placeholder: "Confirm new password" %>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Coming Soon Card -->
-        <div class="card bg-base-300 shadow-lg">
-          <div class="card-body">
-            <h2 class="card-title text-warning">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-              </svg>
-              More Settings Coming Soon
-            </h2>
-            <p class="text-base-content/70">
-              We're working on adding more customization options including:
-            </p>
-            <ul class="list-disc list-inside text-sm text-base-content/60 mt-2 space-y-1">
-              <li>Theme preferences (Dark/Light mode)</li>
-              <li>Default map settings</li>
-              <li>Notification preferences</li>
-              <li>Privacy settings</li>
-              <li>Display name and bio</li>
-            </ul>
-            <div class="mt-4">
-              <div class="badge badge-info">Coming in v2.0</div>
-            </div>
-          </div>
-        </div>
+        <% end %>
 
         <!-- Action Buttons -->
         <div class="card bg-base-100 shadow-lg">
@@ -115,34 +165,70 @@
       <% end %>
     </div>
   </div>
-</div>
 
-<!-- Delete Account Modal -->
-<input type="checkbox" id="delete-modal" class="modal-toggle" />
-<div class="modal">
-  <div class="modal-box">
-    <h3 class="font-bold text-lg text-error">Delete Account</h3>
-    <p class="py-4">Are you sure you want to delete your account? This action is permanent and cannot be undone. All your maps and data will be lost.</p>
-    <div class="modal-action">
-      <label for="delete-modal" class="btn">Cancel</label>
-      <%= link_to "Delete Account", user_path(@user), method: :delete,
-          data: { confirm: "Type 'DELETE' to confirm account deletion" },
-          class: "btn btn-error" %>
+  <!-- Simple Crop Modal -->
+  <input type="checkbox" data-image-cropper-target="cropModal" class="modal-toggle" />
+  <div class="modal">
+    <div class="modal-box max-w-md">
+      <h3 class="font-bold text-lg mb-4">Position Your Image</h3>
+
+      <!-- Crop Container -->
+      <div class="relative mx-auto" style="width: 200px; height: 200px;">
+        <!-- Background image that user can drag -->
+        <img
+          data-image-cropper-target="dragImage"
+          class="absolute cursor-move select-none"
+          style="transform-origin: center; user-select: none; -webkit-user-select: none;"
+          data-action="mousedown->image-cropper#startDrag touchstart->image-cropper#startDrag"
+         alt="temporary image for setting profile picture" src=""/>
+
+        <!-- Circular mask overlay -->
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="w-full h-full border-4 border-primary rounded-full"></div>
+        </div>
+
+        <!-- Darkened overlay with hole -->
+        <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at center, transparent 96px, rgba(0,0,0,0.5) 100px);"></div>
+      </div>
+
+      <div class="text-center mt-4 text-sm text-base-content/70">
+        Drag the image to position it within the circle
+      </div>
+
+      <div class="modal-action">
+        <button type="button" class="btn btn-primary" data-action="click->image-cropper#applyCrop">Apply</button>
+        <label data-image-cropper-target="cropModalLabel" class="btn">Cancel</label>
+      </div>
     </div>
+    <label class="modal-backdrop" data-image-cropper-target="cropModalLabel"></label>
   </div>
-  <label class="modal-backdrop" for="delete-modal"></label>
+
+  <!-- URL Input Modal -->
+  <label>
+    <input type="checkbox" data-image-cropper-target="urlModal" class="modal-toggle" />
+  </label>
+  <div class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Add Image from URL</h3>
+      <div class="form-control mb-4">
+        <label>
+          <input type="url" data-image-cropper-target="urlInput" class="input input-bordered w-full" placeholder="https://example.com/image.jpg">
+        </label>
+      </div>
+      <div class="modal-action">
+        <button type="button" class="btn btn-primary" data-action="click->image-cropper#loadImageFromUrl">Load Image</button>
+        <label data-image-cropper-target="urlModalLabel" class="btn">Cancel</label>
+      </div>
+    </div>
+    <label class="modal-backdrop" data-image-cropper-target="urlModalLabel"></label>
+  </div>
 </div>
 
-<!-- TODO: Add when user_preferences table is created
-Future settings to implement:
-- Theme preference (user_preferences.theme)
-- Email notifications (user_preferences.email_notifications)
-- Auto-save maps (user_preferences.auto_save_maps)
-- Show grid by default (user_preferences.show_grid_default)
-- Public profile (user_preferences.public_profile)
-- Default map size (user_preferences.default_map_size)
-- Default map theme (user_preferences.default_map_theme)
-- Allow public maps (user_preferences.allow_public_maps)
-- Show online status (user_preferences.show_online_status)
-- Allow friend requests (user_preferences.allow_friend_requests)
--->
+<style>
+  /* Prevent image dragging outside container */
+  [data-image-cropper-target="dragImage"] {
+    max-width: none;
+    min-width: 200px;
+    min-height: 200px;
+  }
+</style>

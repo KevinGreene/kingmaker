@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_11_133307) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_133317) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -161,6 +161,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_11_133307) do
     t.string "google_token"
     t.string "google_refresh_token"
     t.string "name"
+    t.string "display_name", default: "", null: false
+    t.string "icon"
+    t.index ["display_name"], name: "index_users_on_display_name"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
