@@ -56,6 +56,12 @@ class PlayerMapsController < ApplicationController
   end
 
   def destroy
+    @player_map = PlayerMap.find(params[:id])
+    if @player_map.destroy
+      head :no_content
+    else
+      render json: { errors: @player_map.errors }, status: :unprocessable_entity
+    end
   end
 
   private

@@ -56,9 +56,6 @@ export default class extends Controller {
   }
 
   handleMouseUp(event) {
-    // debugging
-    console.log("handleMouseUp called", this.element, event.target);
-
     if (!this.isDragging) return;
 
     this.isDragging = false;

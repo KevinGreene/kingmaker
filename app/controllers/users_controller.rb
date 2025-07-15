@@ -7,9 +7,9 @@ class UsersController < ApplicationController
   end
 
   def create
-    user = User.new(params.require(:user).permit(:email_address, :password, :password_confirmation))
-    if user.save
-      start_new_session_for user
+    @user = User.new(params.require(:user).permit(:email_address, :password, :password_confirmation))
+    if @user.save
+      start_new_session_for @user
       redirect_to maps_path, notice: "User was successfully created."
     else
       render :new
@@ -26,18 +26,24 @@ class UsersController < ApplicationController
       return
     end
 
-    # Verify current password if provided
-    if params[:current_password].present?
-      unless @user.authenticate(params[:current_password])
-        @user.errors.add(:current_password, "is incorrect")
+    # Skip password verification for OAuth users
+    unless @user.google_oauth?
+      # Verify current password if provided
+      if params[:current_password].present?
+        unless @user.authenticate(params[:current_password])
+          @user.errors.add(:current_password, "is incorrect")
+          render :edit, status: :unprocessable_entity
+          return
+        end
+      else
+        @user.errors.add(:current_password, "is required")
         render :edit, status: :unprocessable_entity
         return
       end
-    else
-      @user.errors.add(:current_password, "is required")
-      render :edit, status: :unprocessable_entity
-      return
     end
+
+    # Handle avatar cropping
+    handle_avatar_update if params[:user][:cropped_avatar].present?
 
     # Update user with permitted parameters
     if @user.update(user_params)
@@ -62,11 +68,11 @@ class UsersController < ApplicationController
     redirect_to root_path, alert: "User not found."
   end
 
-private
+  private
 
   def user_params
-    # Only permit email and password fields for now
-    permitted_params = params.require(:user).permit(:email_address, :password, :password_confirmation)
+    # Include the new fields, exclude cropped_avatar as it's handled separately
+    permitted_params = params.require(:user).permit(:email_address, :password, :password_confirmation, :display_name, :icon)
 
     # Remove password fields if they're blank (user doesn't want to change password)
     if permitted_params[:password].blank?
@@ -75,11 +81,42 @@ private
     end
 
     permitted_params
+  end
 
-    # TODO: Expand user_params when user preferences are added
-    # Future parameters to add:
-    # :name, :username, :bio, :theme_preference, :email_notifications,
-    # :auto_save_maps, :show_grid_default, :public_profile, :default_map_size,
-    # :default_map_theme, :allow_public_maps, :show_online_status, :allow_friend_requests
+  def handle_avatar_update
+    cropped_data = params[:user][:cropped_avatar]
+
+    if cropped_data == "REMOVE"
+      # Remove the avatar
+      @user.avatar.purge if @user.avatar.attached?
+      @user.update_column(:icon, nil) # Also clear the icon URL
+    elsif cropped_data.present? && cropped_data.start_with?("data:image")
+      # Process the cropped image
+      begin
+        # Decode the base64 image
+        image_data = cropped_data.split(",")[1]
+        decoded_image = Base64.decode64(image_data)
+
+        # Create a temporary file
+        temp_file = Tempfile.new([ "avatar", ".jpg" ])
+        temp_file.binmode
+        temp_file.write(decoded_image)
+        temp_file.rewind
+
+        # Attach the file to the user
+        @user.avatar.attach(
+          io: temp_file,
+          filename: "avatar_#{@user.id}_#{Time.current.to_i}.jpg",
+          content_type: "image/jpeg"
+        )
+
+        # Clear the icon URL since we're now using uploaded avatar
+        @user.update_column(:icon, nil)
+
+      ensure
+        temp_file.close if temp_file
+        temp_file.unlink if temp_file
+      end
+    end
   end
 end

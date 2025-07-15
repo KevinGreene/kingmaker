@@ -1,0 +1,28 @@
+<dialog id="player_list_modal_<%= map.id %>"
+        class="modal"
+        data-controller="player-list"
+        data-player-list-current-player-value="<%= @player&.player_maps&.where(map_id: @map.id)&.to_json || '[]' %>"
+        data-player-list-map-value="<%= @map.player_maps.as_json(
+                                          include: {
+                                            player: {
+                                              include: {
+                                                user: {
+                                                  methods: [:safe_json_attributes]
+                                                }
+                                              }
+                                            }
+                                          }
+                                        ).to_json %>"
+>
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Other players on this map:</h3>
+    <div class="modal-action flex-col">
+      <div data-player-list-target="playersList" class="card card-compact bg-base-100 w-auto shadow-sm">
+        <!-- Players will be inserted here -->
+      </div>
+    </div>
+    <form method="dialog" class="justify-end flex">
+        <button class="btn btn-ghost">Close</button>
+    </form>
+  </div>
+</dialog>
