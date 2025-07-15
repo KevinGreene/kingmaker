@@ -49,9 +49,6 @@ gem "omniauth"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
 
-# tailwind for rails
-gem "tailwindcss-rails"
-
 # Typescript
 gem "jsbundling-rails"
 

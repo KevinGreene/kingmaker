@@ -10,13 +10,16 @@ module.exports = {
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
             },
+            animation: {
+                'spin-slow': 'spin 4s linear infinite',
+                'ping-less': 'ping 3s cubic-bezier(0, 0, 0.1, 2) infinite',
+            }
         },
     },
     plugins: [
         require('@tailwindcss/forms'),
         require('@tailwindcss/aspect-ratio'),
         require('@tailwindcss/typography'),
-        require('@tailwindcss/postcss'),
         require('daisyui')
     ],
     daisyui: {
