@@ -1,0 +1,89 @@
+<%
+  # Set default direction if not provided
+  direction ||= "left"
+  drawer_class = direction == "right" ? "drawer-end" : ""
+  unique_id = "profile-drawer-#{SecureRandom.hex(4)}"
+%>
+
+<!-- Account Management Dropdown -->
+<div class="drawer <%= drawer_class %> z-[9999]">
+  <input id="<%= unique_id %>" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <label for="<%= unique_id %>" tabindex="0" role="button" class="btn btn-circle btn-ghost">
+      <% if current_user&.icon&.present? %>
+        <!-- User's actual profile image -->
+        <%= image_tag current_user.icon,
+                      class: "w-8 h-8 rounded-full object-cover",
+                      alt: "Profile" %>
+      <% else %>
+        <!-- Default profile icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current">
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          />
+        </svg>
+      <% end %>
+    </label>
+  </div>
+  <div class="drawer-side">
+    <label for="<%= unique_id %>" class="drawer-overlay"></label>
+    <ul class="menu bg-base-200 text-base-content min-h-full w-60 p-4">
+      <li>
+        <%= link_to edit_user_path(current_user), class: "text-sm" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          My Profile
+        <% end %>
+      </li>
+      <li>
+        <%= button_to session_path,
+                    method: :delete,
+                    class: "text-sm text-error" do %>
+          <div class="flex">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current mr-2 ml-1">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+            </svg>
+            <p class="text-center content-center align-middle">Sign Out</p>
+          </div>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const drawerId = '<%= unique_id %>';
+  const drawerToggle = document.getElementById(drawerId);
+  const drawerContainer = document.querySelector(`#${drawerId}`).closest('.drawer');
+  const drawerSide = drawerContainer ? drawerContainer.querySelector('.drawer-side') : null;
+  const drawerMenu = drawerSide ? drawerSide.querySelector('.menu') : null;
+
+  // Close drawer when clicking outside
+  document.addEventListener('click', function(event) {
+      if (!drawerToggle.checked) return; // Drawer is already closed
+
+      // Check if click is outside the drawer menu and not on the toggle elements
+      const isOutsideDrawer = drawerMenu && !drawerMenu.contains(event.target);
+      const isNotToggleButton = !event.target.closest(`label[for="${drawerId}"]`) &&
+          event.target !== drawerToggle;
+
+      if (isOutsideDrawer && isNotToggleButton) {
+          drawerToggle.checked = false;
+      }
+  });
+
+  // Close drawer when clicking on menu items (optional - for better UX)
+  if (drawerMenu) {
+    drawerMenu.addEventListener('click', function(event) {
+      // Close drawer when clicking on links (but not buttons for sign out)
+      if (event.target.closest('a')) {
+        drawerToggle.checked = false;
+      }
+    });
+  }
+});
+</script>

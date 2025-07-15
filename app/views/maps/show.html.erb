@@ -4,10 +4,14 @@
 >
 
   <!-- Map Info Header -->
-  <div id="header-section" class="bg-base-200 p-4 border-b border-base-300 h-24">
-    <div class="flex items-center justify-between h-full">
-      <!-- Left side -->
+  <div id="header-section" class="bg-base-200 p-4 border-b border-base-300 h-24 relative">
+    <!-- Profile Icon - Absolute positioned in top-right -->
+    <div class="absolute top-4 right-4 z-10">
+      <%= render 'shared/account_menu', direction: "right" %>
+    </div>
 
+    <div class="flex items-center justify-between h-full pr-16">
+      <!-- Left side -->
       <div class="flex flex-col items-left space-y-1">
         <!-- Back button -->
         <%= button_to maps_url,
@@ -32,8 +36,8 @@
         <p class="text-base-content/70 mt-1"><%= @map.description %></p>
       </div>
 
-      <!-- Right side - Share button -->
-      <div class="flex items-center">
+      <!-- Right side - Action buttons -->
+      <div class="flex items-center gap-2">
         <button class="btn btn-primary btn-sm"
                 onclick="document.getElementById('share_map_modal_<%= @map.id %>').showModal()">
           Share Map
@@ -41,7 +45,7 @@
         <% if current_player_is_gm_for_map?(@map) %>
           <%= button_to edit_map_url(@map),
                         method: :get,
-                        class: "btn btn-error btn-sm flex items-center gap-2 ml-2" do %>
+                        class: "btn btn-error btn-sm flex items-center gap-2" do %>
             Edit Map
           <% end %>
         <% end %>
@@ -60,7 +64,6 @@
   </div>
 </div>
 
-<!-- Share Map Link Modal -->
+<!-- Modals -->
 <%= render 'share_map', map: @map %>
-
 <%= render 'players/player_list', map: @map, player: @player %>

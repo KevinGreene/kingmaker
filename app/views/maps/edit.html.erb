@@ -11,14 +11,17 @@
   <!-- Compact Edit Controls Header -->
   <div id="edit-controls-header" class="bg-base-200 p-3 border-b border-base-300">
     <!-- Title and Navigation Row -->
-    <div class="flex items-center justify-between mb-3">
+    <div class="grid grid-cols-3 items-center justify-between mb-3 w-full">
       <div class="flex items-center gap-4">
         <div>
+          <%= link_to maps_path, class: "btn btn-sm btn-outline" do %>
+            ← Back to Maps
+          <% end %>
           <h1 class="text-lg font-bold"><%= @map.name %></h1>
           <p class="text-xs text-base-content/70">Editing Mode</p>
         </div>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="object-center align-middle">
         <button class="btn btn-sm btn-secondary" onclick="resources_modal.showModal()">
           Manage Map Resources
         </button>
@@ -28,9 +31,9 @@
         <%= link_to @map, class: "btn btn-sm btn-outline" do %>
           View Map
         <% end %>
-        <%= link_to maps_path, class: "btn btn-sm btn-ghost" do %>
-          Back to Maps
-        <% end %>
+      </div>
+      <div class="text-right gap-2">
+        <%= render 'shared/account_menu', direction: "right" %>
       </div>
     </div>
 
