@@ -1,7 +1,7 @@
 <dialog id="player_list_modal_<%= map.id %>"
         class="modal"
         data-controller="player-list"
-        data-player-list-current-player-value="<%= @player.player_maps.where(map_id: @map.id).to_json %>"
+        data-player-list-current-player-value="<%= @player&.player_maps&.where(map_id: @map.id)&.to_json || '[]' %>"
         data-player-list-map-value="<%= @map.player_maps.as_json(
                                           include: {
                                             player: {
