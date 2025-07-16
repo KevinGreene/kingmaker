@@ -1,0 +1,19 @@
+<dialog id="leave_map_<%=map.id %>"
+        class="modal"
+>
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Are you sure you want to leave this map?</h3>
+    <div class="form-control">
+    </div>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn btn-neutral btn-sm btn-border flex items-center gap-2">Cancel</button>
+      </form>
+      <%= button_to map_player_map_path(map, playerMapId),
+                          method: :delete,
+                          class: "btn btn-error btn-sm flex items-center gap-2" do %>
+        Leave Map
+      <% end %>
+    </div>
+  </div>
+</dialog>

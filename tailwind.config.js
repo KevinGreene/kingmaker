@@ -12,7 +12,7 @@ module.exports = {
             },
             animation: {
                 'spin-slow': 'spin 4s linear infinite',
-                'ping-less': 'ping 3s cubic-bezier(0, 0, 0.1, 2) infinite',
+                'ping-less': 'ping 2s cubic-bezier(0, 0, 0.1, 2) infinite',
             }
         },
     },

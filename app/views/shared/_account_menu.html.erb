@@ -30,26 +30,41 @@
   <div class="drawer-side">
     <label for="<%= unique_id %>" class="drawer-overlay"></label>
     <ul class="menu bg-base-200 text-base-content min-h-full w-60 p-4">
-      <li>
-        <%= link_to edit_user_path(current_user), class: "text-sm" do %>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-          </svg>
-          My Profile
-        <% end %>
-      </li>
-      <li>
-        <%= button_to session_path,
-                    method: :delete,
-                    class: "text-sm text-error" do %>
-          <div class="flex">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current mr-2 ml-1">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-            </svg>
-            <p class="text-center content-center align-middle">Sign Out</p>
-          </div>
-        <% end %>
-      </li>
+      <% if authenticated? %>
+        <li>
+            <%= link_to edit_user_path(current_user), class: "text-sm" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              My Profile
+            <% end %>
+        </li>
+        <li>
+          <%= button_to session_path,
+                      method: :delete,
+                      class: "text-sm text-error" do %>
+            <div class="flex">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-4 h-4 stroke-current mr-2 ml-1">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+              <p class="text-center content-center align-middle">Sign Out</p>
+            </div>
+          <% end %>
+        </li>
+      <% else %>
+        <li>
+          <%= link_to "Sign In",
+                     new_session_path,
+                     method: :post
+          %>
+        </li>
+        <li>
+          <%= link_to "Create Account",
+                      new_user_path,
+                      method: :get
+          %>
+        </li>
+      <% end %>
     </ul>
   </div>
 </div>
@@ -64,14 +79,14 @@
 
   // Close drawer when clicking outside
   document.addEventListener('click', function(event) {
-      if (!drawerToggle.checked) return; // Drawer is already closed
+      if (drawerToggle && !drawerToggle.checked) return; // Drawer is already closed
 
       // Check if click is outside the drawer menu and not on the toggle elements
       const isOutsideDrawer = drawerMenu && !drawerMenu.contains(event.target);
       const isNotToggleButton = !event.target.closest(`label[for="${drawerId}"]`) &&
           event.target !== drawerToggle;
 
-      if (isOutsideDrawer && isNotToggleButton) {
+      if (drawerToggle && isOutsideDrawer && isNotToggleButton) {
           drawerToggle.checked = false;
       }
   });

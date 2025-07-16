@@ -43,4 +43,7 @@ application.register("hex-resources", HexResourceController);
 import ImageCropperController from "./image_cropper_controller";
 application.register("image-cropper", ImageCropperController);
 
+import UserEditController from "./user_edit_controller";
+application.register("user-edit", UserEditController);
+
 export { application }

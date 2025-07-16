@@ -2,7 +2,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["fileInput", "cropModal", "cropModalLabel", "dragImage", "croppedData", "currentAvatar", "urlModal", "urlModalLabel", "urlInput"]
+  static targets = ["fileInput", "cropModal", "cropModalLabel", "dragImage", "croppedData", "currentAvatar", "urlModalLabel", "urlInput"]
 
   connect() {
     this.isDragging = false
@@ -25,11 +25,6 @@ export default class extends Controller {
       }
       reader.readAsDataURL(file)
     }
-  }
-
-  showUrlModal() {
-    this.urlModalTarget.checked = true
-    this.urlInputTarget.value = ''
   }
 
   loadImageFromUrl() {

@@ -6,7 +6,7 @@ class User < ApplicationRecord
   # Add avatar attachment
   has_one_attached :avatar
 
-  validates :password, presence: true, length: { minimum: 8 }, if: -> { provider.blank? }
+  validates :password, presence: true, length: { minimum: 8 }, if: -> { password.present? || (new_record? && provider.blank?) }
   validates :email_address, presence: true, uniqueness: true
   validates :display_name, presence: true, if: :display_name_required?
 
