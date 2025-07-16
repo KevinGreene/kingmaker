@@ -9,6 +9,10 @@ export default class extends Controller {
     }
 
     connect(){
+        this.updateModal();
+    }
+
+    updateModal(){
         this.playersListTarget.innerHTML = this.getInnerHTML();
     }
 
@@ -37,15 +41,26 @@ export default class extends Controller {
     kick(event) {
         const mapId = event.target.dataset.mapId;
         const playerMapId = event.target.dataset.playerMapId;
-        console.log("helper", event.target.dataset);
-        console.log("kicking with", mapId, playerMapId);
-        this.saveKickPlayer(mapId, playerMapId);
+        this.saveKickPlayer(mapId, playerMapId).then(r => {
+            this.mapValue = this.mapValue.filter(playerMap =>
+                playerMap.id.toString() !== playerMapId.toString()
+            );
+            this.updateModal();
+        });
     }
 
     promoteToGM(event) {
         const mapId = event.target.dataset.mapId;
         const playerMapId = event.target.dataset.playerMapId;
-        this.savePromotionToGM(mapId, playerMapId);
+        this.savePromotionToGM(mapId, playerMapId).then(r => {
+            this.mapValue = this.mapValue.map(playerMap => {
+                if (playerMap.id.toString() === playerMapId.toString()) {
+                    return {...playerMap, gm: true};
+                }
+                return playerMap;
+            });
+            this.updateModal();
+        });
     }
 
     /**

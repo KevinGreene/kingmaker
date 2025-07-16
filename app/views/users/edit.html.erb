@@ -1,6 +1,7 @@
 <% content_for :title, "Edit Profile" %>
 
-<div class="min-h-screen bg-base-200 py-8" data-controller="image-cropper">
+<div class="min-h-screen bg-base-200 py-8" data-controller="image-cropper user-edit">
+  <%= render 'shared/home_button' %>
   <div class="container mx-auto px-4">
     <div class="max-w-2xl mx-auto">
       <!-- Header -->
@@ -52,9 +53,6 @@
                     <button type="button" class="btn btn-primary btn-sm" data-action="click->image-cropper#selectFile">
                       Upload Image
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-action="click->image-cropper#showUrlModal">
-                      Use URL
-                    </button>
                     <% if @user.avatar_url %>
                       <button type="button" class="btn btn-error btn-sm" data-action="click->image-cropper#removeAvatar">
                         Remove
@@ -79,49 +77,75 @@
             <h2 class="card-title text-primary">Account Information</h2>
 
             <div class="space-y-4">
-              <% unless @user.google_oauth? %>
-                <!-- Email Field -->
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Email Address</span>
-                  </label>
-                  <%= form.email_field :email_address, class: "input input-bordered w-full", placeholder: "your@email.com", required: true %>
-                  <label class="label">
-                    <span class="label-text-alt">This will be used for login and notifications</span>
-                  </label>
-                </div>
-
-                <!-- Current Password (for verification) - Only for non-OAuth users -->
-                <div class="form-control">
-                  <label class="label">
-                    <span class="label-text">Current Password</span>
-                  </label>
-                  <%= password_field_tag :current_password, "", class: "input input-bordered w-full", placeholder: "Enter your current password", required: true %>
-                  <label class="label">
-                    <span class="label-text-alt">Required to verify it's really you</span>
-                  </label>
-                </div>
-              <% else %>
-                <!-- OAuth User Notice -->
+              <% if @user.google_oauth? %>
+              <!-- OAuth User Notice -->
                 <div class="alert alert-info">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <span>You're signed in with Google OAuth - email and password management is handled by Google.</span>
                 </div>
-              <% end %>
+              <%  else  %>
+              <!-- Email Field -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Email Address</span>
+                </label>
+                <%=  form.email_field :email_address, class: "hidden input input-bordered w-full", id: "email-input-field"  %>
+                <label id="email-read-only-field" class="border px-4 py-3 border-neutral rounded-lg w-full text-left object-center content-center"><%= @user.email_address %></label>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline" id="change-email-btn" data-action="click->user-edit#toggleEmailEdit">
+                    Change Email
+                  </button>
+                </div>
+              </div>
+
+              <!-- Current Password Field (Hidden by default, shown when email is being changed) -->
+              <div class="form-control" id="current-password-field" style="display: none;">
+                <label class="label">
+                  <span class="label-text">Current Password</span>
+                </label>
+                <%=  password_field_tag :current_password, "", class: "input input-bordered w-full", placeholder: "Enter your current password to verify changes", id: "current-password-input"  %>
+                <label class="label">
+                  <span class="label-text-alt">Required to verify it's really you</span>
+                </label>
+              </div>
+              <%  end %>
             </div>
           </div>
         </div>
 
         <% unless @user.google_oauth? %>
-          <!-- Change Password Card - Only for non-OAuth users -->
+          <!-- Change Password Toggle Button -->
           <div class="card bg-base-100 shadow-lg">
             <div class="card-body">
+              <button type="button" class="btn btn-outline btn-secondary" id="change-password-toggle" data-action="click->user-edit#togglePasswordSection">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+                Change Password
+              </button>
+            </div>
+          </div>
+
+          <!-- Change Password Card - Hidden by default -->
+          <div class="card bg-base-100 shadow-lg" id="change-password-section" style="display: none;">
+            <div class="card-body">
               <h2 class="card-title text-secondary">Change Password</h2>
-              <p class="text-sm text-base-content/70 mb-4">Leave blank if you don't want to change your password</p>
+              <p class="text-sm text-base-content/70 mb-4">Enter your new password below</p>
 
               <div class="space-y-4">
+                <!-- Current Password for password change -->
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">Current Password</span>
+                  </label>
+                  <%= password_field_tag :current_password_for_change, "", class: "input input-bordered w-full", placeholder: "Enter your current password", id: "current-password-for-change" %>
+                  <label class="label">
+                    <span class="label-text-alt">Required to verify it's really you</span>
+                  </label>
+                </div>
+
                 <!-- New Password -->
                 <div class="form-control">
                   <label class="label">
@@ -203,25 +227,7 @@
     <label class="modal-backdrop" data-image-cropper-target="cropModalLabel"></label>
   </div>
 
-  <!-- URL Input Modal -->
-  <label>
-    <input type="checkbox" data-image-cropper-target="urlModal" class="modal-toggle" />
-  </label>
-  <div class="modal">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg mb-4">Add Image from URL</h3>
-      <div class="form-control mb-4">
-        <label>
-          <input type="url" data-image-cropper-target="urlInput" class="input input-bordered w-full" placeholder="https://example.com/image.jpg">
-        </label>
-      </div>
-      <div class="modal-action">
-        <button type="button" class="btn btn-primary" data-action="click->image-cropper#loadImageFromUrl">Load Image</button>
-        <label data-image-cropper-target="urlModalLabel" class="btn">Cancel</label>
-      </div>
-    </div>
-    <label class="modal-backdrop" data-image-cropper-target="urlModalLabel"></label>
-  </div>
+
 </div>
 
 <style>

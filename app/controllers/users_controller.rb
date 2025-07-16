@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params.require(:user).permit(:email_address, :password, :password_confirmation))
+    @user = User.new(params.require(:user).permit(:email_address, :password, :password_confirmation, :display_name))
     if @user.save
       start_new_session_for @user
       redirect_to maps_path, notice: "User was successfully created."
@@ -17,38 +17,34 @@ class UsersController < ApplicationController
   end
 
   def update
-    # Find the user being updated
     @user = User.find(params[:id])
 
-    # Authentication check - ensure current user can only update their own account
     unless current_user && current_user.id == @user.id
       redirect_to root_path, alert: "You can only edit your own account."
       return
     end
 
+    # Handle avatar cropping BEFORE processing user_params
+    handle_avatar_update if params[:user][:cropped_avatar].present?
+
     # Skip password verification for OAuth users
     unless @user.google_oauth?
-      # Verify current password if provided
-      if params[:current_password].present?
+      puts "incorrectly routing to this section"
+      if params[:current_password].present? && params[:new_password].present?
         unless @user.authenticate(params[:current_password])
           @user.errors.add(:current_password, "is incorrect")
           render :edit, status: :unprocessable_entity
           return
         end
-      else
-        @user.errors.add(:current_password, "is required")
-        render :edit, status: :unprocessable_entity
-        return
       end
     end
 
-    # Handle avatar cropping
-    handle_avatar_update if params[:user][:cropped_avatar].present?
-
-    # Update user with permitted parameters
     if @user.update(user_params)
-      redirect_to edit_user_path(@user), notice: "Profile updated successfully!"
+      puts "user has been updated"
+      redirect_to root_path, notice: "Profile updated successfully!"
     else
+      puts "something went wrong:"
+      puts @user.errors.full_messages # Keep this for debugging
       render :edit, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound

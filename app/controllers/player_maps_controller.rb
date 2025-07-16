@@ -57,10 +57,17 @@ class PlayerMapsController < ApplicationController
 
   def destroy
     @player_map = PlayerMap.find(params[:id])
+
     if @player_map.destroy
-      head :no_content
+      respond_to do |format|
+        format.html { redirect_to maps_path, notice: "Successfully left the map" }
+        format.json { head :no_content }
+      end
     else
-      render json: { errors: @player_map.errors }, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { redirect_to maps_path, alert: "Failed to leave map" }
+        format.json { render json: { errors: @player_map.errors }, status: :unprocessable_entity }
+      end
     end
   end
 
